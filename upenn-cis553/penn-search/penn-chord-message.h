@@ -26,45 +26,50 @@ using namespace ns3;
 
 #define IPV4_ADDRESS_SIZE 4
 
-class PennChordMessage : public Header
-{
-  public:
-    PennChordMessage ();
-    virtual ~PennChordMessage ();
+class PennChordMessage : public Header {
+public:
+    PennChordMessage();
+    virtual ~PennChordMessage();
 
+// TODO: Define messages for the following functions
+//    PennChord::NodeInfo getLocation();
+//    PennChord::NodeInfo find_successor();
+//    PennChord::NodeInfo closest_preceeding();
+//    bool notify();
 
-    enum MessageType
-      {
+    enum MessageType {
         PING_REQ = 1,
         PING_RSP = 2,
+        CHOR_REQ = 3,
+        CHOR_RSP = 4,
         // Define extra message types when needed       
-      };
+    };
 
-    PennChordMessage (PennChordMessage::MessageType messageType, uint32_t transactionId);
+    PennChordMessage(PennChordMessage::MessageType messageType, uint32_t transactionId);
 
     /**
-    *  \brief Sets message type
-    *  \param messageType message type
-    */
-    void SetMessageType (MessageType messageType);
+     *  \brief Sets message type
+     *  \param messageType message type
+     */
+    void SetMessageType(MessageType messageType);
 
     /**
      *  \returns message type
      */
-    MessageType GetMessageType () const;
+    MessageType GetMessageType() const;
 
     /**
      *  \brief Sets Transaction Id
      *  \param transactionId Transaction Id of the request
      */
-    void SetTransactionId (uint32_t transactionId);
+    void SetTransactionId(uint32_t transactionId);
 
     /**
      *  \returns Transaction Id
      */
-    uint32_t GetTransactionId () const;
+    uint32_t GetTransactionId() const;
 
-  private:
+private:
     /**
      *  \cond
      */
@@ -73,72 +78,68 @@ class PennChordMessage : public Header
     /**
      *  \endcond
      */
-  public:
-    static TypeId GetTypeId (void);
-    virtual TypeId GetInstanceTypeId (void) const;
-    void Print (std::ostream &os) const;
-    uint32_t GetSerializedSize (void) const;
-    void Serialize (Buffer::Iterator start) const;
-    uint32_t Deserialize (Buffer::Iterator start);
+public:
+    static TypeId GetTypeId(void);
+    virtual TypeId GetInstanceTypeId(void) const;
+    void Print(std::ostream &os) const;
+    uint32_t GetSerializedSize(void) const;
+    void Serialize(Buffer::Iterator start) const;
+    uint32_t Deserialize(Buffer::Iterator start);
 
-    
-    struct PingReq
-      {
-        void Print (std::ostream &os) const;
-        uint32_t GetSerializedSize (void) const;
-        void Serialize (Buffer::Iterator &start) const;
-        uint32_t Deserialize (Buffer::Iterator &start);
+    struct PingReq {
+        void Print(std::ostream &os) const;
+        uint32_t GetSerializedSize(void) const;
+        void Serialize(Buffer::Iterator &start) const;
+        uint32_t Deserialize(Buffer::Iterator &start);
         // Payload
         std::string pingMessage;
-      };
+    };
 
-    struct PingRsp
-      {
-        void Print (std::ostream &os) const;
-        uint32_t GetSerializedSize (void) const;
-        void Serialize (Buffer::Iterator &start) const;
-        uint32_t Deserialize (Buffer::Iterator &start);
+    struct PingRsp {
+        void Print(std::ostream &os) const;
+        uint32_t GetSerializedSize(void) const;
+        void Serialize(Buffer::Iterator &start) const;
+        uint32_t Deserialize(Buffer::Iterator &start);
         // Payload
         std::string pingMessage;
-      };
+    };
 
 
-  private:
-    struct
-      {
+private:
+
+    struct {
         PingReq pingReq;
         PingRsp pingRsp;
-      } m_message;
-    
-  public:
+    } m_message;
+
+public:
     /**
      *  \returns PingReq Struct
      */
-    PingReq GetPingReq ();
+    PingReq GetPingReq();
 
     /**
      *  \brief Sets PingReq message params
      *  \param message Payload String
      */
 
-    void SetPingReq (std::string message);
+    void SetPingReq(std::string message);
 
     /**
      * \returns PingRsp Struct
      */
-    PingRsp GetPingRsp ();
+    PingRsp GetPingRsp();
     /**
      *  \brief Sets PingRsp message params
      *  \param message Payload String
      */
-    void SetPingRsp (std::string message);
+    void SetPingRsp(std::string message);
 
 }; // class PennChordMessage
 
-static inline std::ostream& operator<< (std::ostream& os, const PennChordMessage& message)
-{
-  message.Print (os);
-  return os;
+static inline std::ostream& operator<<(std::ostream& os, const PennChordMessage& message) {
+    message.Print(os);
+    return os;
 }
 
 #endif

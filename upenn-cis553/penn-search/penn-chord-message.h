@@ -31,11 +31,7 @@ public:
     PennChordMessage();
     virtual ~PennChordMessage();
 
-// TODO: Define messages for the following functions
-//    PennChord::NodeInfo getLocation();
-//    PennChord::NodeInfo find_successor();
-//    PennChord::NodeInfo closest_preceeding();
-//    bool notify();
+
 
     enum MessageType {
         PING_REQ = 1,

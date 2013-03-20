@@ -59,7 +59,23 @@ class PennChord : public PennApplication
     // From PennApplication
     virtual void ProcessCommand (std::vector<std::string> tokens);
     
+    // Custom work
+    
+    typedef struct NodeInfo{
+        int32_t location;
+        Ipv4Address address;
+    } NodeInfo;
+    
+    // TODO now
+    
     void JoinOverlay(Ipv4Address landmark);
+    void CreateOverlay();
+    
+    void stabilize();
+    bool notify(int32_t address);
+    
+    // TODO Later
+    void fix_fingers();
     
   protected:
     virtual void DoDispose ();
@@ -81,7 +97,9 @@ class PennChord : public PennApplication
     Callback <void, Ipv4Address, std::string> m_pingFailureFn;
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
     
-    int m_location;
+    NodeInfo m_info;
+    NodeInfo m_sucessor;
+    NodeInfo m_predecessor;
 };
 
 #endif

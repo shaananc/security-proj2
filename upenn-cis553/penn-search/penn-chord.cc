@@ -96,13 +96,23 @@ void
 PennChord::ProcessCommand(std::vector<std::string> tokens) {
     std::vector<std::string>::iterator iterator = tokens.begin();
     std::string command = *iterator;
-    
-    CHORD_LOG(*iterator << " is the command" << std::endl);
-    
+
+
     if (command == "join") {
         iterator++;
         std::string landmark = *iterator;
-        JoinOverlay(ResolveNodeIpAddress(landmark));
+        
+        std::stringstream ss;
+        ss << m_node->GetId();
+        std::string m_id = ss.str();
+        
+        CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
+        
+        if (landmark == m_id) {
+            CreateOverlay();
+        } else {
+            JoinOverlay(ResolveNodeIpAddress(landmark));
+        }
     }
 
 
@@ -227,7 +237,24 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 }
 
 // TODO Implement
-void PennChord::JoinOverlay(Ipv4Address landmark){
-    landmark.Print(std::cout);
+
+void PennChord::JoinOverlay(Ipv4Address landmark) {
+    CHORD_LOG("Joining Overlay" << std::endl);
+
+}
+
+void PennChord::CreateOverlay(){
+    CHORD_LOG("Creating Overlay" << std::endl);
+    NodeInfo i;
+    i.location = 0;
+    i.address = m_local;
+    m_info = i;
+    m_sucessor = m_info;
+    
+    // TODO Use an enum? Find a better way
+    NodeInfo blank;
+    blank.location = -1;
+    
+    m_predecessor = blank;
     
 }

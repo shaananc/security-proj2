@@ -59,6 +59,8 @@ class PennChord : public PennApplication
     // From PennApplication
     virtual void ProcessCommand (std::vector<std::string> tokens);
     
+    void JoinOverlay(Ipv4Address landmark);
+    
   protected:
     virtual void DoDispose ();
     
@@ -78,6 +80,8 @@ class PennChord : public PennApplication
     Callback <void, Ipv4Address, std::string> m_pingSuccessFn;
     Callback <void, Ipv4Address, std::string> m_pingFailureFn;
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
+    
+    int m_location;
 };
 
 #endif

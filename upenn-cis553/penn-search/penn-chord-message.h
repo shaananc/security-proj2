@@ -31,8 +31,6 @@ public:
     PennChordMessage();
     virtual ~PennChordMessage();
 
-
-
     enum MessageType {
         PING_REQ = 1,
         PING_RSP = 2,
@@ -98,6 +96,22 @@ public:
         uint32_t Deserialize(Buffer::Iterator &start);
         // Payload
         std::string pingMessage;
+    };
+
+    struct PennChordPacket {
+
+        enum TYPE {
+        };
+
+
+    
+    public:
+        virtual void Print(std::ostream &os) const;
+        virtual uint32_t GetSerializedSize(void) const;
+        virtual void Serialize(Buffer::Iterator start)const;
+        virtual uint32_t Deserialize(Buffer::Iterator start);
+
+
     };
 
 

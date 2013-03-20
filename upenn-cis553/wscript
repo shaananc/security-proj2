@@ -23,6 +23,7 @@ def build(bld):
         'common/penn-log.cc',
         'common/penn-routing-protocol.cc',
         'common/penn-application.cc',
+        'common/test-result.cc',
         ]
     headers = bld.new_task_gen('ns3header')
     headers.module = 'upenn-cis553'
@@ -36,7 +37,6 @@ def build(bld):
       'penn-search/penn-search.h',
       'penn-search/penn-chord.h',
       'penn-search/penn-chord-message.h',
-      'penn-search/penn-chord-packet.h',
       'penn-search/penn-search-message.h',
       'penn-search/penn-search-helper.h',
       'penn-search/remote_node.h',
@@ -45,4 +45,6 @@ def build(bld):
       'common/ping-request.h',
       'common/penn-routing-protocol.h',
       'common/penn-application.h',
-      ]
+      'common/neighbour.h',
+      'common/test-result.h',
+       ]

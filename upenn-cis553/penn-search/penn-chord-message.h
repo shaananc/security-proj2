@@ -34,8 +34,7 @@ public:
     enum MessageType {
         PING_REQ = 1,
         PING_RSP = 2,
-        CHOR_REQ = 3,
-        CHOR_RSP = 4,
+        CHOR_PAC = 3,
         // Define extra message types when needed       
     };
 
@@ -120,6 +119,7 @@ private:
     struct {
         PingReq pingReq;
         PingRsp pingRsp;
+        PennChordPacket chordPacket; 
     } m_message;
 
 public:

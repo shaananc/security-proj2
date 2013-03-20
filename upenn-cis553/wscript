@@ -1,0 +1,43 @@
+## -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+import sys
+
+def build(bld):
+    obj = bld.create_ns3_program('simulator-main', ['node'])
+    obj.source = [ 
+        'simulator-main.cc',
+        'ls-routing-protocol/ls-routing-protocol.cc',
+        'ls-routing-protocol/ls-message.cc',
+        'ls-routing-protocol/ls-routing-helper.cc',
+        'dv-routing-protocol/dv-routing-protocol.cc',
+        'dv-routing-protocol/dv-message.cc',
+        'dv-routing-protocol/dv-routing-helper.cc',
+        'penn-search/penn-search.cc',
+        'penn-search/penn-chord.cc',
+        'penn-search/penn-chord-message.cc',
+        'penn-search/penn-search-message.cc',
+        'penn-search/penn-search-helper.cc',
+        'common/ping-request.cc',
+        'common/penn-log.cc',
+        'common/penn-routing-protocol.cc',
+        'common/penn-application.cc',
+        ]
+    headers = bld.new_task_gen('ns3header')
+    headers.module = 'upenn-cis553'
+    headers.source = [
+      'ls-routing-protocol/ls-routing-protocol.h',
+      'ls-routing-protocol/ls-routing-helper.h',
+      'ls-routing-protocol/ls-message.h',
+      'dv-routing-protocol/dv-routing-protocol.h',
+      'dv-routing-protocol/dv-routing-helper.h',
+      'dv-routing-protocol/dv-message.h',
+      'penn-search/penn-search.h',
+      'penn-search/penn-chord.h',
+      'penn-search/penn-chord-message.h',
+      'penn-search/penn-search-message.h',
+      'penn-search/penn-search-helper.h',
+      'common/penn-log.h',
+      'common/ping-request.h',
+      'common/penn-routing-protocol.h',
+      'common/penn-application.h',
+      ]

@@ -24,6 +24,8 @@
 
 using namespace ns3;
 
+class remote_node;
+
 TypeId
 PennChord::GetTypeId() {
     static TypeId tid = TypeId("PennChord")
@@ -101,13 +103,13 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
     if (command == "join") {
         iterator++;
         std::string landmark = *iterator;
-        
+
         std::stringstream ss;
         ss << m_node->GetId();
         std::string m_id = ss.str();
-        
+
         CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
-        
+
         if (landmark == m_id) {
             CreateOverlay();
         } else {
@@ -153,6 +155,10 @@ PennChord::RecvMessage(Ptr<Socket> socket) {
             break;
         case PennChordMessage::PING_RSP:
             ProcessPingRsp(message, sourceAddress, sourcePort);
+            break;
+        case PennChordMessage::CHOR_PAC:
+            //TODO process chord reply
+            // Process in Penn-Chord
             break;
         default:
             ERROR_LOG("Unknown Message Type!");
@@ -240,21 +246,33 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
     CHORD_LOG("Joining Overlay" << std::endl);
+    NodeInfo info;
+    info.address = landmark;
+    remote_node s(info, m_socket, m_appPort, m_local);
+    m_landmark = s;
+    // Sends a request for the location of the landmark
+    m_landmark.getLocation();
 
 }
 
-void PennChord::CreateOverlay(){
+void PennChord::CreateOverlay() {
     CHORD_LOG("Creating Overlay" << std::endl);
     NodeInfo i;
     i.location = 0;
     i.address = m_local;
     m_info = i;
-    m_sucessor = m_info;
     
+    remote_node i_node(i, m_socket, m_appPort, m_local);
+    m_sucessor = i_node;
+
     // TODO Use an enum? Find a better way
     NodeInfo blank;
     blank.location = -1;
+    remote_node blank_node(blank, m_socket, m_appPort, m_local);
     
-    m_predecessor = blank;
-    
+    m_predecessor = blank_node;
+
+
+
+
 }

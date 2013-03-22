@@ -253,6 +253,6 @@ PennChordMessage::GetTransactionId(void) const {
     return m_transactionId;
 }
 
-void PennChordMessage::SetChordPacket(PennChordPacket p){
+void PennChordMessage::SetChordPacket(PennChordPacket p) {
     m_message.chordPacket = p;
 }

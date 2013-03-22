@@ -8,43 +8,51 @@
 #ifndef REMOTE_NODE_H
 #define	REMOTE_NODE_H
 
-#include "penn-chord.h"
 #include <vector>
+#include "ns3/inet-socket-address.h"
+#include "ns3/socket.h"
+#include "penn-chord-message.h"
+#include "ns3/NodeInfo.h"
 
 using namespace std;
 using namespace ns3;
 
+
+
 class remote_node {
 public:
     remote_node();
-
-    remote_node(PennChord::NodeInfo info, Ptr<Socket> m_socket, uint16_t m_appPort);
+    
+    remote_node(NodeInfo info, Ptr<Socket> m_socket, uint16_t m_appPort, Ipv4Address m_originator);
 
     remote_node(const remote_node& orig);
     virtual ~remote_node();
 
     void getLocation();
+    void join();
     void find_successor();
     void closest_preceeding();
     void SendRPC(PennChordMessage::PennChordPacket p);
     void notify();
     void processPacket(PennChordMessage::PennChordPacket p);
-    
-    
-    vector<uint32_t> GetPendingTransactions();
-    
+
+
     uint32_t GetNextTransactionId();
-    
-    
-    PennChord::NodeInfo m_info;
+
+
+    NodeInfo m_info;
+    // This represents the latest up to date info
+    NodeInfo m_sucessor;
+    NodeInfo m_predecessor;
+
     Ptr<Socket> m_socket;
     uint16_t m_appPort;
     uint32_t m_currentTransactionId;
+    Ipv4Address originator;
 
-    
-    
+
 private:
-    vector<uint32_t> pendingTransactions;
+    
 };
 
 #endif	/* REMOTE_NODE_H */

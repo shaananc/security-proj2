@@ -34,55 +34,51 @@
 #include "ns3/uinteger.h"
 #include "ns3/boolean.h"
 
+#include "ns3/NodeInfo.h"
+#include "remote_node.h"
+
 using namespace ns3;
 
-class PennChord : public PennApplication
-{
-  public:
-    static TypeId GetTypeId (void);
-    PennChord ();
-    virtual ~PennChord ();
 
-    void SendPing (Ipv4Address destAddress, std::string pingMessage);
-    void RecvMessage (Ptr<Socket> socket);
-    void ProcessPingReq (PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
-    void ProcessPingRsp (PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
-    void AuditPings ();
-    uint32_t GetNextTransactionId ();
-    void StopChord ();
+class PennChord : public PennApplication {
+public:
+    static TypeId GetTypeId(void);
+    PennChord();
+    virtual ~PennChord();
+
+    void SendPing(Ipv4Address destAddress, std::string pingMessage);
+    void RecvMessage(Ptr<Socket> socket);
+    void ProcessPingReq(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void ProcessPingRsp(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void AuditPings();
+    uint32_t GetNextTransactionId();
+    void StopChord();
 
     // Callback with Application Layer (add more when required)
-    void SetPingSuccessCallback (Callback <void, Ipv4Address, std::string> pingSuccessFn);
-    void SetPingFailureCallback (Callback <void, Ipv4Address, std::string> pingFailureFn);
-    void SetPingRecvCallback (Callback <void, Ipv4Address, std::string> pingRecvFn);
+    void SetPingSuccessCallback(Callback <void, Ipv4Address, std::string> pingSuccessFn);
+    void SetPingFailureCallback(Callback <void, Ipv4Address, std::string> pingFailureFn);
+    void SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRecvFn);
 
     // From PennApplication
-    virtual void ProcessCommand (std::vector<std::string> tokens);
-    
-    // Custom work
-    
-    typedef struct NodeInfo{
-        int32_t location;
-        Ipv4Address address;
-    } NodeInfo;
-    
+    virtual void ProcessCommand(std::vector<std::string> tokens);
+
     // TODO now
-    
+
     void JoinOverlay(Ipv4Address landmark);
     void CreateOverlay();
-    
+
     void stabilize();
     bool notify(int32_t address);
-    
+
     // TODO Later
     void fix_fingers();
-    
-  protected:
-    virtual void DoDispose ();
-    
-  private:
-    virtual void StartApplication (void);
-    virtual void StopApplication (void);
+
+protected:
+    virtual void DoDispose();
+
+private:
+    virtual void StartApplication(void);
+    virtual void StopApplication(void);
 
     uint32_t m_currentTransactionId;
     Ptr<Socket> m_socket;
@@ -96,10 +92,11 @@ class PennChord : public PennApplication
     Callback <void, Ipv4Address, std::string> m_pingSuccessFn;
     Callback <void, Ipv4Address, std::string> m_pingFailureFn;
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
-    
+
     NodeInfo m_info;
-    NodeInfo m_sucessor;
-    NodeInfo m_predecessor;
+    remote_node m_sucessor;
+    remote_node m_predecessor;
+    remote_node m_landmark;
 };
 
 #endif

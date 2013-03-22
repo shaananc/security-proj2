@@ -106,6 +106,7 @@ public:
             REQ_SUC,
             REQ_CP,
             REQ_NOT,
+            REQ_JOIN,
         };
 
 
@@ -118,7 +119,10 @@ public:
 
         Chord_Type m_messageType;
         uint32_t m_transactionId;
-
+        // of whom was the data requested
+        Ipv4Address requestee;
+        // from whom did the request originate
+        Ipv4Address originator;
 
 
     };

@@ -41,6 +41,7 @@ def build(bld):
       'penn-search/penn-search-helper.h',
       'penn-search/remote_node.h',
       'penn-search/remote_node.h',
+      'penn-search/NodeInfo.h',
       'common/penn-log.h',
       'common/ping-request.h',
       'common/penn-routing-protocol.h',

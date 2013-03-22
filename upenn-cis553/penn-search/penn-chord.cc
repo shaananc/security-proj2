@@ -279,10 +279,20 @@ void PennChord::CreateOverlay() {
 }
 
 // TODO
+// Clean up remote note instantiation where location is unknown
+// Fix requestee value
+
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
-    CHORD_LOG(p.m_messageType << " is the Message Type");
-    if(p.m_messageType == PennChordMessage::PennChordPacket::REQ_LOC){
-        
+    CHORD_LOG(m_local << " is my ip");
+    p.Print(std::cout);
+    std::cout << "\n\n\n";
+    if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
+        // put into a function
+        NodeInfo blank;
+        blank.location = -1;
+        blank.address = p.originator;
+        remote_node blank_node(blank, m_socket, m_appPort, m_local);
+        blank_node.reply_successor(m_sucessor.m_info,p.requestee,p.originator);
     }
 }

@@ -29,9 +29,15 @@ public:
     virtual ~remote_node();
 
     void getLocation();
+    void reply_location(NodeInfo location);
+    
     void join();
     void find_successor();
+    void reply_successor(NodeInfo successor, Ipv4Address requestee, Ipv4Address originator);
+    
     void closest_preceeding();
+    void reply_preceeding(NodeInfo preceeding);
+    
     void SendRPC(PennChordMessage::PennChordPacket p);
     void notify();
     void processPacket(PennChordMessage::PennChordPacket p);

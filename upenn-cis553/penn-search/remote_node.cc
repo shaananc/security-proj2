@@ -14,6 +14,7 @@
 using namespace ns3;
 
 
+// TODO: remove code duplication
 
 remote_node::remote_node() {
 }
@@ -60,8 +61,7 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     Ptr<Packet> packet = Create<Packet> ();
     PennChordMessage message = PennChordMessage(PennChordMessage::CHOR_PAC, transactionId);
     p.m_transactionId = GetNextTransactionId();
-    p.originator = originator;
-    p.requestee = m_info.address;
+    
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
@@ -73,6 +73,8 @@ void remote_node::getLocation() {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_LOC;
+    p.requestee = m_info.address;
+    p.originator = originator;
     SendRPC(p);
 
 }
@@ -90,14 +92,29 @@ void remote_node::find_successor() {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_SUC;
+    p.requestee = m_info.address;
+    p.originator = originator;
     SendRPC(p);
 
+}
+
+void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, Ipv4Address originator){
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::RSP_SUC;
+    p.m_result = successor; 
+    p.requestee = requestee;
+    p.originator = originator;
+    SendRPC(p);
+    
 }
 
 void remote_node::notify() {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_NOT;
+    p.requestee = m_info.address;
+    p.originator = originator;
     SendRPC(p);
 
 }
@@ -108,6 +125,7 @@ void remote_node::closest_preceeding() {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_CP;
+    p.requestee = m_info.address;
     SendRPC(p);
 }
 

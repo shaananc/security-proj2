@@ -101,12 +101,14 @@ public:
     struct PennChordPacket {
 
         enum Chord_Type {
-            RSP_INF = 1,
-            RSP_BOOL = 2,
-            REQ_LOC = 3,
-            REQ_SUC = 4,
-            REQ_CP = 5,
-            REQ_NOT = 6,
+            RSP_LOC = 1,
+            RSP_NOT = 2,
+            RSP_SUC = 3,
+            RSP_CP = 4,
+            REQ_LOC = 5,
+            REQ_SUC = 6,
+            REQ_CP = 7,
+            REQ_NOT = 8,
         };
 
 

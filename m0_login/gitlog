@@ -1,0 +1,144 @@
+commit 40061f8e6b85243911dbf6edfa8627baf8be3a56
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 12:11:48 2013 -0400
+
+    fixed originator and successor
+
+commit d5b6a17425475b67b772fcc504a41086cd214dad
+Merge: d47bd4c 91741cd
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 11:39:36 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit d47bd4cf98e476a8e3cb8a735a5add0d3dd2ab3e
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 11:39:24 2013 -0400
+
+    Finished packet structure
+
+commit 91741cd77a3a5a027c7b4fe050aaa5f25460f2fc
+Author: Laurel A Emurian <lemurian@lvn614-8.cis.upenn.edu>
+Date:   Fri Mar 22 10:54:50 2013 -0400
+
+    added self to members file
+
+commit b2e876c4d950b235d3bc4e9b263a05ef1b53570a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 04:00:49 2013 -0400
+
+    successful message passing
+
+commit 498171aae2f7fc3eb3a4334ef60e02f5f2f3518a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 03:37:11 2013 -0400
+
+    added processing function
+
+commit 865b6b45df162e000e5436c63aac8935fa55c141
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 03:30:52 2013 -0400
+
+    compiling on major changes
+
+commit 875cf9af11663392914aa946f616eed225ae1eca
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 02:19:59 2013 -0400
+
+    Experimental Setup for Remote Node - currently event driven
+
+commit 7c118b3f80f486b936277fa840c37895382f7ba3
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 01:40:43 2013 -0400
+
+    More work on ms1, started packet functiosn
+
+commit fc515fdaf41e2dfd96d90775f5db460a821c60ca
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 17:38:54 2013 -0400
+
+    Added cases for chordPacket
+
+commit 714b401e10e9d3cbe9462b40a0cc73e59171c447
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 17:23:46 2013 -0400
+
+    updates to pennchordpacket
+
+commit 9ce67031c1549e405d36a5f1e911410b99d01f40
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:43:11 2013 -0400
+
+    adding test result
+
+commit 17696f2506b2d1d6108898f52c77407c0b1262fa
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:33:24 2013 -0400
+
+    Added self to members.txt
+
+commit 33af28520a70cb70aaafc8ef48d58e8dd873a2aa
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:29:49 2013 -0400
+
+    adding project 1 code
+
+commit bf0cd6a78f9007244cac929b0438032ab9232846
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:25:55 2013 -0400
+
+    added project 1 code
+
+commit baa7d9ced723fef41089e624ced40fc61bd91455
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 15:28:33 2013 -0400
+
+    Added my name to members.txt
+
+commit dabb9b6e0cd09e21b5c0a8e838c5f25edf534bb7
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Thu Mar 21 18:55:50 2013 -0400
+
+    update members.txt
+
+commit f4c66d7f71ef854df84d7d88ad154551ed0a5e8b
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Thu Mar 21 18:35:22 2013 -0400
+
+    Charu's first commit. Created members.txt
+
+commit ae45faa58794ae9a773362eda32103e4cddf3a8a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 15:19:53 2013 -0400
+
+    addedd enum instructions
+
+commit b70f06312c5b552d0cfba3e1ed2c3ff1ff003ec5
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 15:16:54 2013 -0400
+
+    Added more skeleton
+
+commit ba853d0f95fd8dc045f5b3945bc7174eebbcf993
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 14:59:27 2013 -0400
+
+    Scaffolding and stubs
+
+commit c64acc0cdd932d9b84fe626f551e11d0831e717f
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 13:47:55 2013 -0400
+
+    Added execute script, test code, join command
+
+commit 6733de4aa5403db8b8f47ce4af5b2075e612e106
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 11:26:32 2013 -0400
+
+    Initial Commit
+
+commit 59ba0d9cf5016e32034f53847bdd0aed04770866
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 13:25:18 2013 -0700
+
+    Initial commit

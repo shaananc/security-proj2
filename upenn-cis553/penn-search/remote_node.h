@@ -9,8 +9,9 @@
 #define	REMOTE_NODE_H
 
 #include "penn-chord.h"
+#include <vector>
 
-
+using namespace std;
 using namespace ns3;
 
 class remote_node {
@@ -22,10 +23,16 @@ public:
     remote_node(const remote_node& orig);
     virtual ~remote_node();
 
-    PennChord::NodeInfo getLocation();
-    PennChord::NodeInfo find_successor();
-    PennChord::NodeInfo closest_preceeding();
-    bool notify();
+    void getLocation();
+    void find_successor();
+    void closest_preceeding();
+    void SendRPC(PennChordMessage::PennChordPacket p);
+    void notify();
+    void processPacket(PennChordMessage::PennChordPacket p);
+    
+    
+    vector<uint32_t> GetPendingTransactions();
+    
     uint32_t GetNextTransactionId();
     
     
@@ -34,8 +41,10 @@ public:
     uint16_t m_appPort;
     uint32_t m_currentTransactionId;
 
+    
+    
 private:
-
+    vector<uint32_t> pendingTransactions;
 };
 
 #endif	/* REMOTE_NODE_H */

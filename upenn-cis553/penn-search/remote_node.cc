@@ -38,28 +38,62 @@ uint32_t remote_node::GetNextTransactionId(){
     return m_currentTransactionId;
 }
 
-
-
-
-PennChord::NodeInfo remote_node::getLocation() {
+void remote_node::SendRPC(PennChordMessage::PennChordPacket p){
     uint32_t transactionId = GetNextTransactionId();
     Ptr<Packet> packet = Create<Packet> ();
     PennChordMessage message = PennChordMessage(PennChordMessage::CHOR_PAC, transactionId);
-    PennChordMessage::PennChordPacket p;
-    
+    pendingTransactions.push_back(m_currentTransactionId);
+    p.m_transactionId = GetNextTransactionId();
+    message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
+}
+
+
+void remote_node::getLocation() {
+    
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_LOC;
+    SendRPC(p);
+    
 
 }
 
-PennChord::NodeInfo remote_node::find_successor() {
+void remote_node::find_successor() {
+        
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_SUC;
+    SendRPC(p);
 
 }
 
-bool notify() {
+void remote_node::notify() {
 
+            
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_NOT;
+    SendRPC(p);
+    
 }
 
-PennChord::NodeInfo closest_preceeding() {
+void remote_node::closest_preceeding() {
 
+            
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_CP;
+    SendRPC(p);
+}
+
+void remote_node::processPacket(PennChordMessage::PennChordPacket p){
+    //Make appropriate callbacks
+    // switch on p.type
+    // remove from pending transactions
+}
+
+vector<uint32_t> remote_node::GetPendingTransactions(){
+    return pendingTransactions;
 }

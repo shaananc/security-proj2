@@ -16,9 +16,9 @@ using namespace ns3;
 class remote_node {
 public:
     remote_node();
-    
-    remote_node(PennChord::NodeInfo info);
-    
+
+    remote_node(PennChord::NodeInfo info, Ptr<Socket> m_socket, uint16_t m_appPort);
+
     remote_node(const remote_node& orig);
     virtual ~remote_node();
 
@@ -26,8 +26,13 @@ public:
     PennChord::NodeInfo find_successor();
     PennChord::NodeInfo closest_preceeding();
     bool notify();
+    uint32_t GetNextTransactionId();
+    
     
     PennChord::NodeInfo m_info;
+    Ptr<Socket> m_socket;
+    uint16_t m_appPort;
+    uint32_t m_currentTransactionId;
 
 private:
 

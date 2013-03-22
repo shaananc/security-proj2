@@ -99,16 +99,26 @@ public:
 
     struct PennChordPacket {
 
-        enum TYPE {
+        enum Chord_Type {
+            RSP_INF,
+            RSP_BOOL,
+            REQ_LOC,
+            REQ_SUC,
+            REQ_CP,
+            REQ_NOT,
         };
 
 
-    
+
     public:
         virtual void Print(std::ostream &os) const;
         virtual uint32_t GetSerializedSize(void) const;
         virtual void Serialize(Buffer::Iterator start)const;
         virtual uint32_t Deserialize(Buffer::Iterator start);
+
+        Chord_Type m_messageType;
+        uint32_t m_transactionId;
+
 
 
     };
@@ -119,7 +129,7 @@ private:
     struct {
         PingReq pingReq;
         PingRsp pingRsp;
-        PennChordPacket chordPacket; 
+        PennChordPacket chordPacket;
     } m_message;
 
 public:
@@ -144,6 +154,10 @@ public:
      *  \param message Payload String
      */
     void SetPingRsp(std::string message);
+
+
+    void SetChordPacket(PennChordPacket p);
+
 
 }; // class PennChordMessage
 

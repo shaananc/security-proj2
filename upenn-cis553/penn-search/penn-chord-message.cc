@@ -1,4 +1,5 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
+/* -*- Mode:C++; c-file-s
+ * tyle:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -16,6 +17,7 @@
 
 #include "ns3/penn-chord-message.h"
 #include "ns3/log.h"
+#include "penn-chord-message.h"
 
 using namespace ns3;
 
@@ -251,3 +253,6 @@ PennChordMessage::GetTransactionId(void) const {
     return m_transactionId;
 }
 
+void PennChordMessage::SetChordPacket(PennChordPacket p){
+    m_message.chordPacket = p;
+}

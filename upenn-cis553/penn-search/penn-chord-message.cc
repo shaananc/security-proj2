@@ -18,6 +18,7 @@
 #include "ns3/penn-chord-message.h"
 #include "ns3/log.h"
 #include "penn-chord-message.h"
+#include "penn-chord.h"
 
 using namespace ns3;
 
@@ -255,4 +256,8 @@ PennChordMessage::GetTransactionId(void) const {
 
 void PennChordMessage::SetChordPacket(PennChordPacket p) {
     m_message.chordPacket = p;
+}
+
+PennChordMessage::PennChordPacket PennChordMessage::GetChordPacket(){
+    return m_message.chordPacket;
 }

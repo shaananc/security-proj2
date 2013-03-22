@@ -100,13 +100,13 @@ public:
     struct PennChordPacket {
 
         enum Chord_Type {
-            RSP_INF,
-            RSP_BOOL,
-            REQ_LOC,
-            REQ_SUC,
-            REQ_CP,
-            REQ_NOT,
-            REQ_JOIN,
+            RSP_INF = 1,
+            RSP_BOOL = 2,
+            REQ_LOC = 3,
+            REQ_SUC = 4,
+            REQ_CP = 5,
+            REQ_NOT = 6,
+            REQ_JOIN = 7,
         };
 
 
@@ -161,7 +161,7 @@ public:
 
 
     void SetChordPacket(PennChordPacket p);
-
+    PennChordPacket GetChordPacket();
 
 }; // class PennChordMessage
 

@@ -59,13 +59,13 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     uint32_t transactionId = GetNextTransactionId();
     Ptr<Packet> packet = Create<Packet> ();
     PennChordMessage message = PennChordMessage(PennChordMessage::CHOR_PAC, transactionId);
-
     p.m_transactionId = GetNextTransactionId();
     p.originator = originator;
     p.requestee = m_info.address;
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
+    
 }
 
 void remote_node::getLocation() {
@@ -80,7 +80,7 @@ void remote_node::getLocation() {
 void remote_node::join(){
     PennChordMessage::PennChordPacket p;
     // Change packet variables
-    p.m_messageType = PennChordMessage::PennChordPacket::REQ_LOC;
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_JOIN;
     SendRPC(p);
 
 }

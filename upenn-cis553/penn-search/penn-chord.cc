@@ -252,7 +252,7 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     remote_node s(info, m_socket, m_appPort, m_local);
     m_landmark = s;
     // Sends a request for the location of the landmark
-    m_landmark.getLocation();
+    m_landmark.join();
 
 }
 
@@ -280,5 +280,6 @@ void PennChord::CreateOverlay() {
 
 // TODO
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-
+    PennChordMessage::PennChordPacket p = message.GetChordPacket();
+    CHORD_LOG(p.m_messageType << " is the Message Type");
 }

@@ -63,7 +63,7 @@ public:
     virtual void ProcessCommand(std::vector<std::string> tokens);
 
     // TODO now
-
+    void ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     void JoinOverlay(Ipv4Address landmark);
     void CreateOverlay();
 

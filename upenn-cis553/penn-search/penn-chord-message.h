@@ -21,6 +21,7 @@
 #include "ns3/ipv4-address.h"
 #include "ns3/packet.h"
 #include "ns3/object.h"
+#include "ns3/NodeInfo.h"
 
 using namespace ns3;
 
@@ -106,7 +107,6 @@ public:
             REQ_SUC = 4,
             REQ_CP = 5,
             REQ_NOT = 6,
-            REQ_JOIN = 7,
         };
 
 
@@ -123,7 +123,8 @@ public:
         Ipv4Address requestee;
         // from whom did the request originate
         Ipv4Address originator;
-
+        // what is the result - field is unused for requests
+        NodeInfo m_result;
 
     };
 

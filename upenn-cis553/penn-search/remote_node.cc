@@ -80,7 +80,7 @@ void remote_node::getLocation() {
 void remote_node::join(){
     PennChordMessage::PennChordPacket p;
     // Change packet variables
-    p.m_messageType = PennChordMessage::PennChordPacket::REQ_JOIN;
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_LOC;
     SendRPC(p);
 
 }
@@ -97,7 +97,7 @@ void remote_node::find_successor() {
 void remote_node::notify() {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
-    p.m_messageType = PennChordMessage::PennChordPacket::REQ_JOIN;
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_NOT;
     SendRPC(p);
 
 }

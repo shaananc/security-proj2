@@ -22,9 +22,19 @@
 #include "ns3/packet.h"
 #include "ns3/object.h"
 
+#include <vector>
+#include <map>
+
 using namespace ns3;
 
 #define IPV4_ADDRESS_SIZE 4
+
+struct RoutingTableEntry
+{
+  Ipv4Address nextHopAddr;
+  uint32_t cost;
+  uint32_t interface;
+};
 
 class DVMessage : public Header
 {
@@ -32,11 +42,13 @@ class DVMessage : public Header
     DVMessage ();
     virtual ~DVMessage ();
 
-
     enum MessageType
       {
         PING_REQ = 1,
         PING_RSP = 2,
+        HELLO_REQ = 3,
+        HELLO_RSP = 4,
+        UPDATE = 5,
         // Define extra message types when needed       
       };
 
@@ -128,12 +140,21 @@ class DVMessage : public Header
         std::string pingMessage;
       };
 
+   struct Update {
+        uint32_t GetSerializedSize (void) const;
+        void Serialize (Buffer::Iterator &start) const;
+        uint32_t Deserialize (Buffer::Iterator &start);
+        // Payload
+        
+     std::map<Ipv4Address, struct RoutingTableEntry> routingTable;
+    };
 
   private:
     struct
       {
         PingReq pingReq;
         PingRsp pingRsp;
+        Update update;
       } m_message;
     
   public:
@@ -159,6 +180,15 @@ class DVMessage : public Header
      */
     void SetPingRsp (Ipv4Address destinationAddress, std::string message);
 
+    /**
+     * \returns Update Struct
+     */
+    Update GetUpdate ();
+    /**
+     *  \brief Sets Update message params
+     *  \param message Payload String
+     */
+  void SetUpdate (std::map<Ipv4Address, struct RoutingTableEntry> routingTable);
 }; // class DVMessage
 
 static inline std::ostream& operator<< (std::ostream& os, const DVMessage& message)

@@ -29,11 +29,23 @@
 #include "ns3/ping-request.h"
 #include "ns3/penn-routing-protocol.h"
 #include "ns3/ls-message.h"
+#include "ns3/neighbour.h"
 
 #include <vector>
 #include <map>
 
 using namespace ns3;
+
+struct LSNode {
+  uint32_t seqNum;
+  std::vector<Ipv4Address> neighbours;
+};
+
+struct RouteTableEntry {
+  uint32_t cost;
+  Ipv4Address nextHop;
+  uint32_t interface;
+};
 
 class LSRoutingProtocol : public PennRoutingProtocol
 {
@@ -77,21 +89,45 @@ class LSRoutingProtocol : public PennRoutingProtocol
      */
 
     virtual void SetAddressNodeMap (std::map<Ipv4Address, uint32_t> addressNodeMap);
+    /**
+     * \brief
+     *
+     * 
+     *
+     * \param Ipv4Address Neighbour.
+     * \param Socket.
+     */
 
+    void BootstrapNeighbour (Ipv4Address neighAddress, Ptr<Socket> socket);
     // Message Handling
     /**
      * \brief Data Receive Callback function for UDP control plane sockets.
      *
      * \param socket Socket on which data is received.
      */
-
     void RecvLSMessage (Ptr<Socket> socket);
     void ProcessPingReq (LSMessage lsMessage);
     void ProcessPingRsp (LSMessage lsMessage);
+    void ProcessHelloReq (LSMessage LSMessage, Ipv4Address interfaceAddress, Ipv4Address sourceAddress, Ptr<Socket> socket);
+    void ProcessHelloRsp (LSMessage LSMessage, Ipv4Address interfaceAddress);
+    void ProcessLSAdvert (LSMessage LSMessage, Ipv4Address interfaceAddress);
 
     // Periodic Audit
     void AuditPings ();
-  
+
+    // Flood Hello packets for neighbour discovery
+    void FloodHello ();
+    // Advertise LS
+    void AdvertLS ();
+    void AdvertLSTrig ();
+
+    /* Create routing list for all known nodes
+     * routing list has destination IP, next hop, and cost
+     * interface information can be calculated from neighbour list */
+    void CreateRouteList ();
+    void CreateRouteListTrig ();
+
+
     // From Ipv4RoutingProtocol
 
     /**
@@ -188,13 +224,19 @@ class LSRoutingProtocol : public PennRoutingProtocol
      */
     void BroadcastPacket (Ptr<Packet> packet);
     /**
+     * \brief Broadcast a packet on all interfaces except specified.
+     *
+     * \param packet Packet to be sent, sourceIfAddr Interface address to be excluded.
+     */
+    void ForwardPacket (Ptr<Packet> packet, Ipv4Address sourceIfAddr);
+    /**
      * \brief Returns the main IP address of a node in Inet topology.
      *
      * Useful when using commands like PING etc.
      *
      * \param nodeNumber Node Number as in Inet topology.
      */
-    virtual Ipv4Address ResolveNodeIpAddress (uint32_t nodeNumber);    
+    virtual Ipv4Address ResolveNodeIpAddress (uint32_t nodeNumber);
     /**
      * \brief Returns the node number which is using the specified IP.
      *
@@ -204,9 +246,10 @@ class LSRoutingProtocol : public PennRoutingProtocol
      */
 
     virtual std::string ReverseLookup (Ipv4Address ipv4Address); 
-    
+
     // Status 
     void DumpLSA ();
+    void DumpLinks ();
     void DumpNeighbors ();
     void DumpRoutingTable ();
 
@@ -219,14 +262,31 @@ class LSRoutingProtocol : public PennRoutingProtocol
      * \param ipv4Address IP address.
      */
     bool IsOwnAddress (Ipv4Address originatorAddress);
-
+     /**
+     * \brief Check whether we have route to the specified IP.
+     * 
+     * \param ipv4Address IP address of dest.
+     * \param RouteTableEntry pointer to store the route.
+     */
+    Ptr<Ipv4Route> Lookup (Ipv4Address destAddress);
+     /**
+     * \brief Check whether the two LSA are different.
+     * 
+     * \param LSNode neighs1
+     * \param LSNode neighs2
+     */
+    bool CompareLS (const std::vector<Ipv4Address> &neighs1, const std::vector<Ipv4Address> &neighs2);
 
   private:
     std::map< Ptr<Socket>, Ipv4InterfaceAddress > m_socketAddresses;
+    std::map<Ipv4Address, uint32_t> m_ifIpToifNumMap;
     Ipv4Address m_mainAddress;
     Ptr<Ipv4StaticRouting> m_staticRouting;
     Ptr<Ipv4> m_ipv4;
     Time m_pingTimeout;
+    Time m_discoveryTimeout;
+    Time m_lsTimeout;
+    Time m_routeTimeout;
     uint8_t m_maxTTL;
     uint16_t m_lsPort;
     uint32_t m_currentSequenceNumber;
@@ -234,8 +294,16 @@ class LSRoutingProtocol : public PennRoutingProtocol
     std::map<Ipv4Address, uint32_t> m_addressNodeMap;
     // Timers
     Timer m_auditPingsTimer;
+    Timer m_discoveryTimer;
+    Timer m_lsTimer;
+    Timer m_routeTimer;
     // Ping tracker
     std::map<uint32_t, Ptr<PingRequest> > m_pingTracker;
+
+    std::map<Ipv4Address, struct Neighbour> m_neighbourList;
+    std::map<Ipv4Address, struct LSNode> m_lsNodeList;
+    std::map<Ipv4Address, struct RouteTableEntry> m_routeList;
+    std::map<Ipv4Address, struct LSNode> m_lsLinks;
 };
 
 #endif

@@ -68,11 +68,19 @@ DVMessage::GetSerializedSize (void) const
       case PING_RSP:
         size += m_message.pingRsp.GetSerializedSize ();
         break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case UPDATE:
+        size += m_message.update.GetSerializedSize ();
+        break;
       default:
         NS_ASSERT (false);
     }
   return size;
 }
+
 
 void
 DVMessage::Print (std::ostream &os) const
@@ -91,6 +99,12 @@ DVMessage::Print (std::ostream &os) const
         break;
       case PING_RSP:
         m_message.pingRsp.Print (os);
+        break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case UPDATE:
         break;
       default:
         break;  
@@ -114,6 +128,13 @@ DVMessage::Serialize (Buffer::Iterator start) const
         break;
       case PING_RSP:
         m_message.pingRsp.Serialize (i);
+        break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case UPDATE:
+        m_message.update.Serialize (i);
         break;
       default:
         NS_ASSERT (false);   
@@ -139,6 +160,13 @@ DVMessage::Deserialize (Buffer::Iterator start)
         break;
       case PING_RSP:
         size += m_message.pingRsp.Deserialize (i);
+        break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case UPDATE:
+        size += m_message.update.Deserialize (i);
         break;
       default:
         NS_ASSERT (false);
@@ -260,6 +288,64 @@ DVMessage::GetPingRsp ()
   return m_message.pingRsp;
 }
 
+/* UPDATE */
+
+uint32_t 
+DVMessage::Update::GetSerializedSize (void) const
+{
+  uint32_t size;
+  size = sizeof(uint16_t) + routingTable.size() * (2 * IPV4_ADDRESS_SIZE + sizeof(uint32_t));  //2 bytes are reserved for size of the table
+  return size;
+}
+
+void
+DVMessage::Update::Serialize (Buffer::Iterator &start) const
+{ 
+  start.WriteU16 (routingTable.size());   //Input the size of routing table first for ease of deserialization
+
+  for (std::map<Ipv4Address, struct RoutingTableEntry>::const_iterator i = routingTable.begin (); i != routingTable.end (); i++) 
+  {
+      start.WriteHtonU32 (i->first.Get ());
+      start.WriteHtonU32 (i->second.nextHopAddr.Get ());
+      start.WriteU32 (i->second.cost);
+  }
+}
+
+uint32_t
+DVMessage::Update::Deserialize (Buffer::Iterator &start)
+{  
+  uint16_t size = start.ReadU16 ();  //Get the table size first
+  for (int s = 0; s < size; s++){
+    Ipv4Address destAddr;
+    struct RoutingTableEntry routeEntry;
+    destAddr = Ipv4Address (start.ReadNtohU32 ());
+    routeEntry.nextHopAddr = Ipv4Address (start.ReadNtohU32 ());
+    routeEntry.cost = start.ReadU32 ();
+    routingTable.insert(std::make_pair (destAddr, routeEntry));
+  }
+
+  return Update::GetSerializedSize ();
+}
+
+void
+DVMessage::SetUpdate (std::map<Ipv4Address, struct RoutingTableEntry> routingTable )
+{
+  if (m_messageType == 0)
+    {
+      m_messageType = UPDATE;
+    }
+  else
+    {
+      NS_ASSERT (m_messageType == UPDATE);
+    }
+  m_message.update.routingTable = routingTable;
+}
+
+DVMessage::Update
+DVMessage::GetUpdate ()
+{
+  return m_message.update;
+}
 
 //
 //

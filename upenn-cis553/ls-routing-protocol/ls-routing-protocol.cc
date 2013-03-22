@@ -25,7 +25,10 @@
 #include "ns3/ipv4-header.h"
 #include "ns3/ipv4-route.h"
 #include "ns3/uinteger.h"
+#include "ns3/test-result.h"
 #include <sys/time.h>
+
+#include <vector>
 
 using namespace ns3;
 
@@ -48,6 +51,21 @@ LSRoutingProtocol::GetTypeId (void)
                  TimeValue (MilliSeconds (2000)),
                  MakeTimeAccessor (&LSRoutingProtocol::m_pingTimeout),
                  MakeTimeChecker ())
+  .AddAttribute ("DiscoveryTimeout",
+                 "Time between discovery HELLO_REQ in milliseconds",
+                 TimeValue (MilliSeconds (10000)),
+                 MakeTimeAccessor (&LSRoutingProtocol::m_discoveryTimeout),
+                 MakeTimeChecker ())
+  .AddAttribute ("LSTimeout",
+                 "Time between LS_ADVERT messages in milliseconds",
+                 TimeValue (MilliSeconds (10000)),
+                 MakeTimeAccessor (&LSRoutingProtocol::m_lsTimeout),
+                 MakeTimeChecker ())
+  .AddAttribute ("RouteTimeout",
+                 "Time between scheduled routing table updates in milliseconds",
+                 TimeValue (MilliSeconds (30000)),
+                 MakeTimeAccessor (&LSRoutingProtocol::m_routeTimeout),
+                 MakeTimeChecker ())
   .AddAttribute ("MaxTTL",
                  "Maximum TTL value for LS packets",
                  UintegerValue (16),
@@ -64,6 +82,10 @@ LSRoutingProtocol::LSRoutingProtocol ()
   SeedManager::SetSeed (time (NULL));
   random = UniformVariable (0x00000000, 0xFFFFFFFF);
   m_currentSequenceNumber = random.GetInteger ();
+  // Ensure non-zero Sequence Number for wrap around
+  if (m_currentSequenceNumber == 0) {
+    m_currentSequenceNumber++;
+  }
   // Setup static routing 
   m_staticRouting = Create<Ipv4StaticRouting> ();
 }
@@ -88,6 +110,9 @@ LSRoutingProtocol::DoDispose ()
 
   // Cancel timers
   m_auditPingsTimer.Cancel ();
+  m_discoveryTimer.Cancel ();
+  m_lsTimer.Cancel ();
+  m_routeTimer.Cancel ();
  
   m_pingTracker.clear (); 
 
@@ -144,6 +169,7 @@ LSRoutingProtocol::DoStart ()
   for (uint32_t i = 0 ; i < m_ipv4->GetNInterfaces () ; i++)
     {
       Ipv4Address ipAddress = m_ipv4->GetAddress (i, 0).GetLocal ();
+      m_ifIpToifNumMap[ipAddress] = i;
       if (ipAddress == Ipv4Address::GetLoopback ())
         continue;
       // Create socket on this interface
@@ -162,24 +188,38 @@ LSRoutingProtocol::DoStart ()
     }
   // Configure timers
   m_auditPingsTimer.SetFunction (&LSRoutingProtocol::AuditPings, this);
+  m_discoveryTimer.SetFunction (&LSRoutingProtocol::FloodHello, this);
+  m_lsTimer.SetFunction (&LSRoutingProtocol::AdvertLS, this);
+  m_routeTimer.SetFunction (&LSRoutingProtocol::CreateRouteList, this);
 
   // Start timers
   m_auditPingsTimer.Schedule (m_pingTimeout);
+  m_discoveryTimer.Schedule (m_discoveryTimeout);
+  m_lsTimer.Schedule (m_discoveryTimeout + MilliSeconds(2000));
+  m_routeTimer.Schedule (m_routeTimeout);
 
+  // Set starting sequence number to 1 for debug ease (comment out when finished)
+  // m_currentSequenceNumber = 1;
 }
 
 Ptr<Ipv4Route>
 LSRoutingProtocol::RouteOutput (Ptr<Packet> packet, const Ipv4Header &header, Ptr<NetDevice> outInterface, Socket::SocketErrno &sockerr)
 {
   Ptr<Ipv4Route> ipv4Route = m_staticRouting->RouteOutput (packet, header, outInterface, sockerr);
-  if (ipv4Route)
-    {
-      DEBUG_LOG ("Found route to: " << ipv4Route->GetDestination () << " via next-hop: " << ipv4Route->GetGateway () << " with source: " << ipv4Route->GetSource () << " and output device " << ipv4Route->GetOutputDevice());
-    }
-  else
-    {
-      DEBUG_LOG ("No Route to destination: " << header.GetDestination ());
-    }
+  RouteTableEntry route;
+  if (ipv4Route) {
+    TRAFFIC_LOG ("Found route using static routing to: " << ipv4Route->GetDestination () << " via next-hop: " << ipv4Route->GetGateway () << " with source: " << ipv4Route->GetSource () << " and output device " << ipv4Route->GetOutputDevice());
+    return ipv4Route;
+  }
+  // Use ls routing
+  ipv4Route = Lookup (header.GetDestination ());
+  if (ipv4Route) {
+    TRAFFIC_LOG ("Found route to: " << ipv4Route->GetDestination () << " via next-hop: " << ipv4Route->GetGateway () << " with source: " << ipv4Route->GetSource () << " and output device " << ipv4Route->GetOutputDevice());
+    return ipv4Route;
+  }
+  else  {
+    TRAFFIC_LOG ("No Route to destination: " << header.GetDestination ());
+  }
   return ipv4Route;
 }
 
@@ -194,31 +234,88 @@ LSRoutingProtocol::RouteInput  (Ptr<const Packet> packet,
 
   // Drop if packet was originated by this node
   if (IsOwnAddress (sourceAddress) == true)
-    {
-      return true;
-    }
+  {
+    return true;
+  }
 
   // Check for local delivery
   uint32_t interfaceNum = m_ipv4->GetInterfaceForDevice (inputDev);
   if (m_ipv4->IsDestinationAddress (destinationAddress, interfaceNum))
+  {
+    if (!lcb.IsNull ())
     {
-      if (!lcb.IsNull ())
-        {
-          lcb (packet, header, interfaceNum);
-          return true;
-        }
-      else
-        {
-          return false;
-        }
+      lcb (packet, header, interfaceNum);
+      TRAFFIC_LOG ("Local delivery for destination: " << header.GetDestination ());
+      return true;
     }
+    else
+    {
+      return false;
+    }
+  }
 
   // Check static routing table
   if (m_staticRouting->RouteInput (packet, header, inputDev, ucb, mcb, lcb, ecb))
-    {
-      return true;
+  {
+    TRAFFIC_LOG ("Found next hop using static routing to destination: " << header.GetDestination ());
+    return true;
+  }
+  // Check ls routing table
+  Ptr<Ipv4Route> ipv4Route = Lookup (header.GetDestination ());
+  if (ipv4Route) {
+    TRAFFIC_LOG ("Found route to: " << ipv4Route->GetDestination () << " via next-hop: " << ipv4Route->GetGateway () << " with source: " << ipv4Route->GetSource () << " and output device " << ipv4Route->GetOutputDevice());
+    ucb (ipv4Route, packet, header);  // unicast forwarding callback
+    return true;
+  }
+  TRAFFIC_LOG ("Cannot forward packet. No Route to destination: " << header.GetDestination ());
+  return false;
+}
+
+Ptr<Ipv4Route>
+LSRoutingProtocol::Lookup (Ipv4Address destAddress)
+{
+  std::map<Ipv4Address, struct RouteTableEntry>::iterator it = m_routeList.find(destAddress);
+  Ptr<Ipv4Route> ipv4Route = 0;
+  if (it != m_routeList.end()) {
+    ipv4Route = Create<Ipv4Route> ();
+    RouteTableEntry route = it->second;
+    ipv4Route->SetDestination (destAddress);
+    ipv4Route->SetSource (m_mainAddress);
+    ipv4Route->SetGateway (route.nextHop);
+    ipv4Route->SetOutputDevice (m_ipv4->GetNetDevice (route.interface));
+  }
+  return ipv4Route;
+}
+
+bool
+LSRoutingProtocol::CompareLS (const std::vector<Ipv4Address> &neighs1, const std::vector<Ipv4Address> &neighs2)
+{
+  // Check for size difference
+  /*
+  DEBUG_LOG(std::endl << "CompareLS" << std::endl);
+  DEBUG_LOG("neighs1");
+  for (std::vector<Ipv4Address>::const_iterator i =
+      neighs1.begin (); i != neighs1.end (); i++)  {
+    DEBUG_LOG(*i);
+  }
+  DEBUG_LOG("neighs2");
+  for (std::vector<Ipv4Address>::const_iterator i =
+      neighs2.begin (); i != neighs2.end (); i++)  {
+    DEBUG_LOG(*i);
+  }*/
+
+  if (neighs1.size() != neighs2.size()) {
+    //STATUS_LOG("Diff detected in size");
+    return true;
+  }
+  else  {
+    for (uint32_t i = 0; i < neighs1.size(); i++)  {
+      if(neighs1[i] != neighs2[i])  {
+        //STATUS_LOG("Diff detected in element");
+        return true;
+      }
     }
-  DEBUG_LOG ("Cannot forward packet. No Route to destination: " << header.GetDestination ());
+  }
   return false;
 }
 
@@ -232,6 +329,20 @@ LSRoutingProtocol::BroadcastPacket (Ptr<Packet> packet)
       i->first->SendTo (packet, 0, InetSocketAddress (broadcastAddr, m_lsPort));
     }
 }
+
+void
+LSRoutingProtocol::ForwardPacket (Ptr<Packet> packet, Ipv4Address sourceIfAddr)
+{
+  for (std::map<Ptr<Socket> , Ipv4InterfaceAddress>::const_iterator i =
+      m_socketAddresses.begin (); i != m_socketAddresses.end (); i++)
+    {
+      if (i->second.GetLocal() != sourceIfAddr) {
+        Ipv4Address broadcastAddr = i->second.GetLocal ().GetSubnetDirectedBroadcast (i->second.GetMask ());
+        i->first->SendTo (packet, 0, InetSocketAddress (broadcastAddr, m_lsPort));
+      }
+    }
+}
+
 
 void
 LSRoutingProtocol::ProcessCommand (std::vector<std::string> tokens)
@@ -287,6 +398,10 @@ LSRoutingProtocol::ProcessCommand (std::vector<std::string> tokens)
         {
           DumpLSA ();
         }
+      else if (table == "LINKS")
+        {
+          DumpLinks ();
+        }
     }
 }
 
@@ -294,23 +409,85 @@ void
 LSRoutingProtocol::DumpLSA ()
 {
   STATUS_LOG (std::endl << "**************** LSA DUMP ********************" << std::endl
-              << "Node\t\tNeighbor(s)");
-  PRINT_LOG ("");
+              << "NodeNumber\t\tNodeAddress\t\tNeighbourNumber(s)\t\tNeighbor(s)");
+  for (std::map<Ipv4Address , struct LSNode>::const_iterator i =
+      m_lsNodeList.begin (); i != m_lsNodeList.end (); i++)  {
+    std::vector<Ipv4Address> neighbours = i->second.neighbours;
+    Ipv4Address node = i->first;
+    uint32_t nodeNum = m_addressNodeMap[node];
+    for (std::vector<Ipv4Address>::const_iterator neighPtr = 
+      neighbours.begin (); neighPtr != neighbours.end (); neighPtr++) {
+      uint32_t neighNum = m_addressNodeMap[*neighPtr];
+      PRINT_LOG (nodeNum << "\t\t\t" << node << "\t\t" << neighNum << "\t\t\t\t" << *neighPtr);
+    }
+  }
+}
+
+void
+LSRoutingProtocol::DumpLinks ()
+{
+  STATUS_LOG (std::endl << "**************** LINK DUMP ********************" << std::endl
+              << "NodeNumber\t\tNodeAddress\t\tNeighbourNumber(s)\t\tNeighbor(s)");
+  for (std::map<Ipv4Address , struct LSNode>::const_iterator i =
+      m_lsLinks.begin (); i != m_lsLinks.end (); i++)  {
+    std::vector<Ipv4Address> neighbours = i->second.neighbours;
+    Ipv4Address node = i->first;
+    uint32_t nodeNum = m_addressNodeMap[node];
+    for (std::vector<Ipv4Address>::const_iterator neighPtr = 
+      neighbours.begin (); neighPtr != neighbours.end (); neighPtr++) {
+      uint32_t neighNum = m_addressNodeMap[*neighPtr];
+      PRINT_LOG (nodeNum << "\t\t\t" << node << "\t\t" << neighNum << "\t\t\t\t" << *neighPtr);
+    }
+  }
 }
 
 void
 LSRoutingProtocol::DumpNeighbors ()
 {
   STATUS_LOG (std::endl << "**************** Neighbor List ********************" << std::endl
-             << "Node Number\t\tNode Address\t\tInterface");  PRINT_LOG ("");
+              << "NeighborNumber\t\tNeighborAddr\t\tInterfaceAddr\t\tLastHeard\t\tCost");
+  for (std::map<Ipv4Address , struct Neighbour>::const_iterator i =
+      m_neighbourList.begin (); i != m_neighbourList.end (); i++)  {
+    uint32_t neighborNum = m_addressNodeMap[i->first];
+    Ipv4Address neighborAddr = i->first;
+    Ipv4Address ifAddr = i->second.interfaceAddress;
+    uint32_t lastHeard = i->second.lastHeard;
+    uint32_t ifNum = m_ifIpToifNumMap[ifAddr];
+    uint16_t cost = m_ipv4->GetMetric(ifNum);
+    
+    PRINT_LOG (neighborNum << "\t\t\t" << neighborAddr << "\t\t" << ifAddr << "\t\t" << lastHeard << "\t\t\t" << cost);
+
+  /*NOTE: For purpose of autograding, you should invoke the following function for each
+  neighbor table entry. The output format is indicated by parameter name and type.
+  */
+    checkNeighborTableEntry(neighborNum, neighborAddr, ifAddr);
+  }
 }
 
 void
 LSRoutingProtocol::DumpRoutingTable ()
 {
- STATUS_LOG (std::endl << "********************************** Route Table **********************************************" << std::endl
-             << "DestNumber\t\tDestAddr\t\tNextHopNumber\t\tNextHopAddr\t\tInterface\t\tCost");  PRINT_LOG ("");
+  STATUS_LOG (std::endl << "**************** Route Table ********************" << std::endl
+              << "DestNumber\t\tDestAddr\t\tNextHopNumber\t\tNextHopAddr\t\tInterfaceAddr\t\tCost");
+  for (std::map<Ipv4Address, struct RouteTableEntry>::const_iterator i = m_routeList.begin ();
+       i != m_routeList.end (); i++) {
+    Ipv4Address destAddr = i->first;
+    uint32_t destNum = m_addressNodeMap[destAddr];
+    Ipv4Address nextHopAddr = i->second.nextHop;
+    uint32_t nextHopNum = m_addressNodeMap[nextHopAddr];
+    Ipv4Address ifAddr = m_neighbourList[nextHopAddr].interfaceAddress;
+    uint32_t cost = i->second.cost;
+
+    PRINT_LOG (destNum << "\t\t\t" << destAddr << "\t\t" << nextHopNum << "\t\t\t" << nextHopAddr << "\t\t" 
+               << ifAddr << "\t\t" << cost);
+
+	/*NOTE: For purpose of autograding, you should invoke the following function for each
+	routing table entry. The output format is indicated by parameter name and type.
+	*/
+    checkRouteTableEntry(destNum, destAddr, nextHopNum, nextHopAddr, ifAddr, cost);
+  }
 }
+
 void
 LSRoutingProtocol::RecvLSMessage (Ptr<Socket> socket)
 {
@@ -321,6 +498,8 @@ LSRoutingProtocol::RecvLSMessage (Ptr<Socket> socket)
   LSMessage lsMessage;
   packet->RemoveHeader (lsMessage);
 
+  Ipv4Address interfaceAddress = m_socketAddresses[socket].GetLocal();
+
   switch (lsMessage.GetMessageType ())
     {
       case LSMessage::PING_REQ:
@@ -328,6 +507,15 @@ LSRoutingProtocol::RecvLSMessage (Ptr<Socket> socket)
         break;
       case LSMessage::PING_RSP:
         ProcessPingRsp (lsMessage);
+        break;
+      case LSMessage::HELLO_REQ:
+        ProcessHelloReq (lsMessage, interfaceAddress, sourceAddress, socket);
+        break;
+      case LSMessage::HELLO_RSP:
+        ProcessHelloRsp (lsMessage, interfaceAddress);
+        break;
+      case LSMessage::LS_ADVERT:
+        ProcessLSAdvert (lsMessage, interfaceAddress);
         break;
       default:
         ERROR_LOG ("Unknown Message Type!");
@@ -375,6 +563,215 @@ LSRoutingProtocol::ProcessPingRsp (LSMessage lsMessage)
     }
 }
 
+void
+LSRoutingProtocol::ProcessHelloReq (LSMessage lsMessage, Ipv4Address interfaceAddress, Ipv4Address sourceAddress, Ptr<Socket> socket)
+{
+  // Use reverse lookup for ease of debug
+  Ipv4Address fromIp = lsMessage.GetOriginatorAddress ();
+  std::string fromNode = ReverseLookup (fromIp);
+  DEBUG_LOG ("Received HELLO_REQ, From Node: " << fromNode);
+  // Check if new entry
+  if (m_neighbourList.find(fromIp) == m_neighbourList.end()) {
+    struct Neighbour neighbour;
+    neighbour.lastHeard = 0;
+    neighbour.interfaceAddress = interfaceAddress;
+    m_neighbourList.insert(std::make_pair (fromIp, neighbour));
+    // Triggered Update
+    if (m_lsTimer.IsRunning() == false) {
+      m_currentSequenceNumber++;
+      AdvertLS();
+    }
+    BootstrapNeighbour(fromIp, socket);
+  }
+  else {
+  m_neighbourList[fromIp].lastHeard = 0;
+  }
+  Ptr<Packet> packet = Create<Packet> ();
+  LSMessage lsMessageRsp = LSMessage (LSMessage::HELLO_RSP, 0, 1, m_mainAddress);
+  packet->AddHeader (lsMessageRsp);
+  //socket->SendTo (packet, 0, InetSocketAddress (sourceAddress, m_lsPort));
+}
+
+void
+LSRoutingProtocol::ProcessHelloRsp (LSMessage lsMessage, Ipv4Address interfaceAddress)
+{
+  Ipv4Address fromIp = lsMessage.GetOriginatorAddress ();
+  std::string fromNode = ReverseLookup (fromIp);
+  DEBUG_LOG ("Received HELLO_RSP, From Node: " << fromNode);
+  // Check if new entry
+  if (m_neighbourList.find(fromIp) == m_neighbourList.end()) {
+    struct Neighbour neighbour;
+    neighbour.lastHeard = 0;
+    neighbour.interfaceAddress = interfaceAddress;
+    m_neighbourList.insert(std::make_pair (fromIp, neighbour));
+    // Triggered Update
+    if (m_lsTimer.IsRunning() == false) {
+      m_currentSequenceNumber++;
+      AdvertLS();
+    }
+  }
+  // Reset lastHeard for existing entry
+  else {
+    m_neighbourList[fromIp].lastHeard = 0;
+  }
+}
+
+void
+LSRoutingProtocol::ProcessLSAdvert (LSMessage lsMessage, Ipv4Address interfaceAddress)
+{
+  Ipv4Address fromIp = lsMessage.GetOriginatorAddress ();
+  std::string fromNode = ReverseLookup (fromIp);
+  uint32_t newSeqNum = lsMessage.GetSequenceNumber ();
+  DEBUG_LOG ("Received LS_ADVERT, From Node: " << fromNode << ", Sequence #: " << newSeqNum);
+  
+  struct LSNode lsNode;
+  lsNode.seqNum = newSeqNum;
+  lsNode.neighbours = lsMessage.GetLsAd().neighbours;
+
+  // Check if fromIp not present in m_lsNodeList
+  if  (m_lsNodeList.count(fromIp) == 0) {
+    m_lsNodeList[fromIp] = lsNode;
+    // Compute new Routes
+    //STATUS_LOG("Computing routes on new LSA");
+    if (m_routeTimer.IsRunning() == false) {
+      //STATUS_LOG("CreateRouteList on new LSA");
+      CreateRouteList ();
+    }
+  }
+  /* update information to reflect new LSA if more recent sequence number and any change in LSA*/
+  else if (newSeqNum > m_lsNodeList[fromIp].seqNum || (newSeqNum == 0 && m_lsNodeList[fromIp].seqNum != 0)) {
+    if (CompareLS(lsNode.neighbours, m_lsNodeList[fromIp].neighbours)) {
+      // Compute new Routes
+      DEBUG_LOG("Computing routes on updated LSA");
+      m_lsNodeList[fromIp] = lsNode;
+      //if (m_routeTimer.IsRunning() == false) {
+        CreateRouteListTrig ();
+      //}
+    }
+    else  {
+      m_lsNodeList[fromIp] = lsNode;
+    }
+  }
+  // else drop the packet
+  else  { 
+    return;
+  }
+  // rebroadcast the LS message from this node to all neighbors except original sender
+  Ptr<Packet> packet = Create<Packet> ();
+  packet->AddHeader (lsMessage);
+  ForwardPacket (packet, interfaceAddress);
+}
+
+void
+LSRoutingProtocol::CreateRouteList ()
+{
+  // Compute links
+  for (std::map<Ipv4Address , struct LSNode>::const_iterator i =
+      m_lsNodeList.begin (); i != m_lsNodeList.end (); i++)  {
+    Ipv4Address nodeIp = i->first;
+    struct LSNode lsNode;
+    for (std::vector<Ipv4Address>::const_iterator neighIpPtr = 
+      i->second.neighbours.begin (); neighIpPtr != i->second.neighbours.end (); neighIpPtr++)  {
+      std::vector<Ipv4Address> neighbours = m_lsNodeList[*neighIpPtr].neighbours;
+      if (std::find(neighbours.begin(), neighbours.end(), nodeIp) != neighbours.end()) {
+        lsNode.neighbours.push_back(*neighIpPtr);
+      }
+    }
+    m_lsLinks[nodeIp] = lsNode;
+  }
+
+  struct RouteTableEntry cNH;
+  std::map<Ipv4Address, struct RouteTableEntry> m_knownList;
+  std::map<Ipv4Address, struct RouteTableEntry> m_unknownList;
+  cNH.cost = 1;
+  for (std::map<Ipv4Address , struct Neighbour>::const_iterator i =
+      m_neighbourList.begin (); i != m_neighbourList.end (); i++)  {
+    cNH.nextHop = i->first;
+    cNH.interface = m_ipv4->GetInterfaceForAddress(m_neighbourList[cNH.nextHop].interfaceAddress);
+    m_unknownList.insert(std::make_pair (i->first, cNH));
+  }
+  while (!m_unknownList.empty()) {
+    Ipv4Address moveNode = m_unknownList.begin()->first;
+    for (std::map<Ipv4Address , struct RouteTableEntry>::const_iterator i =
+           m_unknownList.begin (); i != m_unknownList.end (); i++)  {
+      if (i->second.cost < m_unknownList[moveNode].cost) {
+        moveNode = i->first;
+      }
+    }
+    m_knownList.insert(std::make_pair (moveNode, m_unknownList[moveNode]));
+    std::map<Ipv4Address, struct RouteTableEntry>::iterator delNode = m_unknownList.find(moveNode);
+    m_unknownList.erase(delNode);
+    cNH.cost = m_knownList[moveNode].cost + 1;
+    cNH.nextHop = m_knownList[moveNode].nextHop;
+    cNH.interface = m_ipv4->GetInterfaceForAddress(m_neighbourList[cNH.nextHop].interfaceAddress);
+    std::vector<Ipv4Address> nNodes = m_lsLinks[moveNode].neighbours;
+    std::vector<Ipv4Address>::size_type nNodesSize = nNodes.size();
+    for (uint16_t i = 0; i < nNodesSize; i++)  {
+      Ipv4Address addNode = nNodes[i];
+      if  (m_knownList.count(addNode) == 0 && m_unknownList.count(addNode) == 0 && addNode != m_mainAddress) {
+        m_unknownList.insert (std::make_pair (addNode, cNH));
+      }
+    }
+  }
+  m_routeList = m_knownList;
+  m_routeTimer.Schedule (m_routeTimeout);
+}
+
+void
+LSRoutingProtocol::CreateRouteListTrig ()
+{
+  // Compute links
+  for (std::map<Ipv4Address , struct LSNode>::const_iterator i =
+      m_lsNodeList.begin (); i != m_lsNodeList.end (); i++)  {
+    Ipv4Address nodeIp = i->first;
+    struct LSNode lsNode;
+    for (std::vector<Ipv4Address>::const_iterator neighIpPtr = 
+      i->second.neighbours.begin (); neighIpPtr != i->second.neighbours.end (); neighIpPtr++)  {
+      std::vector<Ipv4Address> neighbours = m_lsNodeList[*neighIpPtr].neighbours;
+      if (std::find(neighbours.begin(), neighbours.end(), nodeIp) != neighbours.end()) {
+        lsNode.neighbours.push_back(*neighIpPtr);
+      }
+    }
+    m_lsLinks[nodeIp] = lsNode;
+  }
+
+  struct RouteTableEntry cNH;
+  std::map<Ipv4Address, struct RouteTableEntry> m_knownList;
+  std::map<Ipv4Address, struct RouteTableEntry> m_unknownList;
+  cNH.cost = 1;
+  for (std::map<Ipv4Address , struct Neighbour>::const_iterator i =
+      m_neighbourList.begin (); i != m_neighbourList.end (); i++)  {
+    cNH.nextHop = i->first;
+    cNH.interface = m_ipv4->GetInterfaceForAddress(m_neighbourList[cNH.nextHop].interfaceAddress);
+    m_unknownList.insert(std::make_pair (i->first, cNH));
+  }
+  while (!m_unknownList.empty()) {
+    Ipv4Address moveNode = m_unknownList.begin()->first;
+    for (std::map<Ipv4Address , struct RouteTableEntry>::const_iterator i =
+           m_unknownList.begin (); i != m_unknownList.end (); i++)  {
+      if (i->second.cost < m_unknownList[moveNode].cost) {
+        moveNode = i->first;
+      }
+    }
+    m_knownList.insert(std::make_pair (moveNode, m_unknownList[moveNode]));
+    std::map<Ipv4Address, struct RouteTableEntry>::iterator delNode = m_unknownList.find(moveNode);
+    m_unknownList.erase(delNode);
+    cNH.cost = m_knownList[moveNode].cost + 1;
+    cNH.nextHop = m_knownList[moveNode].nextHop;
+    cNH.interface = m_ipv4->GetInterfaceForAddress(m_neighbourList[cNH.nextHop].interfaceAddress);
+    std::vector<Ipv4Address> nNodes = m_lsLinks[moveNode].neighbours;
+    std::vector<Ipv4Address>::size_type nNodesSize = nNodes.size();
+    for (uint16_t i = 0; i < nNodesSize; i++)  {
+      Ipv4Address addNode = nNodes[i];
+      if  (m_knownList.count(addNode) == 0 && m_unknownList.count(addNode) == 0 && addNode != m_mainAddress) {
+        m_unknownList.insert (std::make_pair (addNode, cNH));
+      }
+    }
+  }
+  m_routeList = m_knownList;
+}
+
+
 bool
 LSRoutingProtocol::IsOwnAddress (Ipv4Address originatorAddress)
 {
@@ -411,6 +808,103 @@ LSRoutingProtocol::AuditPings ()
     }
   // Rechedule timer
   m_auditPingsTimer.Schedule (m_pingTimeout); 
+}
+
+void
+LSRoutingProtocol::FloodHello ()
+{
+  // remove stale neighbors from the table
+  for (std::map<Ipv4Address , struct Neighbour>::iterator i =
+      m_neighbourList.begin (); i != m_neighbourList.end (); i++)  {
+    Ipv4Address neighbourAddr = i->first;
+    i->second.lastHeard++;
+    if (i->second.lastHeard >= 3) {
+      STATUS_LOG ("Erasing: " << neighbourAddr);
+      m_neighbourList.erase(i);
+      // Triggered Update
+      if (m_lsTimer.IsRunning() == false) {
+        m_currentSequenceNumber++;
+        AdvertLS();
+      }
+    }
+  }
+  Ptr<Packet> packet = Create<Packet> ();
+  LSMessage lsMessage = LSMessage (LSMessage::HELLO_REQ, 0, 1, m_mainAddress);
+  packet->AddHeader (lsMessage);
+  BroadcastPacket (packet);
+  m_discoveryTimer.Schedule (m_discoveryTimeout); 
+}
+
+void
+LSRoutingProtocol::AdvertLS ()
+{
+  Ptr<Packet> packet = Create<Packet> ();
+  LSMessage lsMessage = LSMessage (LSMessage::LS_ADVERT, m_currentSequenceNumber, 1, m_mainAddress);
+  std::vector<Ipv4Address> neighbours;
+  for (std::map<Ipv4Address , struct Neighbour>::const_iterator i =
+      m_neighbourList.begin (); i != m_neighbourList.end (); i++)  {
+    Ipv4Address neighbourAddr = i->first;
+    neighbours.push_back(neighbourAddr);
+  }
+
+  // store self neighbours in m_lsNodeList
+  struct LSNode lsNode;
+  lsNode.seqNum = m_currentSequenceNumber;
+  lsNode.neighbours = neighbours;
+  m_lsNodeList[m_mainAddress] = lsNode;
+
+  lsMessage.SetLsAd (neighbours);
+  packet->AddHeader (lsMessage);
+  BroadcastPacket (packet);
+  m_lsTimer.Schedule (m_lsTimeout); 
+  m_currentSequenceNumber++;
+}
+
+void
+LSRoutingProtocol::AdvertLSTrig ()
+{
+  Ptr<Packet> packet = Create<Packet> ();
+  LSMessage lsMessage = LSMessage (LSMessage::LS_ADVERT, m_currentSequenceNumber, 1, m_mainAddress);
+  std::vector<Ipv4Address> neighbours;
+  for (std::map<Ipv4Address , struct Neighbour>::const_iterator i =
+      m_neighbourList.begin (); i != m_neighbourList.end (); i++)  {
+    Ipv4Address neighbourAddr = i->first;
+    neighbours.push_back(neighbourAddr);
+  }
+
+  // store self neighbours in m_lsNodeList
+  struct LSNode lsNode;
+  lsNode.seqNum = m_currentSequenceNumber;
+  lsNode.neighbours = neighbours;
+  m_lsNodeList[m_mainAddress] = lsNode;
+
+  lsMessage.SetLsAd (neighbours);
+  packet->AddHeader (lsMessage);
+  BroadcastPacket (packet);
+  m_currentSequenceNumber++;
+}
+
+void
+LSRoutingProtocol::BootstrapNeighbour (Ipv4Address neighAddress, Ptr<Socket> socket)
+{
+  //STATUS_LOG("Bootstrap: " << m_addressNodeMap[neighAddress]);
+  for (std::map<Ipv4Address , struct LSNode>::const_iterator i =
+      m_lsNodeList.begin (); i != m_lsNodeList.end (); i++)  {
+    std::vector<Ipv4Address> neighbours = i->second.neighbours;
+    uint32_t seqNum = i->second.seqNum;
+    Ipv4Address originator = i->first;
+    Ptr<Packet> packet = Create<Packet> ();
+    LSMessage lsMessage = LSMessage (LSMessage::LS_ADVERT, seqNum, 1, originator);
+    lsMessage.SetLsAd (neighbours);
+    packet->AddHeader (lsMessage);
+    //socket->SendTo (packet, 0, InetSocketAddress (neighAddress, m_lsPort));
+
+    // Broadcast on neighbour facing interface
+    Ipv4InterfaceAddress interfaceAddr = m_socketAddresses[socket];
+    Ipv4Address broadcastAddr = interfaceAddr.GetLocal ().GetSubnetDirectedBroadcast (interfaceAddr.GetMask ());
+    socket->SendTo (packet, 0, InetSocketAddress (broadcastAddr, m_lsPort));
+  }
+ 
 }
 
 uint32_t

@@ -21,6 +21,9 @@
 #include "ns3/ipv4-address.h"
 #include "ns3/packet.h"
 #include "ns3/object.h"
+#include "ns3/neighbour.h"
+
+#include <map>
 
 using namespace ns3;
 
@@ -37,6 +40,9 @@ class LSMessage : public Header
       {
         PING_REQ = 1,
         PING_RSP = 2,
+        HELLO_REQ = 3,
+        HELLO_RSP = 4,
+        LS_ADVERT = 5,
         // Define extra message types when needed       
       };
 
@@ -128,12 +134,22 @@ class LSMessage : public Header
         std::string pingMessage;
       };
 
+    struct LsAd
+      {
+        uint32_t GetSerializedSize (void) const;
+        void Serialize (Buffer::Iterator &start) const;
+        uint32_t Deserialize (Buffer::Iterator &start);
+        // Payload
+        std::vector<Ipv4Address> neighbours;
+      };
+
 
   private:
     struct
       {
         PingReq pingReq;
         PingRsp pingRsp;
+        LsAd lsAd;
       } m_message;
     
   public:
@@ -158,6 +174,16 @@ class LSMessage : public Header
      *  \param message Payload String
      */
     void SetPingRsp (Ipv4Address destinationAddress, std::string message);
+
+    /**
+     * \returns LsAd Struct
+     */
+    LsAd GetLsAd ();
+    /**
+     *  \brief Sets LsAd message params
+     *  \param message Payload String
+     */
+    void SetLsAd (std::vector<Ipv4Address> neighbours);
 
 }; // class LSMessage
 

@@ -68,6 +68,13 @@ LSMessage::GetSerializedSize (void) const
       case PING_RSP:
         size += m_message.pingRsp.GetSerializedSize ();
         break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case LS_ADVERT:
+        size += m_message.lsAd.GetSerializedSize ();
+        break;
       default:
         NS_ASSERT (false);
     }
@@ -92,6 +99,12 @@ LSMessage::Print (std::ostream &os) const
       case PING_RSP:
         m_message.pingRsp.Print (os);
         break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case LS_ADVERT:
+        break;
       default:
         break;  
     }
@@ -114,6 +127,13 @@ LSMessage::Serialize (Buffer::Iterator start) const
         break;
       case PING_RSP:
         m_message.pingRsp.Serialize (i);
+        break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case LS_ADVERT:
+        m_message.lsAd.Serialize (i);
         break;
       default:
         NS_ASSERT (false);   
@@ -139,6 +159,13 @@ LSMessage::Deserialize (Buffer::Iterator start)
         break;
       case PING_RSP:
         size += m_message.pingRsp.Deserialize (i);
+        break;
+      case HELLO_REQ:
+        break;
+      case HELLO_RSP:
+        break;
+      case LS_ADVERT:
+        size += m_message.lsAd.Deserialize (i);
         break;
       default:
         NS_ASSERT (false);
@@ -260,6 +287,59 @@ LSMessage::GetPingRsp ()
   return m_message.pingRsp;
 }
 
+
+/* LS_ADVERT */
+
+uint32_t 
+LSMessage::LsAd::GetSerializedSize (void) const
+{
+  uint32_t size;
+  size = sizeof(uint16_t) + neighbours.size()*IPV4_ADDRESS_SIZE;
+  return size;
+}
+
+void
+LSMessage::LsAd::Serialize (Buffer::Iterator &start) const
+{
+  start.WriteU16 (neighbours.size());
+  // write ip address of all neighbours in uint32 network format
+  for (std::vector<Ipv4Address>::const_iterator i =
+      neighbours.begin (); i != neighbours.end (); i++)  {
+    // i is pointer to neighbour Ipv4Address
+    start.WriteHtonU32 (i->Get ());
+  }
+}
+
+uint32_t
+LSMessage::LsAd::Deserialize (Buffer::Iterator &start)
+{  
+  uint16_t length = start.ReadU16 ();
+  for (uint16_t i = 0; i < length; i++)  {
+    neighbours.push_back(Ipv4Address (start.ReadNtohU32 ()));
+  }
+  return LsAd::GetSerializedSize ();
+}
+
+void
+LSMessage::SetLsAd (std::vector<Ipv4Address> neighbours)
+{
+  if (m_messageType == 0)
+    {
+      m_messageType = LS_ADVERT;
+    }
+  else
+    {
+      NS_ASSERT (m_messageType == LS_ADVERT);
+    }
+
+  m_message.lsAd.neighbours = neighbours;
+}
+
+LSMessage::LsAd
+LSMessage::GetLsAd ()
+{
+  return m_message.lsAd;
+}
 
 //
 //

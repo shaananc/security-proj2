@@ -29,6 +29,7 @@
 #include "ns3/ping-request.h"
 #include "ns3/penn-routing-protocol.h"
 #include "ns3/dv-message.h"
+#include "ns3/neighbour.h"
 
 #include <vector>
 #include <map>
@@ -88,9 +89,25 @@ class DVRoutingProtocol : public PennRoutingProtocol
     void RecvDVMessage (Ptr<Socket> socket);
     void ProcessPingReq (DVMessage DVMessage);
     void ProcessPingRsp (DVMessage DVMessage);
+    void ProcessHelloReq (DVMessage DVMessage, Ipv4Address interfaceAddress, Ipv4Address sourceAddress, Ptr<Socket> socket);
+    void ProcessHelloRsp (DVMessage DVMessage, Ipv4Address interfaceAddress);
+    void ProcessUpdate (DVMessage dvMessage);
 
     // Periodic Audit
     void AuditPings ();
+
+    // Flood Hello packets for neighbour discovery
+    void FloodHello ();
+
+    // Flood Update of DV's
+    void FloodUpdate ();
+    void FloodUpdateTrig ();
+
+    /* Create routing list for all known nodes
+     * routing list has information of destination, next hop, and cost
+     * interface information can be calculated from neighbour list */
+    void CreateRouteList ();
+
   
     // From Ipv4RoutingProtocol
 
@@ -208,6 +225,7 @@ class DVRoutingProtocol : public PennRoutingProtocol
     // Status 
     void DumpNeighbors ();
     void DumpRoutingTable ();
+    void DumpUPDATE ();
 
   protected:
     virtual void DoStart (void);
@@ -218,14 +236,24 @@ class DVRoutingProtocol : public PennRoutingProtocol
      * \param ipv4Address IP address.
      */
     bool IsOwnAddress (Ipv4Address originatorAddress);
-
+     /**
+     * \brief Check whether we have route to the specified IP.
+     * 
+     * \param ipv4Address IP address of dest.
+     * \param RouteTableEntry pointer to store the route.
+     */
+    Ptr<Ipv4Route> Lookup (Ipv4Address destAddress);
 
   private:
     std::map< Ptr<Socket>, Ipv4InterfaceAddress > m_socketAddresses;
+    std::map<Ipv4Address, Ptr<Socket> > m_neighbourSocketMap;
     Ipv4Address m_mainAddress;
     Ptr<Ipv4StaticRouting> m_staticRouting;
     Ptr<Ipv4> m_ipv4;
     Time m_pingTimeout;
+    Time m_discoveryTimeout;
+    Time m_dvTimeout;
+    
     uint8_t m_maxTTL;
     uint16_t m_dvPort;
     uint32_t m_currentSequenceNumber;
@@ -233,8 +261,13 @@ class DVRoutingProtocol : public PennRoutingProtocol
     std::map<Ipv4Address, uint32_t> m_addressNodeMap;
     // Timers
     Timer m_auditPingsTimer;
+    Timer m_discoveryTimer;
+    Timer m_dvTimer;
     // Ping tracker
     std::map<uint32_t, Ptr<PingRequest> > m_pingTracker;
+
+    std::map<Ipv4Address, struct Neighbour> m_neighbourList;
+    std::map<Ipv4Address, struct RoutingTableEntry> m_routeList;
 };
 
 #endif

@@ -62,6 +62,8 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
+//    p.Print(std::cout);
+//    std::cout << "That is being sent to " << m_info.address << std::endl;
 }
 
 void remote_node::getLocation(NodeInfo originator) {
@@ -128,11 +130,12 @@ void remote_node::closest_preceeding(NodeInfo originator) {
     SendRPC(p);
 }
 
-void remote_node::reply_preceeding(NodeInfo originator) {
+void remote_node::reply_preceeding(NodeInfo originator, NodeInfo predecessor) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RSP_CP;
-    p.m_result = m_predecessor;
+    p.m_result = predecessor;
+    //cout << "SENDING BACK " << predecessor.address << endl;
     p.requestee = m_info.address;
     p.originator = originator;
     SendRPC(p);

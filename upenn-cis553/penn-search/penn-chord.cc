@@ -202,7 +202,9 @@ PennChord::RecvMessage(Ptr<Socket> socket) {
             break;
         case PennChordMessage::RING_DBG:
             RingstateDebug();
+            break;
         default:
+            std::cout << "NOW THATS STRANGE" << std::endl;
             ERROR_LOG("Unknown Message Type!");
             break;
     }
@@ -287,14 +289,14 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 // TODO Implement
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
-    CHORD_LOG("Joining Overlay" << std::endl);
+    CHORD_LOG("Joining Overlay at " << landmark << std::endl);
     NodeInfo info;
     info.address = landmark;
     remote_node s(info, m_socket, m_appPort);
     m_landmark = s;
     // Sends a request for the location of the landmark
     m_landmark.find_successor(m_info);
-
+   
     // Configure timers
     m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
     // Start timers
@@ -330,18 +332,18 @@ void PennChord::CreateOverlay() {
 
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
-
-//    CHORD_LOG(m_local << " is my ip");
+//
+//    CHORD_LOG("Packet Received");
 //    p.Print(std::cout);
 //    std::cout << "\n\n\n";
 
 
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
         // put into a function
-        bool con = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
+        
         // TODO TEST THIS URGENT
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                con) {
+                RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location)) {
             remote_node(p.originator, m_socket, m_appPort).reply_successor(m_sucessor.m_info, p.requestee, p.originator);
         } else {
             m_sucessor.find_successor(p.originator);
@@ -361,23 +363,26 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_NOT) {
 
-        bool con = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
+        
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                con) {
+                RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location)) {
             m_predecessor.m_info = p.originator;
             m_predecessor.last_seen = Now();
-            CHORD_LOG("Updated Predecessor to " << m_predecessor.m_info.address);
+            //CHORD_LOG("Updated Predecessor to " << ReverseLookup(m_predecessor.m_info.address));
         }
         // Send notification response here
 
 
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_CP) {
-        remote_node(p.originator, m_socket, m_appPort).reply_preceeding(m_predecessor.m_info);
+        remote_node(p.originator, m_socket, m_appPort).reply_preceeding(p.originator, m_predecessor.m_info);
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_CP) {
-        if (RangeCompare(m_info.location, p.m_result.location, m_sucessor.m_info.location)) {
-            m_predecessor.m_info = p.m_result;
+        if (!p.m_result.address.IsEqual(Ipv4Address("0.0.0.0")) &&
+                RangeCompare(m_info.location, p.m_result.location, m_sucessor.m_info.location)) {
+            m_sucessor.m_info = p.m_result;
             cout << "stabilized" << endl;
-            exit(0);
+            //CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
+            m_sucessor.notify(m_info);
+            
         }
     }
 
@@ -404,6 +409,11 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     string p_hash((const char *) mid);
     int pre_cmp = p_hash.compare(string((const char *) low));
     int cur_cmp = p_hash.compare(string((const char *) high));
-    cout << pre_cmp << " pre and post " << cur_cmp << endl;
-    return (pre_cmp < 0 && cur_cmp >= 0);
+    //cout << pre_cmp << " pre and post " << cur_cmp << endl;
+    if (pre_cmp < 0 && cur_cmp >= 0){
+        return 1;
+    } else {
+        // Check to see if only single node
+        return (string((const char *) low).compare(string((const char *) high)) == 0);
+    }
 }

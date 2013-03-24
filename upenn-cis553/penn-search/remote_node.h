@@ -35,7 +35,7 @@ public:
     void reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator);
     
     void closest_preceeding(NodeInfo originator);
-    void reply_preceeding(NodeInfo originator);
+    void reply_preceeding(NodeInfo originator, NodeInfo predecessor);
 
     void SendRPC(PennChordMessage::PennChordPacket p);
     void notify(NodeInfo originator);

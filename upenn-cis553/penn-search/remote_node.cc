@@ -27,9 +27,9 @@ remote_node::~remote_node() {
 }
 
 remote_node::remote_node(NodeInfo info,
-       Ptr<Socket> m_socket,
+        Ptr<Socket> m_socket,
         uint16_t m_appPort) {
-    
+
     m_info = info;
     this->m_socket = m_socket;
     this->m_appPort = m_appPort;
@@ -75,7 +75,7 @@ void remote_node::getLocation(NodeInfo originator) {
 
 }
 
-void remote_node::join(){
+void remote_node::join() {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_LOC;
@@ -94,19 +94,20 @@ void remote_node::find_successor(NodeInfo originator) {
 
 }
 //blah
-void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator){
+
+void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RSP_SUC;
-    p.m_result = successor; 
+    p.m_result = successor;
     p.requestee = requestee;
     p.originator = originator;
     SendRPC(p);
-    
+
 }
 
 void remote_node::notify(NodeInfo originator) {
-    
+
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_NOT;
@@ -116,13 +117,24 @@ void remote_node::notify(NodeInfo originator) {
 
 }
 
-void remote_node::closest_preceeding() {
+void remote_node::closest_preceeding(NodeInfo originator) {
 
-
+    //std::cout << "SENDING STAB to " << originator.address << std::endl;
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_CP;
     p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+void remote_node::reply_preceeding(NodeInfo originator) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::RSP_CP;
+    p.m_result = m_predecessor;
+    p.requestee = m_info.address;
+    p.originator = originator;
     SendRPC(p);
 }
 

@@ -24,7 +24,27 @@ using namespace ns3;
 // TODO Implement All
 
 void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
-    os << m_messageType << " is the message type" << std::endl;
+    switch (m_messageType) {
+        case(REQ_CP):
+            os << "REQ PREDECESSOR";
+            break;
+        case(REQ_NOT):
+            os << "REQ NOTIFY";
+            break;
+        case(REQ_SUC):
+            os << "REQ SUCESSOR";
+            break;
+        case(RSP_CP):
+            os << "RSP PREDECESSOR";
+            break;
+        case(RSP_SUC):
+            os << "RSP SUCESSOR";
+            break;
+        default:
+            break;
+    }
+
+    os << std::endl;
     os << "Result Address " << m_result.address << std::endl;
     os << "Result Location ";
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
@@ -89,15 +109,15 @@ uint32_t PennChordMessage::PennChordPacket::Deserialize(Buffer::Iterator start) 
     m_result.address = Ipv4Address(i.ReadNtohU32());
 
     originator.address = Ipv4Address(i.ReadNtohU32());
-    
+
     for (int j = 0; j < SHA_DIGEST_LENGTH; j++) {
         originator.location[j] = i.ReadU8();
     }
-    
+
     requestee = Ipv4Address(i.ReadNtohU32());
 
 
-    
+
 
 
     return GetSerializedSize();

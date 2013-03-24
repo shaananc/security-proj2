@@ -72,6 +72,8 @@ public:
     void stabilize();
     bool notify(int32_t address);
 
+    bool RangeCompare(u_char *low, u_char *mid, u_char *high);
+    
     // TODO Later
     void fix_fingers();
 
@@ -85,9 +87,11 @@ private:
     uint32_t m_currentTransactionId;
     Ptr<Socket> m_socket;
     Time m_pingTimeout;
+    Time m_stabilizeFreq;
     uint16_t m_appPort;
     // Timers
     Timer m_auditPingsTimer;
+    Timer m_stabilizeTimer;
     // Ping tracker
     std::map<uint32_t, Ptr<PingRequest> > m_pingTracker;
     // Callbacks

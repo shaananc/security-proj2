@@ -23,6 +23,8 @@
 // TODO Keep-Alive Messages
 // TODO Clear up params
 // TODO Change remote_node usage
+// TODO Change logic to callbacks, register them
+
 
 #include "penn-chord.h"
 
@@ -51,6 +53,12 @@ PennChord::GetTypeId() {
             "Timeout value for PING_REQ in milliseconds",
             TimeValue(MilliSeconds(2000)),
             MakeTimeAccessor(&PennChord::m_pingTimeout),
+            MakeTimeChecker())
+
+            .AddAttribute("StabilizeFreq",
+            "Frequency to Update Successor",
+            TimeValue(Seconds(5)),
+            MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
             ;
     return tid;
@@ -287,6 +295,11 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     // Sends a request for the location of the landmark
     m_landmark.find_successor(m_info);
 
+    // Configure timers
+    m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
+    // Start timers
+    m_stabilizeTimer.Schedule(m_stabilizeFreq);
+
 }
 
 void PennChord::CreateOverlay() {
@@ -303,7 +316,10 @@ void PennChord::CreateOverlay() {
 
     m_predecessor = blank_node;
 
-
+    // Configure timers
+    m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
+    // Start timers
+    m_stabilizeTimer.Schedule(m_stabilizeFreq);
 
 
 }
@@ -314,45 +330,63 @@ void PennChord::CreateOverlay() {
 
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
-    CHORD_LOG(m_local << " is my ip");
-    p.Print(std::cout);
-    std::cout << "\n\n\n";
+
+//    CHORD_LOG(m_local << " is my ip");
+//    p.Print(std::cout);
+//    std::cout << "\n\n\n";
+
+
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
         // put into a function
-        string p_hash((const char *) p.originator.location);
-        int pre_cmp = p_hash.compare(string((const char *) m_predecessor.m_info.location));
-        int cur_cmp = p_hash.compare(string((const char *) m_info.location));
+        bool con = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
         // TODO TEST THIS URGENT
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                (pre_cmp < 0 && cur_cmp <= 0)
-                ) {
+                con) {
             remote_node(p.originator, m_socket, m_appPort).reply_successor(m_sucessor.m_info, p.requestee, p.originator);
+        } else {
+            m_sucessor.find_successor(p.originator);
         }
 
-
+        // Received Response about successor
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_SUC) {
+
         m_sucessor.m_info = p.m_result;
         // Make callbacks
-        vector<Callback<void> >::iterator itr;
-        for (itr = m_successor_callbacks.begin(); itr != m_successor_callbacks.end(); itr++) {
-            (*itr)();
-        }
-        m_successor_callbacks.clear();
+        //        vector<Callback<void> >::iterator itr;
+        //        for (itr = m_successor_callbacks.begin(); itr != m_successor_callbacks.end(); itr++) {
+        //            (*itr)();
+        //        }
+        //        m_successor_callbacks.clear();
         m_sucessor.notify(m_info);
+
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_NOT) {
-        // TODO put compare hashes into a function
-        string p_hash((const char *) p.originator.location);
-        int pre_cmp = p_hash.compare(string((const char *) m_predecessor.m_info.location));
-        int cur_cmp = p_hash.compare(string((const char *) m_info.location));
+
+        bool con = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                (pre_cmp < 0 && cur_cmp <= 0)){
+                con) {
             m_predecessor.m_info = p.originator;
             m_predecessor.last_seen = Now();
-            cout << "updated" << std::endl;
+            CHORD_LOG("Updated Predecessor to " << m_predecessor.m_info.address);
         }
-        // Send notification response
+        // Send notification response here
+
+
+    } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_CP) {
+        remote_node(p.originator, m_socket, m_appPort).reply_preceeding(m_predecessor.m_info);
+    } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_CP) {
+        if (RangeCompare(m_info.location, p.m_result.location, m_sucessor.m_info.location)) {
+            m_predecessor.m_info = p.m_result;
+            cout << "stabilized" << endl;
+            exit(0);
+        }
     }
 
+}
+
+void PennChord::stabilize() {
+    CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
+    m_sucessor.closest_preceeding(m_info);
+    m_stabilizeTimer.Schedule(m_stabilizeFreq);
 }
 
 void PennChord::LeaveOverlay() {
@@ -364,4 +398,12 @@ void PennChord::LeaveOverlay() {
 
 void PennChord::RingstateDebug() {
 
+}
+
+bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
+    string p_hash((const char *) mid);
+    int pre_cmp = p_hash.compare(string((const char *) low));
+    int cur_cmp = p_hash.compare(string((const char *) high));
+    cout << pre_cmp << " pre and post " << cur_cmp << endl;
+    return (pre_cmp < 0 && cur_cmp >= 0);
 }

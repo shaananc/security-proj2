@@ -147,3 +147,11 @@ void remote_node::processPacket(PennChordMessage::PennChordPacket p) {
     // remove from pending transactions
 }
 
+
+void remote_node::RingDebug(NodeInfo originator){
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::RING_DBG;
+    p.originator = originator;
+    SendRPC(p);
+}

@@ -67,7 +67,7 @@ public:
     void JoinOverlay(Ipv4Address landmark);
     void LeaveOverlay();
     void CreateOverlay();
-    void RingstateDebug();
+    void PrintInfo();
     
     void stabilize();
     bool notify(int32_t address);

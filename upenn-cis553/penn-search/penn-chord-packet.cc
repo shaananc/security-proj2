@@ -40,7 +40,11 @@ void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
         case(RSP_SUC):
             os << "RSP SUCESSOR";
             break;
+        case(RING_DBG):
+            os << "RING DEUBG";
+            break;
         default:
+            os << "INVALID MESSAGE TYPE";
             break;
     }
 

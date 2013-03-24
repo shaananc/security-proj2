@@ -40,6 +40,8 @@ public:
     void SendRPC(PennChordMessage::PennChordPacket p);
     void notify(NodeInfo originator);
     void processPacket(PennChordMessage::PennChordPacket p);
+    
+    void RingDebug(NodeInfo originator);
 
 
     uint32_t GetNextTransactionId();

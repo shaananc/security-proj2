@@ -24,7 +24,7 @@
 // TODO Clear up params
 // TODO Change remote_node usage
 // TODO Change logic to callbacks, register them
-
+// TODO update find successor
 
 #include "penn-chord.h"
 
@@ -57,7 +57,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("StabilizeFreq",
             "Frequency to Update Successor",
-            TimeValue(Seconds(5)),
+            TimeValue(Seconds(15)),
             MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
             ;
@@ -153,7 +153,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
     } else if (command == "leave") {
         LeaveOverlay();
     } else if (command == "ringstate") {
-
+        m_sucessor.RingDebug(m_info);
     }
 
 
@@ -199,9 +199,6 @@ PennChord::RecvMessage(Ptr<Socket> socket) {
             ProcessChordMessage(message, sourceAddress, sourcePort);
             //TODO process chord reply
             // Process in Penn-Chord
-            break;
-        case PennChordMessage::RING_DBG:
-            RingstateDebug();
             break;
         default:
             std::cout << "NOW THATS STRANGE" << std::endl;
@@ -296,7 +293,7 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     m_landmark = s;
     // Sends a request for the location of the landmark
     m_landmark.find_successor(m_info);
-   
+
     // Configure timers
     m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
     // Start timers
@@ -339,9 +336,9 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
 
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
-        // put into a function
-        
-        // TODO TEST THIS URGENT
+        // TODO put into a function
+
+
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
                 RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location)) {
             remote_node(p.originator, m_socket, m_appPort).reply_successor(m_sucessor.m_info, p.requestee, p.originator);
@@ -363,12 +360,12 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_NOT) {
 
-        
+        int res = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location)) {
+                (0 <= res && res < 2)) {
             m_predecessor.m_info = p.originator;
             m_predecessor.last_seen = Now();
-            //CHORD_LOG("Updated Predecessor to " << ReverseLookup(m_predecessor.m_info.address));
+            CHORD_LOG("Updated Predecessor to " << ReverseLookup(m_predecessor.m_info.address));
         }
         // Send notification response here
 
@@ -380,28 +377,25 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
                 RangeCompare(m_info.location, p.m_result.location, m_sucessor.m_info.location)) {
             m_sucessor.m_info = p.m_result;
             cout << "stabilized" << endl;
-            //CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
+            CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
             m_sucessor.notify(m_info);
-            
+
+        }
+    } else if (p.m_messageType == PennChordMessage::PennChordPacket::RING_DBG) {
+        PrintInfo();
+        if (p.originator.address != m_info.address && m_sucessor.m_info.address != m_info.address) {
+            m_sucessor.RingDebug(p.originator);
         }
     }
-
 }
 
 void PennChord::stabilize() {
-    CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
+    PrintInfo();
     m_sucessor.closest_preceeding(m_info);
-    m_stabilizeTimer.Schedule(m_stabilizeFreq);
+    //m_stabilizeTimer.Schedule(m_stabilizeFreq);
 }
 
 void PennChord::LeaveOverlay() {
-
-}
-
-
-// Print self then send ringstate message to next node
-
-void PennChord::RingstateDebug() {
 
 }
 
@@ -410,11 +404,26 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     int pre_cmp = p_hash.compare(string((const char *) low));
     int cur_cmp = p_hash.compare(string((const char *) high));
     //cout << pre_cmp << " pre and post " << cur_cmp << endl;
-    if (pre_cmp < 0 && cur_cmp >= 0){
+    // For open interval
+    if (pre_cmp < 0 && cur_cmp > 0) {
         return 1;
-  
-    } //else {
-//        // Check to see if only single node
-//        return (string((const char *) low).compare(string((const char *) high)) == 0);
-//    }
+
+        // For half closed interval
+    } else if (pre_cmp < 0 && cur_cmp >= 0) {
+        return 2;
+    }
+    //
+    //    else {
+    //            // Check to see if only single node
+    //            return (string((const char *) low).compare(string((const char *) high)) == 0);
+    //        }
+}
+
+void PennChord::PrintInfo() {
+    //        cout << "Hash ";
+    //        for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+    //            cout << std::hex << (int) m_info.location[i];
+    //        }
+    //        cout << std::endl << std::dec;
+    CHORD_LOG("Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_sucessor.m_info.address));
 }

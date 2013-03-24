@@ -412,8 +412,9 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     //cout << pre_cmp << " pre and post " << cur_cmp << endl;
     if (pre_cmp < 0 && cur_cmp >= 0){
         return 1;
-    } else {
-        // Check to see if only single node
-        return (string((const char *) low).compare(string((const char *) high)) == 0);
-    }
+  
+    } //else {
+//        // Check to see if only single node
+//        return (string((const char *) low).compare(string((const char *) high)) == 0);
+//    }
 }

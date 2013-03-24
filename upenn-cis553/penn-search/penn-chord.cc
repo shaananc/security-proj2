@@ -112,6 +112,9 @@ PennChord::StartApplication(void) {
     m_predecessor = remote_node(b, m_socket, m_appPort);
     m_sucessor = remote_node(b, m_socket, m_appPort);
 
+
+
+
 }
 
 void
@@ -153,6 +156,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
     } else if (command == "leave") {
         LeaveOverlay();
     } else if (command == "ringstate") {
+        PrintInfo();
         m_sucessor.RingDebug(m_info);
     }
 
@@ -287,6 +291,14 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
     CHORD_LOG("Joining Overlay at " << landmark << std::endl);
+
+    cout << "Hash ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) m_info.location[i];
+    }
+    cout << std::endl << std::dec;
+
+
     NodeInfo info;
     info.address = landmark;
     remote_node s(info, m_socket, m_appPort);
@@ -304,6 +316,11 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 void PennChord::CreateOverlay() {
     CHORD_LOG("Creating Overlay" << std::endl);
 
+    cout << "Hash ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) m_info.location[i];
+    }
+    cout << std::endl << std::dec;
 
     remote_node i_node(m_info, m_socket, m_appPort);
     m_sucessor = i_node;
@@ -329,10 +346,10 @@ void PennChord::CreateOverlay() {
 
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
-//
-//    CHORD_LOG("Packet Received");
-//    p.Print(std::cout);
-//    std::cout << "\n\n\n";
+
+    CHORD_LOG("Packet Received");
+    p.Print(std::cout);
+    std::cout << "\n\n\n";
 
 
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
@@ -340,7 +357,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
 
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location)) {
+                RangeCompare(m_info.location, p.originator.location, m_sucessor.m_info.location)) {
             remote_node(p.originator, m_socket, m_appPort).reply_successor(m_sucessor.m_info, p.requestee, p.originator);
         } else {
             m_sucessor.find_successor(p.originator);
@@ -348,7 +365,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
         // Received Response about successor
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_SUC) {
-
+        CHORD_LOG("Setting Successor to " << ReverseLookup(p.m_result.address));
         m_sucessor.m_info = p.m_result;
         // Make callbacks
         //        vector<Callback<void> >::iterator itr;
@@ -376,23 +393,24 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
         if (!p.m_result.address.IsEqual(Ipv4Address("0.0.0.0")) &&
                 RangeCompare(m_info.location, p.m_result.location, m_sucessor.m_info.location)) {
             m_sucessor.m_info = p.m_result;
-            cout << "stabilized" << endl;
+            CHORD_LOG("Setting Successor to " << ReverseLookup(p.m_result.address));
             CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
             m_sucessor.notify(m_info);
 
         }
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RING_DBG) {
-        PrintInfo();
+        
         if (p.originator.address != m_info.address && m_sucessor.m_info.address != m_info.address) {
+            PrintInfo();
             m_sucessor.RingDebug(p.originator);
         }
     }
 }
 
 void PennChord::stabilize() {
-    PrintInfo();
+    //PrintInfo();
     m_sucessor.closest_preceeding(m_info);
-    //m_stabilizeTimer.Schedule(m_stabilizeFreq);
+    m_stabilizeTimer.Schedule(m_stabilizeFreq);
 }
 
 void PennChord::LeaveOverlay() {
@@ -403,27 +421,53 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     string p_hash((const char *) mid);
     int pre_cmp = p_hash.compare(string((const char *) low));
     int cur_cmp = p_hash.compare(string((const char *) high));
-    //cout << pre_cmp << " pre and post " << cur_cmp << endl;
+
+
+    cout << "LOW ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) low[i];
+    }
+    cout << std::endl << std::dec;
+
+
+    cout << "MID ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) mid[i];
+    }
+    cout << std::endl << std::dec;
+
+
+    cout << "HI ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) high[i];
+    }
+    cout << std::endl << std::dec;
+
+
+
+    cout << pre_cmp << " pre and post " << cur_cmp << endl;
+    cout << (pre_cmp > 0 && cur_cmp <= 0) << endl;
+
     // For open interval
-    if (pre_cmp < 0 && cur_cmp > 0) {
+    if (pre_cmp > 0 && cur_cmp < 0) {
         return 1;
 
         // For half closed interval
-    } else if (pre_cmp < 0 && cur_cmp >= 0) {
+    } else if (pre_cmp > 0 && cur_cmp <= 0) {
         return 2;
+    }//
+    else {
+        // Check to see if only single node
+        return (string((const char *) low).compare(string((const char *) high)) == 0);
     }
-    //
-    //    else {
-    //            // Check to see if only single node
-    //            return (string((const char *) low).compare(string((const char *) high)) == 0);
-    //        }
+    //return 0;
 }
 
 void PennChord::PrintInfo() {
-    //        cout << "Hash ";
-    //        for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-    //            cout << std::hex << (int) m_info.location[i];
-    //        }
-    //        cout << std::endl << std::dec;
-    CHORD_LOG("Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_sucessor.m_info.address));
+    //    cout << "Hash ";
+    //    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+    //        cout << std::hex << (int) m_info.location[i];
+    //    }
+    //    cout << std::endl << std::dec;
+    CHORD_LOG("RING DEBUG -- Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_sucessor.m_info.address));
 }

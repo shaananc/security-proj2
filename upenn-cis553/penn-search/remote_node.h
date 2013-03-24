@@ -13,6 +13,7 @@
 #include "ns3/socket.h"
 #include "penn-chord-message.h"
 #include "ns3/NodeInfo.h"
+#include "ns3/nstime.h"
 
 using namespace std;
 using namespace ns3;
@@ -48,6 +49,8 @@ public:
     // This represents the latest up to date info
     NodeInfo m_sucessor;
     NodeInfo m_predecessor;
+    
+    Time last_seen;
     
     Ptr<Socket> m_socket;
     uint16_t m_appPort;

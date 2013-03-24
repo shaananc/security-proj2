@@ -20,14 +20,16 @@
 /* Hash printing code adapted from http://ubuntuforums.org/showthread.php?t=1612675 */
 
 // TODO Fill in all functions
-// Clear up params
-// Change remote_node usage
+// TODO Keep-Alive Messages
+// TODO Clear up params
+// TODO Change remote_node usage
 
 #include "penn-chord.h"
 
 #include "ns3/random-variable.h"
 #include "ns3/inet-socket-address.h"
 #include "NodeInfo.h"
+#include "remote_node.h"
 
 #include <openssl/sha.h>
 
@@ -97,6 +99,10 @@ PennChord::StartApplication(void) {
     SHA1((const u_char *) ip_string, sizeof (ip_string), m_info.location);
     m_info.address = m_local;
 
+    NodeInfo b;
+    b.address = Ipv4Address("0.0.0.0");
+    m_predecessor = remote_node(b, m_socket, m_appPort);
+    m_sucessor = remote_node(b, m_socket, m_appPort);
 
 }
 
@@ -313,15 +319,14 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     std::cout << "\n\n\n";
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
         // put into a function
-        string p_hash((const char *)p.originator.location);
-        int pre_cmp = p_hash.compare(string((const char *)m_predecessor.m_info.location));
-        int cur_cmp = p_hash.compare(string((const char *)m_info.location));
+        string p_hash((const char *) p.originator.location);
+        int pre_cmp = p_hash.compare(string((const char *) m_predecessor.m_info.location));
+        int cur_cmp = p_hash.compare(string((const char *) m_info.location));
         // TODO TEST THIS URGENT
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                 (pre_cmp < 0 && cur_cmp <= 0)
+                (pre_cmp < 0 && cur_cmp <= 0)
                 ) {
-            remote_node blank_node(p.originator, m_socket, m_appPort);
-            blank_node.reply_successor(m_sucessor.m_info, p.requestee, p.originator);
+            remote_node(p.originator, m_socket, m_appPort).reply_successor(m_sucessor.m_info, p.requestee, p.originator);
         }
 
 
@@ -333,6 +338,19 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             (*itr)();
         }
         m_successor_callbacks.clear();
+        m_sucessor.notify(m_info);
+    } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_NOT) {
+        // TODO put compare hashes into a function
+        string p_hash((const char *) p.originator.location);
+        int pre_cmp = p_hash.compare(string((const char *) m_predecessor.m_info.location));
+        int cur_cmp = p_hash.compare(string((const char *) m_info.location));
+        if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
+                (pre_cmp < 0 && cur_cmp <= 0)){
+            m_predecessor.m_info = p.originator;
+            m_predecessor.last_seen = Now();
+            cout << "updated" << std::endl;
+        }
+        // Send notification response
     }
 
 }

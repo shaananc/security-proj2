@@ -62,7 +62,6 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
-
 }
 
 void remote_node::getLocation(NodeInfo originator) {
@@ -107,6 +106,7 @@ void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, Nod
 }
 
 void remote_node::notify(NodeInfo originator) {
+    
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_NOT;

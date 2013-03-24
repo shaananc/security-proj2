@@ -10,6 +10,7 @@
 
 #include "ns3/penn-chord.h"
 #include "ns3/inet-socket-address.h"
+#include "NodeInfo.h"
 
 using namespace ns3;
 
@@ -38,10 +39,10 @@ remote_node::remote_node(NodeInfo info,
     originator = m_originator;
 
     NodeInfo s;
-    s.location = -1;
+    s.address = Ipv4Address("0.0.0.0");
     this->m_sucessor = s;
     NodeInfo t;
-    t.location = -1;
+    t.address = Ipv4Address("0.0.0.0");
     m_predecessor = t;
 
 
@@ -65,7 +66,7 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
-    
+
 }
 
 void remote_node::getLocation() {

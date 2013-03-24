@@ -8,10 +8,13 @@
 #ifndef NODEINFO_H
 #define	NODEINFO_H
 
+#include <string>
+#include <openssl/sha.h>
+
 using namespace ns3;
 
 typedef struct NodeInfo {
-    int32_t location;
+    u_char location[SHA_DIGEST_LENGTH];
     Ipv4Address address;
 } NodeInfo;
 

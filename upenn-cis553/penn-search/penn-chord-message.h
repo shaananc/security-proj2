@@ -36,6 +36,7 @@ public:
         PING_REQ = 1,
         PING_RSP = 2,
         CHOR_PAC = 3,
+        RING_DBG = 4,
         // Define extra message types when needed       
     };
 

@@ -4,6 +4,7 @@ import sys
 
 def build(bld):
     obj = bld.create_ns3_program('simulator-main', ['node'])
+    obj.env.append_value('LINKFLAGS','-lcrypto')
     obj.source = [ 
         'simulator-main.cc',
         'ls-routing-protocol/ls-routing-protocol.cc',

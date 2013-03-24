@@ -17,10 +17,15 @@
  */
 
 
+/* Hash printing code adapted from http://ubuntuforums.org/showthread.php?t=1612675 */
+
 #include "penn-chord.h"
 
 #include "ns3/random-variable.h"
 #include "ns3/inet-socket-address.h"
+#include "NodeInfo.h"
+
+#include <openssl/sha.h>
 
 using namespace ns3;
 
@@ -115,6 +120,10 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         } else {
             JoinOverlay(ResolveNodeIpAddress(landmark));
         }
+    } else if (command == "leave") {
+        LeaveOverlay();
+    } else if (command == "ringstate") {
+
     }
 
 
@@ -161,6 +170,8 @@ PennChord::RecvMessage(Ptr<Socket> socket) {
             //TODO process chord reply
             // Process in Penn-Chord
             break;
+        case PennChordMessage::RING_DBG:
+            RingstateDebug();
         default:
             ERROR_LOG("Unknown Message Type!");
             break;
@@ -259,16 +270,24 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 void PennChord::CreateOverlay() {
     CHORD_LOG("Creating Overlay" << std::endl);
     NodeInfo i;
-    i.location = 0;
+
+    // Stores hash into location
+    uint8_t ip_string[4];
+    m_local.Serialize(ip_string);
+    SHA1((const u_char *) ip_string, sizeof (ip_string), i.location);
+
     i.address = m_local;
     m_info = i;
+
+
+
 
     remote_node i_node(i, m_socket, m_appPort, m_local);
     m_sucessor = i_node;
 
     // TODO Use an enum? Find a better way
     NodeInfo blank;
-    blank.location = -1;
+    blank.address = Ipv4Address("0.0.0.0");
     remote_node blank_node(blank, m_socket, m_appPort, m_local);
 
     m_predecessor = blank_node;
@@ -290,9 +309,19 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
         // put into a function
         NodeInfo blank;
-        blank.location = -1;
         blank.address = p.originator;
         remote_node blank_node(blank, m_socket, m_appPort, m_local);
-        blank_node.reply_successor(m_sucessor.m_info,p.requestee,p.originator);
+        blank_node.reply_successor(m_sucessor.m_info, p.requestee, p.originator);
     }
+}
+
+void PennChord::LeaveOverlay() {
+
+}
+
+
+// Print self then send ringstate message to next node
+
+void PennChord::RingstateDebug() {
+
 }

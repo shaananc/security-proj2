@@ -28,16 +28,13 @@ remote_node::~remote_node() {
 
 remote_node::remote_node(NodeInfo info,
        Ptr<Socket> m_socket,
-        uint16_t m_appPort,
-        Ipv4Address m_originator) {
+        uint16_t m_appPort) {
     
     m_info = info;
     this->m_socket = m_socket;
     this->m_appPort = m_appPort;
     srand(time(NULL));
     m_currentTransactionId = rand() % ~0;
-    originator = m_originator;
-
     NodeInfo s;
     s.address = Ipv4Address("0.0.0.0");
     this->m_sucessor = s;
@@ -62,14 +59,13 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     Ptr<Packet> packet = Create<Packet> ();
     PennChordMessage message = PennChordMessage(PennChordMessage::CHOR_PAC, transactionId);
     p.m_transactionId = GetNextTransactionId();
-    
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
 
 }
 
-void remote_node::getLocation() {
+void remote_node::getLocation(NodeInfo originator) {
 
     PennChordMessage::PennChordPacket p;
     // Change packet variables
@@ -88,7 +84,7 @@ void remote_node::join(){
 
 }
 
-void remote_node::find_successor() {
+void remote_node::find_successor(NodeInfo originator) {
 
     PennChordMessage::PennChordPacket p;
     // Change packet variables
@@ -98,8 +94,8 @@ void remote_node::find_successor() {
     SendRPC(p);
 
 }
-
-void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, Ipv4Address originator){
+//blah
+void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator){
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RSP_SUC;
@@ -110,7 +106,7 @@ void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, Ipv
     
 }
 
-void remote_node::notify() {
+void remote_node::notify(NodeInfo originator) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_NOT;

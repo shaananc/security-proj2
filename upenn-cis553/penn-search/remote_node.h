@@ -17,29 +17,27 @@
 using namespace std;
 using namespace ns3;
 
-
-
 class remote_node {
 public:
     remote_node();
-    
-    remote_node(NodeInfo info, Ptr<Socket> m_socket, uint16_t m_appPort, Ipv4Address m_originator);
+
+    remote_node(NodeInfo info, Ptr<Socket> m_socket, uint16_t m_appPort);
 
     remote_node(const remote_node& orig);
     virtual ~remote_node();
 
-    void getLocation();
+    void getLocation(NodeInfo originator);
     void reply_location(NodeInfo location);
-    
+
     void join();
-    void find_successor();
-    void reply_successor(NodeInfo successor, Ipv4Address requestee, Ipv4Address originator);
+    void find_successor(NodeInfo originator);
+    void reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator);
     
     void closest_preceeding();
     void reply_preceeding(NodeInfo preceeding);
-    
+
     void SendRPC(PennChordMessage::PennChordPacket p);
-    void notify();
+    void notify(NodeInfo originator);
     void processPacket(PennChordMessage::PennChordPacket p);
 
 
@@ -50,15 +48,13 @@ public:
     // This represents the latest up to date info
     NodeInfo m_sucessor;
     NodeInfo m_predecessor;
-
+    
     Ptr<Socket> m_socket;
     uint16_t m_appPort;
     uint32_t m_currentTransactionId;
-    Ipv4Address originator;
-
 
 private:
-    
+
 };
 
 #endif	/* REMOTE_NODE_H */

@@ -19,6 +19,10 @@
 
 /* Hash printing code adapted from http://ubuntuforums.org/showthread.php?t=1612675 */
 
+// TODO Fill in all functions
+// Clear up params
+// Change remote_node usage
+
 #include "penn-chord.h"
 
 #include "ns3/random-variable.h"
@@ -56,6 +60,9 @@ PennChord::PennChord()
     SeedManager::SetSeed(time(NULL));
     random = UniformVariable(0x00000000, 0xFFFFFFFF);
     m_currentTransactionId = random.GetInteger();
+
+
+
 }
 
 PennChord::~PennChord() {
@@ -82,6 +89,15 @@ PennChord::StartApplication(void) {
     m_auditPingsTimer.SetFunction(&PennChord::AuditPings, this);
     // Start timers
     m_auditPingsTimer.Schedule(m_pingTimeout);
+
+
+    // Stores hash into location
+    uint8_t ip_string[4];
+    m_local.Serialize(ip_string);
+    SHA1((const u_char *) ip_string, sizeof (ip_string), m_info.location);
+    m_info.address = m_local;
+
+
 }
 
 void
@@ -260,35 +276,24 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     CHORD_LOG("Joining Overlay" << std::endl);
     NodeInfo info;
     info.address = landmark;
-    remote_node s(info, m_socket, m_appPort, m_local);
+    remote_node s(info, m_socket, m_appPort);
     m_landmark = s;
     // Sends a request for the location of the landmark
-    m_landmark.find_successor();
+    m_landmark.find_successor(m_info);
 
 }
 
 void PennChord::CreateOverlay() {
     CHORD_LOG("Creating Overlay" << std::endl);
-    NodeInfo i;
-
-    // Stores hash into location
-    uint8_t ip_string[4];
-    m_local.Serialize(ip_string);
-    SHA1((const u_char *) ip_string, sizeof (ip_string), i.location);
-
-    i.address = m_local;
-    m_info = i;
 
 
-
-
-    remote_node i_node(i, m_socket, m_appPort, m_local);
+    remote_node i_node(m_info, m_socket, m_appPort);
     m_sucessor = i_node;
 
     // TODO Use an enum? Find a better way
     NodeInfo blank;
     blank.address = Ipv4Address("0.0.0.0");
-    remote_node blank_node(blank, m_socket, m_appPort, m_local);
+    remote_node blank_node(blank, m_socket, m_appPort);
 
     m_predecessor = blank_node;
 
@@ -308,11 +313,28 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     std::cout << "\n\n\n";
     if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
         // put into a function
-        NodeInfo blank;
-        blank.address = p.originator;
-        remote_node blank_node(blank, m_socket, m_appPort, m_local);
-        blank_node.reply_successor(m_sucessor.m_info, p.requestee, p.originator);
+        string p_hash((const char *)p.originator.location);
+        int pre_cmp = p_hash.compare(string((const char *)m_predecessor.m_info.location));
+        int cur_cmp = p_hash.compare(string((const char *)m_info.location));
+        // TODO TEST THIS URGENT
+        if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
+                 (pre_cmp < 0 && cur_cmp <= 0)
+                ) {
+            remote_node blank_node(p.originator, m_socket, m_appPort);
+            blank_node.reply_successor(m_sucessor.m_info, p.requestee, p.originator);
+        }
+
+
+    } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_SUC) {
+        m_sucessor.m_info = p.m_result;
+        // Make callbacks
+        vector<Callback<void> >::iterator itr;
+        for (itr = m_successor_callbacks.begin(); itr != m_successor_callbacks.end(); itr++) {
+            (*itr)();
+        }
+        m_successor_callbacks.clear();
     }
+
 }
 
 void PennChord::LeaveOverlay() {

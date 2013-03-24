@@ -97,7 +97,9 @@ private:
 
     NodeInfo m_info;
     remote_node m_sucessor;
+    vector<Callback<void> > m_successor_callbacks; 
     remote_node m_predecessor;
+    vector<Callback<void> > m_predecessor_callbacks;
     remote_node m_landmark;
 };
 

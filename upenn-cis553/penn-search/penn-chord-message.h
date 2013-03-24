@@ -125,7 +125,7 @@ public:
         // of whom was the data requested
         Ipv4Address requestee;
         // from whom did the request originate
-        Ipv4Address originator;
+        NodeInfo originator;
         // what is the result - field is unused for requests
         NodeInfo m_result;
 

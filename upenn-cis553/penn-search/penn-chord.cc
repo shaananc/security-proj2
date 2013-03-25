@@ -110,7 +110,7 @@ PennChord::StartApplication(void) {
     NodeInfo b;
     b.address = Ipv4Address("0.0.0.0");
     m_predecessor = remote_node(b, m_socket, m_appPort);
-    m_sucessor = remote_node(b, m_socket, m_appPort);
+    m_successor = remote_node(b, m_socket, m_appPort);
 
 
 
@@ -157,7 +157,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         LeaveOverlay();
     } else if (command == "ringstate") {
         PrintInfo();
-        m_sucessor.RingDebug(m_info);
+        m_successor.RingDebug(m_info);
     }
 
 
@@ -167,7 +167,7 @@ void
 PennChord::SendPing(Ipv4Address destAddress, std::string pingMessage) {
     if (destAddress != Ipv4Address::GetAny()) {
         uint32_t transactionId = GetNextTransactionId();
-        CHORD_LOG("Sending PING_REQ to Node: " << ReverseLookup(destAddress) << " IP: " << destAddress << " Message: " << pingMessage << " transactionId: " << transactionId);
+        CHORD_LOG("Sending PING_REQ to IP: " << destAddress << " Message: " << pingMessage << " transactionId: " << transactionId);
         Ptr<PingRequest> pingRequest = Create<PingRequest> (transactionId, Simulator::Now(), destAddress, pingMessage);
         // Add to ping-tracker
         m_pingTracker.insert(std::make_pair(transactionId, pingRequest));
@@ -214,9 +214,8 @@ PennChord::RecvMessage(Ptr<Socket> socket) {
 void
 PennChord::ProcessPingReq(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
 
-    // Use reverse lookup for ease of debug
-    std::string fromNode = ReverseLookup(sourceAddress);
-    CHORD_LOG("Received PING_REQ, From Node: " << fromNode << ", Message: " << message.GetPingReq().pingMessage);
+  // Using IP address for use on multiple real machines
+    CHORD_LOG("Received PING_REQ, From IP: " << sourceAddress << ", Message: " << message.GetPingReq().pingMessage);
     // Send Ping Response
     PennChordMessage resp = PennChordMessage(PennChordMessage::PING_RSP, message.GetTransactionId());
     resp.SetPingRsp(message.GetPingReq().pingMessage);
@@ -233,8 +232,7 @@ PennChord::ProcessPingRsp(PennChordMessage message, Ipv4Address sourceAddress, u
     std::map<uint32_t, Ptr<PingRequest> >::iterator iter;
     iter = m_pingTracker.find(message.GetTransactionId());
     if (iter != m_pingTracker.end()) {
-        std::string fromNode = ReverseLookup(sourceAddress);
-        CHORD_LOG("Received PING_RSP, From Node: " << fromNode << ", Message: " << message.GetPingRsp().pingMessage);
+        CHORD_LOG("Received PING_RSP, From IP: " << sourceAddress << ", Message: " << message.GetPingRsp().pingMessage);
         m_pingTracker.erase(iter);
         // Send indication to application layer
         m_pingSuccessFn(sourceAddress, message.GetPingRsp().pingMessage);
@@ -323,7 +321,7 @@ void PennChord::CreateOverlay() {
     cout << std::endl << std::dec;
 
     remote_node i_node(m_info, m_socket, m_appPort);
-    m_sucessor = i_node;
+    m_successor = i_node;
 
     // TODO Use an enum? Find a better way
     NodeInfo blank;
@@ -357,23 +355,23 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
 
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
-                RangeCompare(m_info.location, p.originator.location, m_sucessor.m_info.location)) {
-            remote_node(p.originator, m_socket, m_appPort).reply_successor(m_sucessor.m_info, p.requestee, p.originator);
+                RangeCompare(m_info.location, p.originator.location, m_successor.m_info.location)) {
+            remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor.m_info, p.requestee, p.originator);
         } else {
-            m_sucessor.find_successor(p.originator);
+            m_successor.find_successor(p.originator);
         }
 
         // Received Response about successor
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_SUC) {
-        CHORD_LOG("Setting Successor to " << ReverseLookup(p.m_result.address));
-        m_sucessor.m_info = p.m_result;
+        CHORD_LOG("Setting Successor to " << p.m_result.address);
+        m_successor.m_info = p.m_result;
         // Make callbacks
         //        vector<Callback<void> >::iterator itr;
         //        for (itr = m_successor_callbacks.begin(); itr != m_successor_callbacks.end(); itr++) {
         //            (*itr)();
         //        }
         //        m_successor_callbacks.clear();
-        m_sucessor.notify(m_info);
+        m_successor.notify(m_info);
 
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_NOT) {
 
@@ -382,7 +380,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
                 (0 <= res && res < 2)) {
             m_predecessor.m_info = p.originator;
             m_predecessor.last_seen = Now();
-            CHORD_LOG("Updated Predecessor to " << ReverseLookup(m_predecessor.m_info.address));
+            CHORD_LOG("Updated Predecessor to " << m_predecessor.m_info.address);
         }
         // Send notification response here
 
@@ -391,25 +389,25 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
         remote_node(p.originator, m_socket, m_appPort).reply_preceeding(p.originator, m_predecessor.m_info);
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_CP) {
         if (!p.m_result.address.IsEqual(Ipv4Address("0.0.0.0")) &&
-                RangeCompare(m_info.location, p.m_result.location, m_sucessor.m_info.location)) {
-            m_sucessor.m_info = p.m_result;
-            CHORD_LOG("Setting Successor to " << ReverseLookup(p.m_result.address));
-            CHORD_LOG("My pred is " << ReverseLookup(m_predecessor.m_info.address) << " and my suc is " << ReverseLookup(m_sucessor.m_info.address));
-            m_sucessor.notify(m_info);
+                RangeCompare(m_info.location, p.m_result.location, m_successor.m_info.location)) {
+            m_successor.m_info = p.m_result;
+            CHORD_LOG("Setting Successor to " << p.m_result.address);
+            CHORD_LOG("My pred is " << m_predecessor.m_info.address << " and my suc is " << m_successor.m_info.address);
+            m_successor.notify(m_info);
 
         }
     } else if (p.m_messageType == PennChordMessage::PennChordPacket::RING_DBG) {
         
-        if (p.originator.address != m_info.address && m_sucessor.m_info.address != m_info.address) {
+        if (p.originator.address != m_info.address && m_successor.m_info.address != m_info.address) {
             PrintInfo();
-            m_sucessor.RingDebug(p.originator);
+            m_successor.RingDebug(p.originator);
         }
     }
 }
 
 void PennChord::stabilize() {
     //PrintInfo();
-    m_sucessor.closest_preceeding(m_info);
+    m_successor.closest_preceeding(m_info);
     m_stabilizeTimer.Schedule(m_stabilizeFreq);
 }
 
@@ -469,5 +467,5 @@ void PennChord::PrintInfo() {
     //        cout << std::hex << (int) m_info.location[i];
     //    }
     //    cout << std::endl << std::dec;
-    CHORD_LOG("RING DEBUG -- Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_sucessor.m_info.address));
+    CHORD_LOG("RING DEBUG -- Predecessor: " << m_predecessor.m_info.address << " Successor: " << m_successor.m_info.address);
 }

@@ -49,7 +49,7 @@ public:
 
     NodeInfo m_info;
     // This represents the latest up to date info
-    NodeInfo m_sucessor;
+    NodeInfo m_successor;
     NodeInfo m_predecessor;
     
     Time last_seen;

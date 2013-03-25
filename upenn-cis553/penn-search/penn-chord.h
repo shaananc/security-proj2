@@ -100,7 +100,7 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
 
     NodeInfo m_info;
-    remote_node m_sucessor;
+    remote_node m_successor;
     vector<Callback<void> > m_successor_callbacks; 
     remote_node m_predecessor;
     vector<Callback<void> > m_predecessor_callbacks;

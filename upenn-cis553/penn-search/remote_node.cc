@@ -37,7 +37,7 @@ remote_node::remote_node(NodeInfo info,
     m_currentTransactionId = rand() % ~0;
     NodeInfo s;
     s.address = Ipv4Address("0.0.0.0");
-    this->m_sucessor = s;
+    this->m_successor = s;
     NodeInfo t;
     t.address = Ipv4Address("0.0.0.0");
     m_predecessor = t;

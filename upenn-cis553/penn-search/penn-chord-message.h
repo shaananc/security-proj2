@@ -114,7 +114,7 @@ public:
 
 
 
-    public:
+        public:
         virtual void Print(std::ostream &os) const;
         virtual uint32_t GetSerializedSize(void) const;
         virtual void Serialize(Buffer::Iterator start)const;

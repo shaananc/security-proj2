@@ -345,14 +345,15 @@ void PennChord::CreateOverlay() {
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
 
-    CHORD_LOG("Packet Received");
-    p.Print(std::cout);
-    std::cout << "\n\n\n";
+    DEBUG_LOG("Packet Received");
+    //p.Print(std::cout);
+    // DEBUG_LOG("Message Type: " << p.m_messageType);
+    // std::cout << "\n\n";
 
-
-    if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC) {
+    switch (p.m_messageType) {
+    case (PennChordMessage::PennChordPacket::REQ_SUC): {
         // TODO put into a function
-
+      DEBUG_LOG("REQ SUCCESSOR from " << p.originator.address);
 
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
                 RangeCompare(m_info.location, p.originator.location, m_successor.m_info.location)) {
@@ -362,7 +363,10 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
         }
 
         // Received Response about successor
-    } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_SUC) {
+        break;
+    }
+    case (PennChordMessage::PennChordPacket::RSP_SUC): {
+      DEBUG_LOG("RSP SUCCESSOR from " << p.originator.address);
         CHORD_LOG("Setting Successor to " << p.m_result.address);
         m_successor.m_info = p.m_result;
         // Make callbacks
@@ -372,8 +376,10 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
         //        }
         //        m_successor_callbacks.clear();
         m_successor.notify(m_info);
-
-    } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_NOT) {
+        break;
+    }
+    case (PennChordMessage::PennChordPacket::REQ_NOT): {
+      DEBUG_LOG("REQ NOTIFY from " << p.originator.address);
 
         int res = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
         if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
@@ -383,11 +389,15 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             CHORD_LOG("Updated Predecessor to " << m_predecessor.m_info.address);
         }
         // Send notification response here
-
-
-    } else if (p.m_messageType == PennChordMessage::PennChordPacket::REQ_CP) {
+        break;
+    }
+    case (PennChordMessage::PennChordPacket::REQ_CP): {
+      DEBUG_LOG("REQ PREDECESSOR from " << p.originator.address);
         remote_node(p.originator, m_socket, m_appPort).reply_preceeding(p.originator, m_predecessor.m_info);
-    } else if (p.m_messageType == PennChordMessage::PennChordPacket::RSP_CP) {
+        break;
+    }
+    case (PennChordMessage::PennChordPacket::RSP_CP): {
+      DEBUG_LOG("RSP PREDECESSOR from " << p.originator.address);
         if (!p.m_result.address.IsEqual(Ipv4Address("0.0.0.0")) &&
                 RangeCompare(m_info.location, p.m_result.location, m_successor.m_info.location)) {
             m_successor.m_info = p.m_result;
@@ -396,12 +406,19 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             m_successor.notify(m_info);
 
         }
-    } else if (p.m_messageType == PennChordMessage::PennChordPacket::RING_DBG) {
+        break;
+    }
+    case (PennChordMessage::PennChordPacket::RING_DBG): {
+      DEBUG_LOG("RING DEBUG from " << p.originator.address);
         
         if (p.originator.address != m_info.address && m_successor.m_info.address != m_info.address) {
             PrintInfo();
             m_successor.RingDebug(p.originator);
         }
+        break;
+    }
+    default:
+      cout << "Invalid Message Type";
     }
 }
 
@@ -420,6 +437,7 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     int pre_cmp = p_hash.compare(string((const char *) low));
     int cur_cmp = p_hash.compare(string((const char *) high));
 
+    /*
 
     cout << "LOW ";
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
@@ -441,19 +459,23 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     }
     cout << std::endl << std::dec;
 
+    */
 
-
-    cout << pre_cmp << " pre and post " << cur_cmp << endl;
-    cout << (pre_cmp > 0 && cur_cmp <= 0) << endl;
+    DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
+    DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
 
     // For open interval
     if (pre_cmp > 0 && cur_cmp < 0) {
         return 1;
-
-        // For half closed interval
-    } else if (pre_cmp > 0 && cur_cmp <= 0) {
+    }
+    // For half closed interval
+    else if (pre_cmp > 0 && cur_cmp <= 0) {
         return 2;
-    }//
+    }
+    // Wrap around
+    else if (pre_cmp > 0 && pre_cmp < cur_cmp) {
+      return 3;
+    }
     else {
         // Check to see if only single node
         return (string((const char *) low).compare(string((const char *) high)) == 0);
@@ -467,5 +489,5 @@ void PennChord::PrintInfo() {
     //        cout << std::hex << (int) m_info.location[i];
     //    }
     //    cout << std::endl << std::dec;
-    CHORD_LOG("RING DEBUG -- Predecessor: " << m_predecessor.m_info.address << " Successor: " << m_successor.m_info.address);
+  CHORD_LOG("\nRING DEBUG -- Self: " << m_local << " Predecessor: " << m_predecessor.m_info.address << " Successor: " << m_successor.m_info.address);
 }

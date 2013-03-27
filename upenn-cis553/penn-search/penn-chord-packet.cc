@@ -6,6 +6,7 @@
  */
 
 #include "penn-chord-message.h"
+#include "penn-chord.h"
 
 #include "ns3/header.h"
 #include "ns3/ipv4-address.h"
@@ -26,28 +27,28 @@ using namespace ns3;
 void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
     switch (m_messageType) {
         case(REQ_CP):
-            os << "REQ PREDECESSOR";
+	  //	  DEBUG_LOG("REQ PREDECESSOR");
             break;
         case(REQ_NOT):
-            os << "REQ NOTIFY";
+	  // DEBUG_LOG("REQ NOTIFY");
             break;
         case(REQ_SUC):
-            os << "REQ SUCESSOR";
+	  // DEBUG_LOG("REQ SUCCESSOR");
             break;
         case(RSP_CP):
-            os << "RSP PREDECESSOR";
+	  // DEBUG_LOG("RSP PREDECESSOR");
             break;
         case(RSP_SUC):
-            os << "RSP SUCESSOR";
+	  // DEBUG_LOG("RSP SUCCESSOR");
             break;
         case(RING_DBG):
-            os << "RING DEUBG";
+	  // DEBUG_LOG("RING DEUBG");
             break;
         default:
-            os << "INVALID MESSAGE TYPE";
+	  // DEBUG_LOG("INVALID MESSAGE TYPE");
             break;
     }
-
+    /*
     os << std::endl;
     os << "Result Address " << m_result.address << std::endl;
     os << "Result Location ";
@@ -64,6 +65,7 @@ void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
     os << std::endl;
 
     os << std::dec << m_transactionId << " transaction id" << std::endl;
+    */
 }
 
 uint32_t PennChordMessage::PennChordPacket::GetSerializedSize(void)const {

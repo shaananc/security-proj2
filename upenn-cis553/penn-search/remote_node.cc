@@ -185,4 +185,24 @@ void remote_node::Leave_Conf(NodeInfo originator) {
     SendRPC(p);
 }
 
+void remote_node::Look(NodeInfo originator, NodeInfo requested) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LOOK;
+    p.m_result = requested;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+void remote_node::Look_Res(NodeInfo originator, NodeInfo result) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LOOK_RES;
+    p.m_result = result;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
 

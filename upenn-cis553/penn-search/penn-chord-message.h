@@ -113,6 +113,8 @@ public:
             LEAVE_SUC = 10,
             LEAVE_PRED = 11,
             LEAVE_CONF = 12,
+            LOOK = 13,
+            LOOK_RES = 14,
         };
 
 

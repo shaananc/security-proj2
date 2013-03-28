@@ -47,6 +47,9 @@ public:
     void Leave_Pred(NodeInfo originator, NodeInfo predecessor);
     void Leave_Conf(NodeInfo originator);
 
+    void Look(NodeInfo originator, NodeInfo requested);
+    void Look_Res(NodeInfo originator, NodeInfo result);
+
     uint32_t GetNextTransactionId();
 
 

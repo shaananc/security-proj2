@@ -439,7 +439,29 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
       LeaveOverlay();
       break;
     }
-      
+    case (PennChordMessage::PennChordPacket::LOOK): {
+      CHORD_LOG("LOOK from " << p.requestee << " on behalf of " << p.originator.address);
+      if (RangeCompare(m_predecessor.m_info.location, p.m_result.location, m_info.location)) {
+        // Current node correct lookup
+        remote_node req(p.originator, m_socket, m_appPort);
+        NodeInfo result = p.m_result;
+        result.address = m_info.address;
+        // CHORD_LOG("LookupResult " << m_info.location << ", " << result.location << ", " << p.originator.address);        
+        // p_result.address will hold the address of the node storing the key
+        // p_result.location will hold the key requested
+        req.Look_Res(p.originator, result);
+      }
+      else {
+        //  CHORD_LOG("LookupRequest " << m_info.location << ": NextHop " << m_successor.address << ", " << m_successor.location << 
+        //        ", " << p.m_result.location); 
+        m_successor.Look(p.originator, p.m_result);
+      }
+      break;
+    }
+    case (PennChordMessage::PennChordPacket::LOOK_RES): {
+      CHORD_LOG("LOOK_RES from " << p.requestee << " on behalf of " << p.originator.address);
+      break;
+    }
     default:
       cout << "Invalid Message Type";
     }

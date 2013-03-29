@@ -155,3 +155,54 @@ void remote_node::RingDebug(NodeInfo originator){
     p.originator = originator;
     SendRPC(p);
 }
+
+void remote_node::Leave_Suc(NodeInfo originator, NodeInfo successor) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LEAVE_SUC;
+    p.m_result = successor;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+void remote_node::Leave_Pred(NodeInfo originator, NodeInfo predecessor) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LEAVE_PRED;
+    p.m_result = predecessor;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+void remote_node::Leave_Conf(NodeInfo originator) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LEAVE_CONF;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+void remote_node::Look(NodeInfo originator, NodeInfo requested) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LOOK;
+    p.m_result = requested;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+void remote_node::Look_Res(NodeInfo originator, NodeInfo result) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::LOOK_RES;
+    p.m_result = result;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+}
+
+

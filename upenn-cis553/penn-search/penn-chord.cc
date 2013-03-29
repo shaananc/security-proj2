@@ -138,7 +138,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
     std::string command = *iterator;
 
 
-    if (command == "join") {
+    if (command == "join" || command == "JOIN") {
         iterator++;
         std::string landmark = *iterator;
 
@@ -153,9 +153,9 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         } else {
             JoinOverlay(ResolveNodeIpAddress(landmark));
         }
-    } else if (command == "leave") {
-        LeaveOverlay();
-    } else if (command == "ringstate") {
+    } else if (command == "leave" || command == "LEAVE") {
+        LeaveInitiate();
+    } else if (command == "ringstate" || command == "RINGSTATE") {
         PrintInfo();
         m_successor.RingDebug(m_info);
     }
@@ -417,6 +417,51 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
         }
         break;
     }
+            
+    case (PennChordMessage::PennChordPacket::LEAVE_SUC): {
+      CHORD_LOG("LEAVE SUC from " << p.originator.address);
+      m_successor.m_info = p.m_result;
+      CHORD_LOG("Setting Successor to " << p.m_result.address);
+      m_successor.Leave_Pred(p.originator, m_info);
+      break;   
+    }
+    case (PennChordMessage::PennChordPacket::LEAVE_PRED): {
+      CHORD_LOG("LEAVE PRED from " << p.requestee << " on behalf of " << p.originator.address);
+      m_predecessor.m_info = p.m_result;
+      CHORD_LOG("Updating Predecessor to " << p.m_result.address);
+
+      remote_node leaver(p.originator, m_socket, m_appPort);
+      leaver.Leave_Conf(p.originator);
+      break;
+    }
+    case (PennChordMessage::PennChordPacket::LEAVE_CONF): {
+      CHORD_LOG("LEAVE CONF from " << p.requestee << " on behalf of " << p.originator.address);
+      LeaveOverlay();
+      break;
+    }
+    case (PennChordMessage::PennChordPacket::LOOK): {
+      CHORD_LOG("LOOK from " << p.requestee << " on behalf of " << p.originator.address);
+      if (RangeCompare(m_predecessor.m_info.location, p.m_result.location, m_info.location)) {
+        // Current node correct lookup
+        remote_node req(p.originator, m_socket, m_appPort);
+        NodeInfo result = p.m_result;
+        result.address = m_info.address;
+        // CHORD_LOG("LookupResult " << m_info.location << ", " << result.location << ", " << p.originator.address);        
+        // p_result.address will hold the address of the node storing the key
+        // p_result.location will hold the key requested
+        req.Look_Res(p.originator, result);
+      }
+      else {
+        //  CHORD_LOG("LookupRequest " << m_info.location << ": NextHop " << m_successor.address << ", " << m_successor.location << 
+        //        ", " << p.m_result.location); 
+        m_successor.Look(p.originator, p.m_result);
+      }
+      break;
+    }
+    case (PennChordMessage::PennChordPacket::LOOK_RES): {
+      CHORD_LOG("LOOK_RES from " << p.requestee << " on behalf of " << p.originator.address);
+      break;
+    }
     default:
       cout << "Invalid Message Type";
     }
@@ -428,8 +473,22 @@ void PennChord::stabilize() {
     m_stabilizeTimer.Schedule(m_stabilizeFreq);
 }
 
-void PennChord::LeaveOverlay() {
+void PennChord::LeaveInitiate() {
+  m_predecessor.Leave_Suc(m_info, m_successor.m_info); 
+}
 
+void PennChord::LeaveOverlay() {
+  CHORD_LOG("Leaving Overlay");
+  NodeInfo blank;
+  blank.address = Ipv4Address("0.0.0.0");
+  remote_node blank_node(blank, m_socket, m_appPort);
+  m_landmark = blank_node;
+  m_predecessor = blank_node;
+  m_successor = blank_node;
+
+  // Cancel timers
+  m_stabilizeTimer.Cancel();
+    
 }
 
 bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {

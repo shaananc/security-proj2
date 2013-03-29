@@ -110,6 +110,11 @@ public:
             REQ_CP = 7,
             REQ_NOT = 8,
             RING_DBG = 9,
+            LEAVE_SUC = 10,
+            LEAVE_PRED = 11,
+            LEAVE_CONF = 12,
+            LOOK = 13,
+            LOOK_RES = 14,
         };
 
 

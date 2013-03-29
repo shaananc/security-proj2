@@ -411,6 +411,33 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 }
 
 
+void PennChord::procREQ_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    CHORD_LOG("LOOK from " << p.requestee << " on behalf of " << p.originator.address);
+    if (RangeCompare(m_predecessor.m_info.location, p.m_result.location, m_info.location)) {
+        // Current node correct lookup
+        remote_node req(p.originator, m_socket, m_appPort);
+        NodeInfo result = p.m_result;
+        result.address = m_info.address;
+        // CHORD_LOG("LookupResult " << m_info.location << ", " << result.location << ", " << p.originator.address);        
+        // p_result.address will hold the address of the node storing the key
+        // p_result.location will hold the key requested
+        req.reply_look(p.originator, result);
+    } else {
+        //  CHORD_LOG("LookupRequest " << m_info.location << ": NextHop " << m_successor.address << ", " << m_successor.location << 
+        //        ", " << p.m_result.location); 
+        m_successor.find_look(p.originator, p.m_result);
+    }
+}
+
+void PennChord::procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    CHORD_LOG("RSP_LOOK from " << p.requestee << " on behalf of " << p.originator.address);
+}
+
+void PennChord::procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    CHORD_LOG("LEAVE CONF from " << p.requestee << " on behalf of " << p.originator.address);
+    LeaveOverlay();
+}
+
 void PennChord::stabilize() {
     //PrintInfo();
     m_successor.closest_preceeding(m_info);

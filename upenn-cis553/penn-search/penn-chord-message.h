@@ -113,7 +113,7 @@ public:
             LEAVE_SUC = 10,
             LEAVE_PRED = 11,
             LEAVE_CONF = 12,
-            LOOK = 13,
+            REQ_LOOK = 13,
             RSP_LOOK = 14,
         };
 

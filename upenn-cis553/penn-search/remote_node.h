@@ -47,8 +47,8 @@ public:
     void Leave_Pred(NodeInfo originator, NodeInfo predecessor);
     void Leave_Conf(NodeInfo originator);
 
-    void Look(NodeInfo originator, NodeInfo requested);
-    void RSP_LOOK(NodeInfo originator, NodeInfo result);
+    void find_look(NodeInfo originator, NodeInfo requested);
+    void reply_look(NodeInfo originator, NodeInfo result);
 
     uint32_t GetNextTransactionId();
 

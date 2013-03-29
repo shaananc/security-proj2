@@ -20,6 +20,7 @@ def build(bld):
         'penn-search/penn-search-message.cc',
         'penn-search/penn-search-helper.cc',
         'penn-search/remote_node.cc',
+        'penn-search/process-chord-packet.cc',
         'common/ping-request.cc',
         'common/penn-log.cc',
         'common/penn-routing-protocol.cc',

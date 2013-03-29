@@ -16,7 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
+#include <iostream>
+#include <vector>
+#include <map>
+#include <fstream>
 #include "penn-search.h"
 
 #include "ns3/random-variable.h"
@@ -173,6 +176,66 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
             }
         }
     }
+
+  //Read file line by line and created inverted 
+  //keyword list
+  if (command == "PUBLISH")
+  {
+        iterator++;
+        std::string metadataFile = *iterator;
+        char * writable = new char[metadataFile.size() + 1];
+        std::copy(metadataFile.begin(), metadataFile.end(), writable);
+        writable[metadataFile.size()] = '\0';
+        ifstream infile;
+        infile.open(writable, ifstream::in);
+        std::string s = "";
+        //Map of <Key, Document List>
+        std::map<std::string, std::vector<string> > inverted; 
+        while(getline(infile, s)){
+            std::stringstream ss(s);
+            std::string item;
+            int i=1;
+            //store the document 
+            std::string doc; 
+            getline(ss, doc, ' ');
+            while (getline(ss, item, ' ')){
+                std::vector<string> docs;
+                //keyword doesn't exist in map
+                if(inverted.count(item) != 0){
+                    //keyword exists in map
+                    std::map<std::string, std::vector<string> >::iterator it = inverted.find(item);
+                    std::vector<string> docs = it->second;
+                }
+                //add document to doc list and insert into map
+                docs.push_back(doc);
+                inverted.insert(std::make_pair(item, docs));
+                //keep track of how many tokes there are in the string
+                i++;
+            }
+            //junk entry in file
+            if(i<2){
+                ERROR_LOG("\nInsufficient Params in File...\n");
+                break;
+            }
+        }
+
+        //Iterate over the map, for each key in the map perform a lookup
+        //to get the address of the node that key is hashed to
+        std::map<std::string, std::vector<string> >::iterator iter;
+        for(iter = inverted.begin(); iter != inverted.end(); iter++){
+            //Perform a lookup in the chord table with the keyword as key
+            //Ipv4Address node = chord_lookup(iter->first);
+            //Send new list of documents to the node
+            //m_chord->UpdateNode(node, iter->second);
+        }
+
+  }
+
+  if (command == "SEARCH")
+  {
+      /*Perform search operations*/
+  }
+
 }
 
 void

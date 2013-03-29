@@ -1,4 +1,4 @@
-# project ns (3.9) configured on Sun Mar 24 21:33:37 2013 by
+# project ns (3.9) configured on Wed Mar 27 22:59:58 2013 by
 # waf 1.5.16 (abi 7, python 20702f0 on linux2)
 # using ./waf
 #
@@ -52,7 +52,7 @@ int main() { return 0; }
 [1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wl,--soname=foo', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -----------------------------------------
 Checking for -Wl,--soname=foo support
@@ -71,7 +71,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------
@@ -87,7 +87,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------
@@ -106,7 +106,7 @@ int main ()
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-pthread', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-pthread']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-pthread']
 yes
 
 -----------------------------------------
@@ -143,7 +143,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -163,7 +163,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -179,7 +179,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -210,7 +210,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lrt']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lrt']
 yes
 
 -----------------------------------------------
@@ -226,7 +226,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -242,7 +242,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 ---------------------------------------------------
@@ -269,7 +269,7 @@ int main() {
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
 [0m/usr/lib64/gcc/x86_64-suse-linux/4.6/../../../../x86_64-suse-linux/bin/ld: cannot find -lsqlite3
 collect2: ld returned 1 exit status
-['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lsqlite3']
+['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lsqlite3']
 command returned 'Build failed:  -> task failed (err #1): \n\t{task: cxx_link test_1.o -> testprog}'not found
 
 ---------------------------------------------------
@@ -289,7 +289,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 ---------------------------------------------------
@@ -305,7 +305,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 ---------------------------------------------------
@@ -343,7 +343,7 @@ int main() {
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-L/usr/lib64', '-Wl,-Bdynamic', '-lpython2.7', '-lm', '-lpthread', '-ldl', '-lutil']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-L/usr/lib64', '-Wl,-Bdynamic', '-lpython2.7', '-lm', '-lpthread', '-ldl', '-lutil']
 yes
 
 ---------------------------------------------------
@@ -375,7 +375,7 @@ int main()
 [1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-fno-strict-aliasing', '-Idebug', '-I..', '-I/usr/include/python2.7', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-L/usr/lib64', '-Wl,-Bdynamic', '-lm', '-lpthread', '-ldl', '-lutil', '-lpython2.7']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-L/usr/lib64', '-Wl,-Bdynamic', '-lm', '-lpthread', '-ldl', '-lutil', '-lpython2.7']
 yes
 ==>
 #include <stdio.h>
@@ -385,7 +385,7 @@ int main() { return 0; }
 [1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-fvisibility=hidden', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 ---------------------------------------------------
 Checking for -fvisibility=hidden support
@@ -431,7 +431,7 @@ int main() { return 0; }
 [1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DENABLE_GSL', '../test.cc', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wno-error=deprecated-declarations support
@@ -444,7 +444,7 @@ int main() { return 0; }
 [1/2] [32mcc: build/.conf_check_0/test.c -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-Idebug', '-I..', '-D_DEBUG', '-DENABLE_GSL', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcc_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wno-error=deprecated-declarations support
@@ -457,7 +457,7 @@ int main() { return 0; }
 [1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DENABLE_GSL', '../test.cc', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -fstrict-aliasing support
@@ -470,7 +470,7 @@ int main() { return 0; }
 [1/2] [32mcc: build/.conf_check_0/test.c -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DENABLE_GSL', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcc_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -fstrict-aliasing support
@@ -483,7 +483,7 @@ int main() { return 0; }
 [1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Wstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DENABLE_GSL', '../test.cc', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wstrict-aliasing support
@@ -496,7 +496,7 @@ int main() { return 0; }
 [1/2] [32mcc: build/.conf_check_0/test.c -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Wstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DENABLE_GSL', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
 [2/2] [33mcc_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/r/rmygatt/TCOM512/proj2l/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wstrict-aliasing support

@@ -62,8 +62,15 @@ public:
     // From PennApplication
     virtual void ProcessCommand(std::vector<std::string> tokens);
 
-    // TODO now
+    
     void ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procREQ_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procRSP_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procREQ_NOT(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    
     void JoinOverlay(Ipv4Address landmark);
     void LeaveInitiate();
     void LeaveOverlay();
@@ -101,10 +108,9 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
 
     NodeInfo m_info;
-    remote_node m_successor;
-    vector<Callback<void> > m_successor_callbacks; 
+    remote_node m_successor; 
     remote_node m_predecessor;
-    vector<Callback<void> > m_predecessor_callbacks;
+    std::map<uint32_t, Callback<void ,PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> > m_chordTracker;
     remote_node m_landmark;
 };
 

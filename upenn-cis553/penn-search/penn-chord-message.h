@@ -114,7 +114,7 @@ public:
             LEAVE_PRED = 11,
             LEAVE_CONF = 12,
             LOOK = 13,
-            LOOK_RES = 14,
+            RSP_LOOK = 14,
         };
 
 

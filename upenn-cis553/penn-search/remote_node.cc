@@ -195,10 +195,10 @@ void remote_node::Look(NodeInfo originator, NodeInfo requested) {
     SendRPC(p);
 }
 
-void remote_node::Look_Res(NodeInfo originator, NodeInfo result) {
+void remote_node::RSP_LOOK(NodeInfo originator, NodeInfo result) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
-    p.m_messageType = PennChordMessage::PennChordPacket::LOOK_RES;
+    p.m_messageType = PennChordMessage::PennChordPacket::RSP_LOOK;
     p.m_result = result;
     p.requestee = m_info.address;
     p.originator = originator;

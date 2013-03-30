@@ -1,0 +1,30 @@
+Documentation notes: (will write up by Monday)
+
+- added different message types to check when receiving a PennChordPacket
+  -- list types here 
+
+- nodeinfo.h file to keep track of node location and address 
+
+- hashes in compile script 
+
+- notify 
+  - process chord message 
+      - remote node replies to successor node
+      - notify successor node
+      - if message is REQ_NOT, then compare hashes, update the tie wihen the predecessor was last seen 
+
+- stabilizer timers (in join overlay)
+  - starts and configured in join overlay/create overlay
+  - timer is every 15 seconds 
+  - if REQ_SUC, see if successor is in range, if not, then find the actual scuccesor 
+  - if RSP_SUC, compare arange as above and update
+  - if RSP_CP, then compare range - if in range, then set predecssor and declare stabilized 
+   
+  - stabilize function - set timer and debug log   
+  - range compare is a hasing function 
+  - remote node sets message result, originator, sends CP reply 
+
+
+- ring debugging 
+  - ringDebug -> sends ring debug message 
+  - called if given ringstate command

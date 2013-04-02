@@ -1,6 +1,6 @@
-# project ns (3.9) configured on Fri Mar 29 00:34:05 2013 by
-# waf 1.5.16 (abi 7, python 20703f0 on linux2)
-# using ../waf
+# project ns (3.9) configured on Tue Apr  2 11:38:09 2013 by
+# waf 1.5.16 (abi 7, python 20702f0 on linux2)
+# using ./waf
 #
 
 ----------------------------------------
@@ -33,16 +33,6 @@ Checking for program g++ or c++
   -> '/usr/bin/g++'
 
 ----------------------------------------
-Checking for program ar
-  find program=['ar'] paths=[] var='AR'
-  -> '/usr/bin/ar'
-
-----------------------------------------
-Checking for program ranlib
-  find program=['ranlib'] paths=[] var='RANLIB'
-  -> '/usr/bin/ranlib'
-
-----------------------------------------
 Checking for g++ 
 ok 
 
@@ -59,10 +49,10 @@ not found
 int main() { return 0; }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cc -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wl,--soname=foo', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -----------------------------------------
 Checking for -Wl,--soname=foo support
@@ -78,10 +68,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------
@@ -94,10 +84,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------
@@ -113,10 +103,10 @@ int main ()
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-pthread', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-pthread']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-pthread']
 yes
 
 -----------------------------------------
@@ -130,12 +120,12 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m../test.cpp: In function ‘int main()’:
-../test.cpp:4:7: error: ‘uint128_t’ was not declared in this scope
-../test.cpp:4:18: error: expected primary-expression before ‘)’ token
-../test.cpp:4:20: error: expected ‘)’ before numeric constant
-../test.cpp:5:14: error: ‘uint128_t’ was not declared in this scope
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m../test.cpp: In function 'int main()':
+../test.cpp:4:7: error: 'uint128_t' was not declared in this scope
+../test.cpp:4:18: error: expected primary-expression before ')' token
+../test.cpp:4:20: error: expected ')' before numeric constant
+../test.cpp:5:14: error: 'uint128_t' was not declared in this scope
 ['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
 command returned 'Build failed:  -> task failed (err #1): \n\t{task: cxx test.cpp -> test_1.o}'not found
 
@@ -150,18 +140,15 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m../test.cpp: In function ‘int main()’:
-../test.cpp:4:7: error: ‘__uint128_t’ was not declared in this scope
-../test.cpp:4:20: error: expected primary-expression before ‘)’ token
-../test.cpp:4:22: error: expected ‘)’ before numeric constant
-../test.cpp:5:14: error: ‘__uint128_t’ was not declared in this scope
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-command returned 'Build failed:  -> task failed (err #1): \n\t{task: cxx test.cpp -> test_1.o}'not found
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+yes
 
 -----------------------------------------------
 Checking for high precision time implementation
-cairo 128-bit integer
+128-bit integer
 
 -----------------------------------------------
 Checking for header stdint.h
@@ -173,10 +160,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -189,10 +176,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -205,7 +192,7 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m../test.cpp:1:26: fatal error: sys/inttypes.h: No such file or directory
 compilation terminated.
 ['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
@@ -220,10 +207,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lrt']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lrt']
 yes
 
 -----------------------------------------------
@@ -236,10 +223,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 -----------------------------------------------
@@ -252,16 +239,16 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 ---------------------------------------------------
 Checking for pkg-config flags for GTK_CONFIG_STORE 
-not found
-['/usr/bin/pkg-config', '--cflags', '--libs', 'gtk+-2.0 >= 2.12']: '' (exit code 1)
+ok 
+['/usr/bin/pkg-config', '--cflags', '--libs', 'gtk+-2.0 >= 2.12']: '-pthread -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libpng14  -pthread -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  \n' (exit code 0)
 
 ---------------------------------------------------
 Checking for pkg-config flags for LIBXML2 
@@ -277,11 +264,13 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lsqlite3']
-yes
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m/usr/lib64/gcc/x86_64-suse-linux/4.6/../../../../x86_64-suse-linux/bin/ld: cannot find -lsqlite3
+collect2: ld returned 1 exit status
+['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bdynamic', '-lsqlite3']
+command returned 'Build failed:  -> task failed (err #1): \n\t{task: cxx_link test_1.o -> testprog}'not found
 
 ---------------------------------------------------
 Checking for NSC location 
@@ -297,10 +286,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 ---------------------------------------------------
@@ -313,10 +302,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 yes
 
 ---------------------------------------------------
@@ -326,21 +315,21 @@ Checking for program python
 
 ---------------------------------------------------
 Checking for Python version >= 2.3
-ok 2.7.3
+ok 2.7.2
 Configuration returned from '/usr/bin/python':
 python_prefix = '/usr'
 python_SO = '.so'
 python_SYSLIBS = '-lm'
-python_LDFLAGS = '-Wl,-Bsymbolic-functions -Wl,-z,relro'
+python_LDFLAGS = ''
 python_SHLIBS = '-lpthread -ldl  -lutil'
-python_LIBDIR = '/usr/lib'
-python_LIBPL = '/usr/lib/python2.7/config'
+python_LIBDIR = '/usr/lib64'
+python_LIBPL = '/usr/lib64/python2.7/config'
 INCLUDEPY = '/usr/include/python2.7'
-Py_ENABLE_SHARED = 0
+Py_ENABLE_SHARED = 1
 MACOSX_DEPLOYMENT_TARGET = ''
 
 
-# Trying LIBDIR: ['/usr/lib']
+# Trying LIBDIR: ['/usr/lib64']
 
 ---------------------------------------------------
 Checking for library python2.7
@@ -351,10 +340,10 @@ int main() {
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-L/usr/lib', '-Wl,-Bdynamic', '-lpython2.7', '-lm', '-lpthread', '-ldl', '-lutil']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-L/usr/lib64', '-Wl,-Bdynamic', '-lpython2.7', '-lm', '-lpthread', '-ldl', '-lutil']
 yes
 
 ---------------------------------------------------
@@ -383,20 +372,20 @@ int main()
 }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cpp -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cpp -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-fno-strict-aliasing', '-Idebug', '-I..', '-I/usr/include/python2.7', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-L/usr/lib', '-Wl,-Bdynamic', '-lm', '-lpthread', '-ldl', '-lutil', '-lpython2.7']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog', '-L/usr/lib64', '-Wl,-Bdynamic', '-lm', '-lpthread', '-ldl', '-lutil', '-lpython2.7']
 yes
 ==>
 #include <stdio.h>
 int main() { return 0; }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cc -> ../build/.conf_check_0/testbuild/debug/test_1.o
+[1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
 [0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-fvisibility=hidden', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 ---------------------------------------------------
 Checking for -fvisibility=hidden support
@@ -413,7 +402,7 @@ not found
 ---------------------------------------------------
 Checking for program mpic++
   find program=['mpic++'] paths=[] var='MPI'
-  -> ''
+  -> '/usr/lib64/mpi/gcc/openmpi/bin/mpic++'
 
 ---------------------------------------------------
 Checking for program sudo
@@ -432,17 +421,17 @@ Checking for program valgrind
 
 ---------------------------------------------------
 Checking for pkg-config flags for GSL 
-not found
-['/usr/bin/pkg-config', '--cflags', '--libs', 'gsl']: '' (exit code 1)
+ok 
+['/usr/bin/pkg-config', '--cflags', '--libs', 'gsl']: ' -lgsl -lgslcblas -lm  \n' (exit code 0)
 ==>
 #include <stdio.h>
 int main() { return 0; }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cc -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DENABLE_GSL', '../test.cc', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wno-error=deprecated-declarations support
@@ -452,10 +441,10 @@ yes
 int main() { return 0; }
 
 <==
-[1/2] [32mcc: ../build/.conf_check_0/test.c -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcc_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[1/2] [32mcc: build/.conf_check_0/test.c -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-Idebug', '-I..', '-D_DEBUG', '-DENABLE_GSL', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcc_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wno-error=deprecated-declarations support
@@ -465,10 +454,10 @@ yes
 int main() { return 0; }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cc -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DENABLE_GSL', '../test.cc', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -fstrict-aliasing support
@@ -478,10 +467,10 @@ yes
 int main() { return 0; }
 
 <==
-[1/2] [32mcc: ../build/.conf_check_0/test.c -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcc_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[1/2] [32mcc: build/.conf_check_0/test.c -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DENABLE_GSL', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcc_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -fstrict-aliasing support
@@ -491,10 +480,10 @@ yes
 int main() { return 0; }
 
 <==
-[1/2] [32mcxx: ../build/.conf_check_0/test.cc -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Wstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cc', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcxx_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[1/2] [32mcxx: build/.conf_check_0/test.cc -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Wstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DENABLE_GSL', '../test.cc', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcxx_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/g++', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wstrict-aliasing support
@@ -504,10 +493,10 @@ yes
 int main() { return 0; }
 
 <==
-[1/2] [32mcc: ../build/.conf_check_0/test.c -> ../build/.conf_check_0/testbuild/debug/test_1.o
-[0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Wstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
-[2/2] [33mcc_link: ../build/.conf_check_0/testbuild/debug/test_1.o -> ../build/.conf_check_0/testbuild/debug/testprog
-[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/home/user/NetBeansProjects/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
+[1/2] [32mcc: build/.conf_check_0/test.c -> build/.conf_check_0/testbuild/debug/test_1.o
+[0m['/usr/bin/gcc', '-O0', '-ggdb', '-g3', '-O0', '-ggdb', '-g3', '-Wno-error=deprecated-declarations', '-fstrict-aliasing', '-Wstrict-aliasing', '-Idebug', '-I..', '-D_DEBUG', '-DENABLE_GSL', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.c', '-c', '-o', 'debug/test_1.o']
+[2/2] [33mcc_link: build/.conf_check_0/testbuild/debug/test_1.o -> build/.conf_check_0/testbuild/debug/testprog
+[0m['/usr/bin/gcc', 'debug/test_1.o', '-o', '/mnt/castor/seas_home/j/jangidc/cis553/cis553_proj2/cis553_proj2/build/.conf_check_0/testbuild/debug/testprog']
 
 -------------------------------------------------------
 Checking for -Wstrict-aliasing support

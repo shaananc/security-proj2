@@ -205,4 +205,13 @@ void remote_node::reply_look(NodeInfo originator, NodeInfo result) {
     SendRPC(p);
 }
 
+void remote_node::update_node(NodeInfo node, std::vector<std::string> &docs){
+    for(std::vector<std::string>::iterator it=docs.begin(); it!=docs.end(); it++){
+        std::string command = *it;
+        //If the document is not in the document list of node
+        if(std::find(documents.begin(), documents.end(), command) == documents.end()){
+            documents.push_back(command);
+        }
+    }
 
+}

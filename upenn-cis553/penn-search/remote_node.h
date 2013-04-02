@@ -9,6 +9,7 @@
 #define	REMOTE_NODE_H
 
 #include <vector>
+#include <algorithm>
 #include "ns3/inet-socket-address.h"
 #include "ns3/socket.h"
 #include "penn-chord-message.h"
@@ -52,6 +53,8 @@ public:
 
     uint32_t GetNextTransactionId();
 
+    void update_node(NodeInfo node, std::vector<string> &docs);
+
 
     NodeInfo m_info;
     // This represents the latest up to date info
@@ -63,6 +66,9 @@ public:
     Ptr<Socket> m_socket;
     uint16_t m_appPort;
     uint32_t m_currentTransactionId;
+
+    //Maintains the list of documents 
+    std::vector<std::string> documents;
 
 private:
 

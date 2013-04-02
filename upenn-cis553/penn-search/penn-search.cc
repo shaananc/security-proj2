@@ -226,13 +226,13 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
             //Perform a lookup in the chord table with the keyword as key
             //Ipv4Address node = chord_lookup(iter->first);
             //Send new list of documents to the node
-            //m_chord->UpdateNode(node, iter->second);
+            //m_chord->update_node(node, iter->second);
         }
 
   }
 
-  if (command == "SEARCH")
-  {
+  if (command == "SEARCH"){
+
       /*Perform search operations*/
   }
 

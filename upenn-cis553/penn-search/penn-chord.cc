@@ -17,6 +17,7 @@
  */
 
 
+
 /* Hash printing code adapted from http://ubuntuforums.org/showthread.php?t=1612675 */
 
 // TODO Keep-Alive Messages
@@ -340,7 +341,7 @@ void PennChord::CreateOverlay() {
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
 
-    DEBUG_LOG("Packet Received");
+//    DEBUG_LOG("Packet Received");
 
     map<uint32_t, Callback<void, PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
     if (callback_pair != m_chordTracker.end()) {
@@ -443,8 +444,8 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     int cur_cmp = p_hash.compare(string((const char *) high));
 
 
-    DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
-    DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
+  //  DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
+  //  DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
 
     // For open interval
     if (pre_cmp > 0 && cur_cmp < 0) {

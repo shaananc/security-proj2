@@ -17,7 +17,7 @@ class remote_node;
  *************************************************************/
 
 void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    DEBUG_LOG("REQ SUCCESSOR from " << p.originator.address);
+    //DEBUG_LOG("REQ SUCCESSOR from " << p.originator.address);
     if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
             RangeCompare(m_info.location, p.originator.location, m_successor.m_info.location)) {
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor.m_info, p.requestee, p.originator);
@@ -27,46 +27,46 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
 }
 
 void PennChord::procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    DEBUG_LOG("RSP SUCCESSOR from " << p.originator.address);
-    CHORD_LOG("Setting Successor to " << p.m_result.address);
+    //DEBUG_LOG("RSP SUCCESSOR from " << p.originator.address);
+    //CHORD_LOG("Setting Successor to " << p.m_result.address);
     m_successor.m_info = p.m_result;
     m_successor.notify(m_info);
 }
 
 void PennChord::procREQ_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    DEBUG_LOG("REQ PREDECESSOR from " << p.originator.address);
+  //  DEBUG_LOG("REQ PREDECESSOR from " << p.originator.address);
     remote_node(p.originator, m_socket, m_appPort).reply_preceeding(p.originator, m_predecessor.m_info);
 }
 
 void PennChord::procRSP_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    DEBUG_LOG("RSP PREDECESSOR from " << p.originator.address);
+    //DEBUG_LOG("RSP PREDECESSOR from " << p.originator.address);
     if (!p.m_result.address.IsEqual(Ipv4Address("0.0.0.0")) &&
             RangeCompare(m_info.location, p.m_result.location, m_successor.m_info.location)) {
         m_successor.m_info = p.m_result;
-        CHORD_LOG("Setting Successor to " << p.m_result.address);
-        CHORD_LOG("My pred is " << m_predecessor.m_info.address << " and my suc is " << m_successor.m_info.address);
+      //  CHORD_LOG("Setting Successor to " << p.m_result.address);
+      //  CHORD_LOG("My pred is " << m_predecessor.m_info.address << " and my suc is " << m_successor.m_info.address);
         m_successor.notify(m_info);
 
     }
 }
 
 void PennChord::procLEAVE_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    CHORD_LOG("LEAVE SUC from " << p.originator.address);
+    //CHORD_LOG("LEAVE SUC from " << p.originator.address);
     m_successor.m_info = p.m_result;
-    CHORD_LOG("Setting Successor to " << p.m_result.address);
+    //CHORD_LOG("Setting Successor to " << p.m_result.address);
     m_successor.Leave_Pred(p.originator, m_info);
 }
 
 void PennChord::procLEAVE_PRED(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    CHORD_LOG("LEAVE PRED from " << p.requestee << " on behalf of " << p.originator.address);
+    //CHORD_LOG("LEAVE PRED from " << p.requestee << " on behalf of " << p.originator.address);
     m_predecessor.m_info = p.m_result;
-    CHORD_LOG("Updating Predecessor to " << p.m_result.address);
+    //CHORD_LOG("Updating Predecessor to " << p.m_result.address);
     remote_node leaver(p.originator, m_socket, m_appPort);
     leaver.Leave_Conf(p.originator);
 }
 
 void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    DEBUG_LOG("RING DEBUG from " << p.originator.address);
+   // DEBUG_LOG("RING DEBUG from " << p.originator.address);
     if (p.originator.address != m_info.address && m_successor.m_info.address != m_info.address) {
         PrintInfo();
         m_successor.RingDebug(p.originator);
@@ -74,14 +74,14 @@ void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address so
 }
 
 void PennChord::procREQ_NOT(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    DEBUG_LOG("REQ NOTIFY from " << p.originator.address);
+    //DEBUG_LOG("REQ NOTIFY from " << p.originator.address);
 
     int res = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
     if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
             (0 <= res && res < 2)) {
         m_predecessor.m_info = p.originator;
         m_predecessor.last_seen = Now();
-        CHORD_LOG("Updated Predecessor to " << m_predecessor.m_info.address);
+        //CHORD_LOG("Updated Predecessor to " << m_predecessor.m_info.address);
     }
 }
 

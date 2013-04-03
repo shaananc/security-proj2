@@ -87,6 +87,7 @@ public:
 
     bool RangeCompare(u_char *low, u_char *mid, u_char *high);
     
+    
     // TODO Later
     void fix_fingers();
 
@@ -112,6 +113,7 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingFailureFn;
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
 
+    bool joined;
     NodeInfo m_info;
     remote_node m_successor; 
     remote_node m_predecessor;

@@ -56,7 +56,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("StabilizeFreq",
             "Frequency to Update Successor",
-            TimeValue(Seconds(15)),
+            TimeValue(Seconds(5)),
             MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
             ;
@@ -284,15 +284,15 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 // TODO Implement
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
-    CHORD_LOG("Joining Overlay at " << landmark << std::endl);
+    // CHORD_LOG("Joining Overlay at " << landmark << std::endl);
 
-    cout << "Hash ";
-    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-        cout << std::hex << (int) m_info.location[i];
-    }
-    cout << std::endl << std::dec;
+//    cout << "Hash ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) m_info.location[i];
+//    }
+//    cout << std::endl << std::dec;
 
-
+    joined = true;
     NodeInfo info;
     info.address = landmark;
     remote_node s(info, m_socket, m_appPort);
@@ -308,14 +308,15 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 }
 
 void PennChord::CreateOverlay() {
-    CHORD_LOG("Creating Overlay" << std::endl);
+   // CHORD_LOG("Creating Overlay" << std::endl);
 
-    cout << "Hash ";
-    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-        cout << std::hex << (int) m_info.location[i];
-    }
-    cout << std::endl << std::dec;
+    // cout << "Hash ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) m_info.location[i];
+//    }
+//    cout << std::endl << std::dec;
 
+    joined = true;
     remote_node i_node(m_info, m_socket, m_appPort);
     m_successor = i_node;
 
@@ -339,6 +340,7 @@ void PennChord::CreateOverlay() {
 // Fix requestee value
 
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    if(joined == false){return;}
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
 
 //    DEBUG_LOG("Packet Received");
@@ -421,11 +423,13 @@ void PennChord::stabilize() {
 }
 
 void PennChord::LeaveInitiate() {
+    CHORD_LOG("Leaving Ring");
+    m_stabilizeTimer.Cancel();
     m_predecessor.Leave_Suc(m_info, m_successor.m_info);
 }
 
 void PennChord::LeaveOverlay() {
-    CHORD_LOG("Leaving Overlay");
+    // CHORD_LOG("Leaving Overlay");
     NodeInfo blank;
     blank.address = Ipv4Address("0.0.0.0");
     remote_node blank_node(blank, m_socket, m_appPort);
@@ -434,7 +438,7 @@ void PennChord::LeaveOverlay() {
     m_successor = blank_node;
 
     // Cancel timers
-    m_stabilizeTimer.Cancel();
+   // m_stabilizeTimer.Cancel();
 
 }
 
@@ -468,5 +472,5 @@ void PennChord::PrintInfo() {
     //        cout << std::hex << (int) m_info.location[i];
     //    }
     //    cout << std::endl << std::dec;
-    CHORD_LOG("\nRING DEBUG -- Self: " << m_local << " Predecessor: " << m_predecessor.m_info.address << " Successor: " << m_successor.m_info.address);
+    CHORD_LOG("\nRING DEBUG -- Self: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
 }

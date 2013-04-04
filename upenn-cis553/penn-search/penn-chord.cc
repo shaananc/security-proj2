@@ -145,7 +145,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         ss << m_node->GetId();
         std::string m_id = ss.str();
 
-        CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
+        //CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
 
         if (landmark == m_id) {
             CreateOverlay();

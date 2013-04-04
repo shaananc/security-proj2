@@ -76,7 +76,7 @@ void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address so
         
         m_successor.RingDebug(p.originator,p.m_result.address.Get()+1);
     } else {
-        std::cout << std::endl << p.m_result.address.Get() << " is the total number of nodes at the end of debug\n";
+        CHORD_LOG(p.m_result.address.Get() << " is the total number of nodes in the ring\n");
     }
 }
 

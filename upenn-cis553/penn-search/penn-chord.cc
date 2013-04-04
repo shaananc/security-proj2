@@ -56,7 +56,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("StabilizeFreq",
             "Frequency to Update Successor",
-            TimeValue(Seconds(5)),
+            TimeValue(MilliSeconds(900)),
             MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
             ;
@@ -156,7 +156,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         LeaveInitiate();
     } else if (command == "ringstate" || command == "RINGSTATE") {
         PrintInfo();
-        m_successor.RingDebug(m_info);
+        m_successor.RingDebug(m_info,1);
     }
 
 
@@ -284,13 +284,13 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 // TODO Implement
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
-    // CHORD_LOG("Joining Overlay at " << landmark << std::endl);
+     CHORD_LOG("Joining Overlay at " << landmark << std::endl);
 
-//    cout << "Hash ";
-//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-//        cout << std::hex << (int) m_info.location[i];
-//    }
-//    cout << std::endl << std::dec;
+    cout << "Hash ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) m_info.location[i];
+    }
+    cout << std::endl << std::dec;
 
     joined = true;
     NodeInfo info;
@@ -308,13 +308,13 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 }
 
 void PennChord::CreateOverlay() {
-   // CHORD_LOG("Creating Overlay" << std::endl);
+    CHORD_LOG("Creating Overlay" << std::endl);
 
-    // cout << "Hash ";
-//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-//        cout << std::hex << (int) m_info.location[i];
-//    }
-//    cout << std::endl << std::dec;
+ cout << "Hash ";
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        cout << std::hex << (int) m_info.location[i];
+    }
+    cout << std::endl << std::dec;
 
     joined = true;
     remote_node i_node(m_info, m_socket, m_appPort);
@@ -443,23 +443,55 @@ void PennChord::LeaveOverlay() {
 }
 
 bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
-    string p_hash((const char *) mid);
-    int pre_cmp = p_hash.compare(string((const char *) low));
-    int cur_cmp = p_hash.compare(string((const char *) high));
-
+    string me((const char *) mid);
+    string pred = string((const char *) low);
+    string suc = string((const char *) high);
+    
+    // is greater than 0 if me is larger
+    int pre_cmp = me.compare(pred);
+    // is less than 0 if me is smaller
+    int cur_cmp = me.compare(suc);
+    // is less than 0 if suc is less than pred
+    int both_cmp = suc.compare(pred);
+    
 
   //  DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
   //  DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
 
+
+//    cout << "Pred ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) low[i];
+//    }
+//    cout << std::endl << std::dec;
+//    cout << "Me  ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) mid[i];
+//    }
+//    cout << std::endl << std::dec;
+//    cout << "Suc  ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) high[i];
+//    }
+//    cout << std::endl << std::dec;
+
+
+    
     // For open interval
-    if (pre_cmp > 0 && cur_cmp < 0) {
+    bool strict_order = pre_cmp > 0 && cur_cmp < 0;
+    bool wrap_order1 = pre_cmp > 0 && both_cmp < 0;
+    bool wrap_order2 = cur_cmp < 0 && both_cmp > 0;
+    
+    
+    
+//    CHORD_LOG("Strict: " << strict_order << " Wrap1 " << wrap_order1 << " Wrap2 " << wrap_order2);
+//    CHORD_LOG("Precmp: " << pre_cmp << " Mecmp " << cur_cmp << " Succmp " << both_cmp);
+    
+    if (strict_order || wrap_order1 || wrap_order2) {
         return 1;
     }// For half closed interval
     else if (pre_cmp > 0 && cur_cmp <= 0) {
         return 2;
-    }// Wrap around
-    else if (pre_cmp > 0 && pre_cmp < cur_cmp) {
-        return 3;
     } else {
         // Check to see if only single node
         return (string((const char *) low).compare(string((const char *) high)) == 0);

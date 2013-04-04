@@ -42,7 +42,7 @@ public:
     void notify(NodeInfo originator);
     void processPacket(PennChordMessage::PennChordPacket p);
     
-    void RingDebug(NodeInfo originator);
+    void RingDebug(NodeInfo originator, uint32_t n);
 
     void Leave_Suc(NodeInfo originator, NodeInfo successor);
     void Leave_Pred(NodeInfo originator, NodeInfo predecessor);

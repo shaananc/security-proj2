@@ -39,6 +39,7 @@
 
 using namespace ns3;
 
+string strHash(u_char *hash);
 
 class PennChord : public PennApplication {
 public:

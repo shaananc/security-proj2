@@ -1,30 +1,10 @@
-Documentation notes: (will write up by Monday)
+We have added a few different chord message types to help when sending and receiving chochord packets: REQ_SUC, RSP_SUC, REQ_NOT, REQ_CP, RSP_CP, and RING_DBG. REQ_SUC and RSP_SUC are requests and responses for packets containing successor information, respectively. REQ_NOT is a request for notification. REQ_CP and RSP_CP are requests and responses for chord packets, respectively. RING_DBG contains debug information for ring stabilization. 
 
-- added different message types to check when receiving a PennChordPacket
-  -- list types here 
+To help keep track of node information, we have added a nodeinfo class in nodeinfo.h that tracks node location and address. 
 
-- nodeinfo.h file to keep track of node location and address 
+To notify the system of updates, we process each chord message by having the remote node reply to its successor node. If the message is of type REQ_NOT, then we compare hashes and update the time when the node's predecessor was last seen. 
 
-- hashes in compile script 
+For ring stabilization, we've added a few stabilization timers that get started and configured when the overlay is created. The timer goes off every 15 seconds. We have added a stabilization function that sets the timer and debug log. To to see if a node is in range (ie, if the successor is correct), we use a range_compare() function that hashes the addresses to see if they are in the correct range.  To help with stabilization, we do the following: if a REQ_SUC message is seen, check if the successor is in range. If the successor is not in range, then find the actual successor. If the message is a RSP_SUC message, then we compare the range using range_compare() and update the network accordingly. If the message is a RSP_CP message, then we also compare the range. If the node is in range, then we set this node as the predecessor and declare that the ring is stabilized. 
 
-- notify 
-  - process chord message 
-      - remote node replies to successor node
-      - notify successor node
-      - if message is REQ_NOT, then compare hashes, update the tie wihen the predecessor was last seen 
+To debug the ring, we have implemented a ring debugging function that sends a RING_DBG message that is called when given the ringstate command. 
 
-- stabilizer timers (in join overlay)
-  - starts and configured in join overlay/create overlay
-  - timer is every 15 seconds 
-  - if REQ_SUC, see if successor is in range, if not, then find the actual scuccesor 
-  - if RSP_SUC, compare arange as above and update
-  - if RSP_CP, then compare range - if in range, then set predecssor and declare stabilized 
-   
-  - stabilize function - set timer and debug log   
-  - range compare is a hasing function 
-  - remote node sets message result, originator, sends CP reply 
-
-
-- ring debugging 
-  - ringDebug -> sends ring debug message 
-  - called if given ringstate command

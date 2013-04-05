@@ -460,7 +460,7 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     // For open interval
     bool strict_order = pre_cmp > 0 && cur_cmp < 0;
     bool wrap_order1 = pre_cmp > 0 && both_cmp < 0;
-    bool wrap_order2 = cur_cmp < 0 && both_cmp > 0;
+    bool wrap_order2 = cur_cmp < 0 && both_cmp > 0 && 0;
 
 
 

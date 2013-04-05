@@ -423,13 +423,13 @@ void PennChord::stabilize() {
 }
 
 void PennChord::LeaveInitiate() {
-    CHORD_LOG("Leaving Ring");
-    m_stabilizeTimer.Cancel();
-    m_predecessor.Leave_Suc(m_info, m_successor.m_info);
+  DEBUG_LOG("Leave Initiated");
+  //  m_stabilizeTimer.Cancel();
+  m_predecessor.Leave_Suc(m_info, m_successor.m_info);
 }
 
 void PennChord::LeaveOverlay() {
-    // CHORD_LOG("Leaving Overlay");
+    CHORD_LOG("Leaving Ring");
     NodeInfo blank;
     blank.address = Ipv4Address("0.0.0.0");
     remote_node blank_node(blank, m_socket, m_appPort);
@@ -438,7 +438,7 @@ void PennChord::LeaveOverlay() {
     m_successor = blank_node;
 
     // Cancel timers
-   // m_stabilizeTimer.Cancel();
+    m_stabilizeTimer.Cancel();
 
 }
 

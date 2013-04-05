@@ -1,6 +1,6 @@
-We have added a few different chord message types to help when sending and receiving chochord packets: REQ_SUC, RSP_SUC, REQ_NOT, REQ_CP, RSP_CP, and RING_DBG. REQ_SUC and RSP_SUC are requests and responses for packets containing successor information, respectively. REQ_NOT is a request for notification. REQ_CP and RSP_CP are requests and responses for chord packets, respectively. RING_DBG contains debug information for ring stabilization. 
+For our chord implementation, we start with a basic building block of a remote node. A remote node contains its own IP address as well as its hash. This data is stored as a NodeInfo object. Additionally, a remote node contains NodeInfo of its successor and predecessor. 
 
-To help keep track of node information, we have added a nodeinfo class in nodeinfo.h that tracks node location and address. 
+We have added a few different chord message types to help when sending and receiving chochord packets: REQ_SUC, RSP_SUC, REQ_NOT, REQ_CP, RSP_CP, and RING_DBG. REQ_SUC and RSP_SUC are requests and responses for packets containing successor information, respectively. REQ_NOT is a request for notification. REQ_CP and RSP_CP are requests and responses for chord packets, respectively. RING_DBG contains debug information for ring stabilization. 
 
 To notify the system of updates, we process each chord message by having the remote node reply to its successor node. If the message is of type REQ_NOT, then we compare hashes and update the time when the node's predecessor was last seen. 
 
@@ -8,3 +8,4 @@ For ring stabilization, we've added a few stabilization timers that get started 
 
 To debug the ring, we have implemented a ring debugging function that sends a RING_DBG message that is called when given the ringstate command. 
 
+In order to facilitate a graceful departure from the ring, we have designed the leaving as a 3 step process. First, the departing node will notify its predecessor with the departing node's successor information. The predecessor set its successor to the new information and will then notify the original successor that it is the new predecessor. The successor will update its information and then notify the departing node. At this point, since both of the departing node's successor and predecessor have updated to the new information, the node will depart the ring.

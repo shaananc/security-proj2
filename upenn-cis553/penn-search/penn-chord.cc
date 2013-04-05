@@ -145,7 +145,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         ss << m_node->GetId();
         std::string m_id = ss.str();
 
-        CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
+        //CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
 
         if (landmark == m_id) {
             CreateOverlay();
@@ -156,7 +156,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         LeaveInitiate();
     } else if (command == "ringstate" || command == "RINGSTATE") {
         PrintInfo();
-        m_successor.RingDebug(m_info,1);
+        m_successor.RingDebug(m_info, 1);
     }
 
 
@@ -284,13 +284,13 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
 // TODO Implement
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
-     CHORD_LOG("Joining Overlay at " << landmark << std::endl);
+    CHORD_LOG("Joining Overlay at " << landmark << std::endl);
 
-    cout << "Hash ";
-    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-        cout << std::hex << (int) m_info.location[i];
-    }
-    cout << std::endl << std::dec;
+//    cout << "Hash ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) m_info.location[i];
+//    }
+//    cout << std::endl << std::dec;
 
     joined = true;
     NodeInfo info;
@@ -310,11 +310,11 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 void PennChord::CreateOverlay() {
     CHORD_LOG("Creating Overlay" << std::endl);
 
- cout << "Hash ";
-    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-        cout << std::hex << (int) m_info.location[i];
-    }
-    cout << std::endl << std::dec;
+//    cout << "Hash ";
+//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+//        cout << std::hex << (int) m_info.location[i];
+//    }
+//    cout << std::endl << std::dec;
 
     joined = true;
     remote_node i_node(m_info, m_socket, m_appPort);
@@ -340,10 +340,12 @@ void PennChord::CreateOverlay() {
 // Fix requestee value
 
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    if(joined == false){return;}
+    if (joined == false) {
+        return;
+    }
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
 
-//    DEBUG_LOG("Packet Received");
+    //    DEBUG_LOG("Packet Received");
 
     map<uint32_t, Callback<void, PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
     if (callback_pair != m_chordTracker.end()) {
@@ -413,9 +415,6 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     }
 }
 
-
-
-
 void PennChord::stabilize() {
     //PrintInfo();
     m_successor.closest_preceeding(m_info);
@@ -423,13 +422,13 @@ void PennChord::stabilize() {
 }
 
 void PennChord::LeaveInitiate() {
-  DEBUG_LOG("Leave Initiated");
-  //  m_stabilizeTimer.Cancel();
-  m_predecessor.Leave_Suc(m_info, m_successor.m_info);
+    //CHORD_LOG("Leaving Ring");
+    m_stabilizeTimer.Cancel();
+    m_predecessor.Leave_Suc(m_info, m_successor.m_info);
 }
 
 void PennChord::LeaveOverlay() {
-    CHORD_LOG("Leaving Ring");
+    // CHORD_LOG("Leaving Overlay");
     NodeInfo blank;
     blank.address = Ipv4Address("0.0.0.0");
     remote_node blank_node(blank, m_socket, m_appPort);
@@ -438,7 +437,7 @@ void PennChord::LeaveOverlay() {
     m_successor = blank_node;
 
     // Cancel timers
-    m_stabilizeTimer.Cancel();
+    // m_stabilizeTimer.Cancel();
 
 }
 
@@ -446,47 +445,28 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     string me((const char *) mid);
     string pred = string((const char *) low);
     string suc = string((const char *) high);
-    
+
     // is greater than 0 if me is larger
     int pre_cmp = me.compare(pred);
     // is less than 0 if me is smaller
     int cur_cmp = me.compare(suc);
     // is less than 0 if suc is less than pred
     int both_cmp = suc.compare(pred);
-    
-
-  //  DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
-  //  DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
 
 
-//    cout << "Pred ";
-//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-//        cout << std::hex << (int) low[i];
-//    }
-//    cout << std::endl << std::dec;
-//    cout << "Me  ";
-//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-//        cout << std::hex << (int) mid[i];
-//    }
-//    cout << std::endl << std::dec;
-//    cout << "Suc  ";
-//    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-//        cout << std::hex << (int) high[i];
-//    }
-//    cout << std::endl << std::dec;
+    //  DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
+    //  DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
 
-
-    
     // For open interval
     bool strict_order = pre_cmp > 0 && cur_cmp < 0;
     bool wrap_order1 = pre_cmp > 0 && both_cmp < 0;
     bool wrap_order2 = cur_cmp < 0 && both_cmp > 0;
-    
-    
-    
-//    CHORD_LOG("Strict: " << strict_order << " Wrap1 " << wrap_order1 << " Wrap2 " << wrap_order2);
-//    CHORD_LOG("Precmp: " << pre_cmp << " Mecmp " << cur_cmp << " Succmp " << both_cmp);
-    
+
+
+
+    //    CHORD_LOG("Strict: " << strict_order << " Wrap1 " << wrap_order1 << " Wrap2 " << wrap_order2);
+    //    CHORD_LOG("Precmp: " << pre_cmp << " Mecmp " << cur_cmp << " Succmp " << both_cmp);
+
     if (strict_order || wrap_order1 || wrap_order2) {
         return 1;
     }// For half closed interval
@@ -504,5 +484,21 @@ void PennChord::PrintInfo() {
     //        cout << std::hex << (int) m_info.location[i];
     //    }
     //    cout << std::endl << std::dec;
-    CHORD_LOG("\nRING DEBUG -- Self: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
+    //CHORD_LOG("\nRingState: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
+
+    CHORD_LOG("\nRingState<" << strHash(m_info.location) << ">: Pred<"
+            << ReverseLookup(m_predecessor.m_info.address)<< "," << strHash(m_predecessor.m_info.location)
+            << ">,Succ<" << ReverseLookup(m_successor.m_info.address) <<
+            "," << strHash(m_successor.m_info.location) << ">"
+            );
+
+}
+
+string strHash(u_char *hash) {
+    stringstream s;
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        s << std::hex << (int) hash[i];
+    }
+    s << std::dec;
+    return s.str();
 }

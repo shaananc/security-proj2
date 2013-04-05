@@ -7,3 +7,4 @@ penn-chord.h
 penn-search.cc
 remote_node.cc
 remote_node.h
+process-chord-packet.cc

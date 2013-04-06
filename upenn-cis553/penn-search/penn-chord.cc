@@ -325,6 +325,7 @@ void PennChord::CreateOverlay() {
     blank.address = Ipv4Address("0.0.0.0");
     remote_node blank_node(blank, m_socket, m_appPort);
 
+    // set predecessor to self as well as successor
     m_predecessor = blank_node;
 
     // Configure timers
@@ -442,7 +443,7 @@ void PennChord::LeaveOverlay() {
 }
 
 bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
-    string me((const char *) mid);
+    string me = string((const char *) mid);
     string pred = string((const char *) low);
     string suc = string((const char *) high);
 
@@ -453,7 +454,42 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
     // is less than 0 if suc is less than pred
     int both_cmp = suc.compare(pred);
 
+    //    DEBUG_LOG("RC both_cmp = " << both_cmp << endl);
 
+    if (both_cmp == 0) {
+      return 1;
+    }
+    else if (both_cmp > 0) {
+      if (pre_cmp <= 0) {
+        return 0;
+      }
+      else if (cur_cmp > 0) {
+        return 0;
+      }
+      else if (cur_cmp < 0) {
+        return 1;
+      }
+      else {
+        return 2;
+      }
+    }
+    else if (both_cmp < 0) {
+      //    DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
+      if (cur_cmp == 0) {
+        return 2;
+      }
+      else if (pre_cmp > 0 || cur_cmp < 0) {
+        return 1;
+      }
+      else if (pre_cmp < 0 || cur_cmp > 0) {
+        return 0;
+      } 
+    }
+    else {
+      return 2;
+    }
+
+    /*
     //  DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
     //  DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
 
@@ -476,6 +512,7 @@ bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
         // Check to see if only single node
         return (string((const char *) low).compare(string((const char *) high)) == 0);
     }
+    */
 }
 
 void PennChord::PrintInfo() {

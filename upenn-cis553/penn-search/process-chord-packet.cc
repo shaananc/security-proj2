@@ -18,11 +18,12 @@ class remote_node;
 
 void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //CHORD_LOG("REQ SUCCESSOR from " << ReverseLookup(p.originator.address));
-    if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
+  if (/*m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||*/
             RangeCompare(m_info.location, p.originator.location, m_successor.m_info.location)) {
-        
+    CHORD_LOG("Successor Found");
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor.m_info, p.requestee, p.originator);
     } else {
+    CHORD_LOG("No successor. Forwarding");
         m_successor.find_successor(p.originator);
     }
 }
@@ -41,6 +42,8 @@ void PennChord::procREQ_CP(PennChordMessage::PennChordPacket p, Ipv4Address sour
 
 void PennChord::procRSP_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //CHORD_LOG("RSP PREDECESSOR from " << ReverseLookup(p.originator.address) << " WHICH IS " << ReverseLookup(p.m_result.address));
+  //    DEBUG_LOG("RC on RSP CP from " << sourceAddress);
+
     bool range = RangeCompare(m_info.location, p.m_result.location, m_successor.m_info.location);
     if (!p.m_result.address.IsEqual(Ipv4Address("0.0.0.0")) && (range == 1)
             && p.m_result.address != m_info.address
@@ -86,7 +89,7 @@ void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address so
 }
 
 void PennChord::procREQ_NOT(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    //DEBUG_LOG("REQ NOTIFY from " << p.originator.address);
+  //DEBUG_LOG("RC on REQ NOTIFY from " << p.originator.address);
 
     int res = RangeCompare(m_predecessor.m_info.location, p.originator.location, m_info.location);
     if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||

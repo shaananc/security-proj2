@@ -39,7 +39,7 @@
 
 using namespace ns3;
 
-string strHash(u_char *hash);
+string strHash(unsigned char *hash);
 
 class PennChord : public PennApplication {
 public:
@@ -67,6 +67,8 @@ public:
     void ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procREQ_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procRSP_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procREQ_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
@@ -86,7 +88,7 @@ public:
     void stabilize();
     bool notify(int32_t address);
 
-    bool RangeCompare(u_char *low, u_char *mid, u_char *high);
+    bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
     
     
     // TODO Later

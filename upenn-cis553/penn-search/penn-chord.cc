@@ -103,7 +103,7 @@ PennChord::StartApplication(void) {
     // Stores hash into location
     uint8_t ip_string[4];
     m_local.Serialize(ip_string);
-    SHA1((const u_char *) ip_string, sizeof (ip_string), m_info.location);
+    SHA1((const unsigned char *) ip_string, sizeof (ip_string), m_info.location);
     m_info.address = m_local;
 
     NodeInfo b;
@@ -298,7 +298,9 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     remote_node s(info, m_socket, m_appPort);
     m_landmark = s;
     // Sends a request for the location of the landmark
-    m_landmark.find_successor(m_info);
+    m_landmark.find_successor(m_info, m_currentTransactionId);
+    //uint32_t transaction_id = m_landmark.find_successor(m_info);
+    m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_SUC, this);
 
     // Configure timers
     m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
@@ -355,6 +357,16 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     } else {
 
         switch (p.m_messageType) {
+            case (PennChordMessage::PennChordPacket::REQ_PRE):
+            {
+                procREQ_PRE(p, sourceAddress, sourcePort);
+                break;
+            }
+            case (PennChordMessage::PennChordPacket::RSP_PRE):
+            {
+                procRSP_PRE(p, sourceAddress, sourcePort);
+                break;
+            }
             case (PennChordMessage::PennChordPacket::REQ_SUC):
             {
                 procREQ_SUC(p, sourceAddress, sourcePort);
@@ -362,7 +374,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             }
             case (PennChordMessage::PennChordPacket::RSP_SUC):
             {
-                procRSP_SUC(p, sourceAddress, sourcePort);
+                //procRSP_SUC(p, sourceAddress, sourcePort);
                 break;
             }
             case (PennChordMessage::PennChordPacket::REQ_NOT):
@@ -442,7 +454,7 @@ void PennChord::LeaveOverlay() {
 
 }
 
-bool PennChord::RangeCompare(u_char *low, u_char *mid, u_char *high) {
+bool PennChord::RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high) {
     string me = string((const char *) mid);
     string pred = string((const char *) low);
     string suc = string((const char *) high);
@@ -531,7 +543,7 @@ void PennChord::PrintInfo() {
 
 }
 
-string strHash(u_char *hash) {
+string strHash(unsigned char *hash) {
     stringstream s;
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
         s << std::hex << (int) hash[i];

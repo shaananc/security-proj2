@@ -14,7 +14,7 @@
 using namespace ns3;
 
 typedef struct NodeInfo {
-    u_char location[SHA_DIGEST_LENGTH];
+    unsigned char location[SHA_DIGEST_LENGTH];
     Ipv4Address address;
 } NodeInfo;
 

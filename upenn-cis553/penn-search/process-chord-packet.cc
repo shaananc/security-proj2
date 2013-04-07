@@ -16,15 +16,34 @@ class remote_node;
  * 
  *************************************************************/
 
+void PennChord::procREQ_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    //CHORD_LOG("REQ SUCCESSOR from " << ReverseLookup(p.originator.address));
+    if (m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||
+            RangeCompare(m_info.location, p.originator.location, m_successor.m_info.location)) {
+        
+        remote_node(p.originator, m_socket, m_appPort).reply_predecessor(m_info, p.requestee, p.originator);
+    } else {
+        m_successor.find_predecessor(p.originator);
+    }
+}
+
+void PennChord::procRSP_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    //DEBUG_LOG("RSP SUCCESSOR from " << p.originator.address);
+    //CHORD_LOG("RSP_SUCCESSOR: Setting Successor to " << ReverseLookup(p.m_result.address));
+    m_successor.m_info = p.m_result;
+    m_successor.notify(m_info);
+}
+
 void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //CHORD_LOG("REQ SUCCESSOR from " << ReverseLookup(p.originator.address));
   if (/*m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||*/
             RangeCompare(m_info.location, p.originator.location, m_successor.m_info.location)) {
-    CHORD_LOG("Successor Found");
-        remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor.m_info, p.requestee, p.originator);
+        
+        CHORD_LOG("Successor Found");
+        remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor.m_info, p.requestee, p.originator, p.m_transactionId);
     } else {
-    CHORD_LOG("No successor. Forwarding");
-        m_successor.find_successor(p.originator);
+        CHORD_LOG("No successor. Forwarding");
+        m_successor.find_successor(p.originator, p.m_transactionId);
     }
 }
 

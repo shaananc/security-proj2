@@ -115,6 +115,8 @@ public:
             LEAVE_CONF = 12,
             REQ_LOOK = 13,
             RSP_LOOK = 14,
+            REQ_PRE = 15,
+            RSP_PRE = 16,
         };
 
 

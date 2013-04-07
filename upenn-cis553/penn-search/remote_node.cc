@@ -58,7 +58,6 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     uint32_t transactionId = GetNextTransactionId();
     Ptr<Packet> packet = Create<Packet> ();
     PennChordMessage message = PennChordMessage(PennChordMessage::CHOR_PAC, transactionId);
-    p.m_transactionId = GetNextTransactionId();
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
@@ -85,25 +84,49 @@ void remote_node::join() {
 
 }
 
-void remote_node::find_successor(NodeInfo originator) {
+void remote_node::find_predecessor(NodeInfo originator) {
+
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::REQ_PRE;
+    p.requestee = m_info.address;
+    p.originator = originator;
+    SendRPC(p);
+
+}
+
+void remote_node::reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator) {
+    PennChordMessage::PennChordPacket p;
+    // Change packet variables
+    p.m_messageType = PennChordMessage::PennChordPacket::RSP_PRE;
+    p.m_result = predecessor;
+    p.requestee = requestee;
+    p.originator = originator;
+    p.m_transactionId = GetNextTransactionId();
+    SendRPC(p);
+
+}
+
+void remote_node::find_successor(NodeInfo originator, uint32_t transactionId_original) {
 
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_SUC;
     p.requestee = m_info.address;
     p.originator = originator;
+    p.m_transactionId = transactionId_original;
     SendRPC(p);
-
 }
-//blah
 
-void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator) {
+//blah
+void remote_node::reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RSP_SUC;
     p.m_result = successor;
     p.requestee = requestee;
     p.originator = originator;
+    p.m_transactionId = transactionId_original;
     SendRPC(p);
 
 }

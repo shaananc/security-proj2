@@ -298,7 +298,7 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     remote_node s(info, m_socket, m_appPort);
     m_landmark = s;
     // Sends a request for the location of the landmark
-    m_landmark.find_successor(m_info, m_currentTransactionId);
+    m_landmark.find_successor(m_info, m_info.location, m_currentTransactionId);
     //uint32_t transaction_id = m_landmark.find_successor(m_info);
     m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_SUC, this);
 

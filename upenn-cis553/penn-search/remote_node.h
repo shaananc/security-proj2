@@ -32,11 +32,11 @@ public:
     void reply_location(NodeInfo location);
 
     void join();
-    void find_successor(NodeInfo originator, uint32_t transactionId_original);
+    void find_successor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
     void reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
     
-    void find_predecessor(NodeInfo originator);
-    void reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator);
+    void find_predecessor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
+    void reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
 
     void closest_preceeding(NodeInfo originator);
     void reply_preceeding(NodeInfo originator, NodeInfo predecessor);

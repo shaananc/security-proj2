@@ -84,18 +84,20 @@ void remote_node::join() {
 
 }
 
-void remote_node::find_predecessor(NodeInfo originator) {
+void remote_node::find_predecessor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original) {
 
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::REQ_PRE;
     p.requestee = m_info.address;
     p.originator = originator;
+    p.m_transactionId = transactionId_original;
+    memcpy (p.lookupLocation, location, SHA_DIGEST_LENGTH);
     SendRPC(p);
 
 }
 
-void remote_node::reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator) {
+void remote_node::reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RSP_PRE;
@@ -107,7 +109,7 @@ void remote_node::reply_predecessor(NodeInfo predecessor, Ipv4Address requestee,
 
 }
 
-void remote_node::find_successor(NodeInfo originator, uint32_t transactionId_original) {
+void remote_node::find_successor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original) {
 
     PennChordMessage::PennChordPacket p;
     // Change packet variables
@@ -115,6 +117,7 @@ void remote_node::find_successor(NodeInfo originator, uint32_t transactionId_ori
     p.requestee = m_info.address;
     p.originator = originator;
     p.m_transactionId = transactionId_original;
+    memcpy (p.lookupLocation, location, SHA_DIGEST_LENGTH);
     SendRPC(p);
 }
 

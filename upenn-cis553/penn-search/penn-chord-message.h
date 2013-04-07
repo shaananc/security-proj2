@@ -135,7 +135,8 @@ public:
         NodeInfo originator;
         // what is the result - field is unused for requests
         NodeInfo m_result;
-
+        // location requested
+        unsigned char lookupLocation[SHA_DIGEST_LENGTH];
     };
 
 

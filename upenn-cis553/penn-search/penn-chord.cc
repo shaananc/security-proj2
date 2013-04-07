@@ -351,7 +351,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     //    DEBUG_LOG("Packet Received");
 
     map<uint32_t, Callback<void, PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
-    if (callback_pair != m_chordTracker.end()) {
+    if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address) {
         callback_pair->second(p, sourceAddress, sourcePort);
 
     } else {

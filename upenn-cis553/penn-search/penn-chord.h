@@ -84,6 +84,9 @@ public:
     void LeaveOverlay();
     void CreateOverlay();
     void Lookup(unsigned char location[]);
+    void SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4Address> lookupSuccessFn);
+    void SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t> lookupFailureFn);
+
     void PrintInfo();
     
     void stabilize();
@@ -116,6 +119,8 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingSuccessFn;
     Callback <void, Ipv4Address, std::string> m_pingFailureFn;
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
+    Callback <void, uint8_t*, uint8_t, Ipv4Address> m_lookupSuccessFn;
+    Callback <void, uint8_t*, uint8_t> m_lookupFailureFn;
 
     bool joined;
     NodeInfo m_info;

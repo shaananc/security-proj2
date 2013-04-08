@@ -104,7 +104,7 @@ void remote_node::reply_predecessor(NodeInfo predecessor, Ipv4Address requestee,
     p.m_result = predecessor;
     p.requestee = requestee;
     p.originator = originator;
-    p.m_transactionId = GetNextTransactionId();
+    p.m_transactionId = transactionId_original;
     SendRPC(p);
 
 }

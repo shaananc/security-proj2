@@ -139,6 +139,8 @@ public:
         unsigned char lookupLocation[SHA_DIGEST_LENGTH];
         // whether the query resolved
         bool m_resolved;
+        // flag set for finger fixing lookups (non application)
+        bool m_chordLevelLookup;
     };
 
 

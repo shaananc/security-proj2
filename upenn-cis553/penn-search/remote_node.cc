@@ -117,6 +117,7 @@ void remote_node::find_successor(NodeInfo originator, unsigned char location[], 
     p.requestee = m_info.address;
     p.originator = originator;
     p.m_transactionId = transactionId_original;
+    p.m_resolved = false;
     memcpy (p.lookupLocation, location, SHA_DIGEST_LENGTH);
     SendRPC(p);
 }

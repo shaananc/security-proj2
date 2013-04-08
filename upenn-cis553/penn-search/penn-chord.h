@@ -83,6 +83,7 @@ public:
     void LeaveInitiate();
     void LeaveOverlay();
     void CreateOverlay();
+    void Lookup(unsigned char location[]);
     void PrintInfo();
     
     void stabilize();
@@ -118,7 +119,11 @@ private:
 
     bool joined;
     NodeInfo m_info;
+    // node: self 
+    remote_node m_remoteNodeSelf; 
+    // node: successor
     remote_node m_successor; 
+    // node: predecessor
     remote_node m_predecessor;
     std::map<uint32_t, Callback<void ,PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> > m_chordTracker;
     remote_node m_landmark;

@@ -40,9 +40,11 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
             RangeCompare(m_info.location, p.lookupLocation, m_successor.m_info.location)) {
         
         CHORD_LOG("Successor Found");
+        p.m_resolved = true;
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor.m_info, p.requestee, p.originator, p.m_transactionId);
     } else {
         CHORD_LOG("No successor. Forwarding");
+        p.m_resolved = false;
         m_successor.find_successor(p.originator, p.lookupLocation, p.m_transactionId);
     }
 }

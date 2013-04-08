@@ -69,7 +69,7 @@ void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
 }
 
 uint32_t PennChordMessage::PennChordPacket::GetSerializedSize(void)const {
-    return sizeof (uint16_t) + sizeof (uint32_t)*4 + SHA_DIGEST_LENGTH * 3;
+    return sizeof (uint16_t) + sizeof (uint32_t)*4 + SHA_DIGEST_LENGTH * 3 + 1;
 }
 
 void PennChordMessage::PennChordPacket::Serialize(Buffer::Iterator start)const {
@@ -98,6 +98,7 @@ void PennChordMessage::PennChordPacket::Serialize(Buffer::Iterator start)const {
         i.WriteU8(lookupLocation[j]);
     }
 
+    i.WriteU8(m_resolved);
 
 }
 
@@ -125,9 +126,10 @@ uint32_t PennChordMessage::PennChordPacket::Deserialize(Buffer::Iterator start) 
     requestee = Ipv4Address(i.ReadNtohU32());
 
     for (int j = 0; j < SHA_DIGEST_LENGTH; j++) {
-        i.WriteU8(lookupLocation[j]);
+        lookupLocation[j] = i.ReadU8();
     }
 
+    m_resolved = i.ReadU8();
 
 
     return GetSerializedSize();

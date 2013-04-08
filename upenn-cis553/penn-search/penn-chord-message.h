@@ -137,6 +137,8 @@ public:
         NodeInfo m_result;
         // location requested
         unsigned char lookupLocation[SHA_DIGEST_LENGTH];
+        // whether the query resolved
+        bool m_resolved;
     };
 
 

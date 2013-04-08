@@ -105,6 +105,7 @@ PennChord::StartApplication(void) {
     m_local.Serialize(ip_string);
     SHA1((const unsigned char *) ip_string, sizeof (ip_string), m_info.location);
     m_info.address = m_local;
+    m_remoteNodeSelf = remote_node(m_info, m_socket, m_appPort);
 
     NodeInfo b;
     b.address = Ipv4Address("0.0.0.0");
@@ -309,6 +310,12 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 
 }
 
+void PennChord::Lookup(unsigned char location[]) {
+    // Sends a request for the location of the landmark
+    m_remoteNodeSelf.find_successor(m_info, location, m_currentTransactionId);
+    m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_LOOK, this);
+}
+
 void PennChord::CreateOverlay() {
     CHORD_LOG("Creating Overlay" << std::endl);
 
@@ -351,7 +358,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     //    DEBUG_LOG("Packet Received");
 
     map<uint32_t, Callback<void, PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
-    if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address) {
+    if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address && p.m_resolved == true) {
         callback_pair->second(p, sourceAddress, sourcePort);
 
     } else {

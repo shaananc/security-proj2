@@ -9,6 +9,7 @@
 #define	REMOTE_NODE_H
 
 #include <vector>
+#include <map>
 #include <algorithm>
 #include "ns3/inet-socket-address.h"
 #include "ns3/socket.h"
@@ -56,7 +57,7 @@ public:
 
     uint32_t GetNextTransactionId();
 
-    void update_node(NodeInfo node, std::vector<string> &docs);
+    void update_node(NodeInfo node, std::map<std::string, std::vector<string> > &docs);
 
 
     NodeInfo m_info;
@@ -70,8 +71,11 @@ public:
     uint16_t m_appPort;
     uint32_t m_currentTransactionId;
 
-    //Maintains the list of documents 
-    std::vector<std::string> documents;
+    //Maintains (key, document) list the node is responsible for
+    std::map<std::string, vector<std::string> > documents;
+
+    //Maintains the list of (key, document) lists that have to be publsihed
+    std::map<std::string, vector<std::string> > need_to_publish;
 
 private:
 

@@ -234,13 +234,20 @@ void remote_node::reply_look(NodeInfo originator, NodeInfo result) {
     SendRPC(p);
 }
 
-void remote_node::update_node(NodeInfo node, std::vector<std::string> &docs){
-    for(std::vector<std::string>::iterator it=docs.begin(); it!=docs.end(); it++){
-        std::string command = *it;
-        //If the document is not in the document list of node
-        if(std::find(documents.begin(), documents.end(), command) == documents.end()){
-            documents.push_back(command);
+void remote_node::update_node(NodeInfo node, std::map<std::string, std::vector<std::string> > &docs){
+    for(std::map<std::string, std::vector<std::string> >::iterator it=docs.begin(); it!=docs.end(); it++){
+        
+        //If the document is not in the list of keys maintained at the node
+        if(documents.find(it->first) == documents.end()){
+            documents.insert(std::make_pair(it->first, it->second));
+        }
+        else{       //if the key exists in the list of keys maintained at the node
+            
+            //std::vector<std::string> st = documents.find(it->first)->second; 
+            std::vector<string>::iterator strItr;
+            for(strItr = it->second.begin(); strItr!=it->second.end(); strItr++){
+                (documents.find(it->first)->second).push_back(*strItr);
+            }
         }
     }
-
 }

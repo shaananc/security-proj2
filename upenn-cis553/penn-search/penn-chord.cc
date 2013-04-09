@@ -259,7 +259,12 @@ PennChord::AuditPings() {
 
 uint32_t
 PennChord::GetNextTransactionId() {
-    return m_currentTransactionId++;
+    if (m_currentTransactionId == ~0) {
+        m_currentTransactionId = 0;
+    } else {
+        m_currentTransactionId++;
+    }
+    return m_currentTransactionId;
 }
 
 void
@@ -302,7 +307,7 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     m_landmark.find_successor(m_info, m_info.location, m_currentTransactionId);
     //uint32_t transaction_id = m_landmark.find_successor(m_info);
     m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_SUC, this);
-
+    GetNextTransactionId();
     // Configure timers
     m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
     // Start timers
@@ -314,6 +319,7 @@ void PennChord::Lookup(unsigned char location[]) {
     // Sends a request for the location of the landmark
     m_remoteNodeSelf.find_successor(m_info, location, m_currentTransactionId);
     m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_LOOK, this);
+    GetNextTransactionId();
 }
 
 void PennChord::CreateOverlay() {
@@ -459,6 +465,16 @@ void PennChord::LeaveOverlay() {
     // Cancel timers
     // m_stabilizeTimer.Cancel();
 
+}
+
+void PennChord::SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4Address> lookupSuccessFn)
+{
+  m_lookupSuccessFn = lookupSuccessFn;
+}
+
+void PennChord::SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t> lookupFailureFn)
+{
+  m_lookupFailureFn = lookupFailureFn;
 }
 
 bool PennChord::RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high) {

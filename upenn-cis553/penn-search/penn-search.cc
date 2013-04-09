@@ -99,6 +99,7 @@ PennSearch::StartApplication (void)
   m_chord->SetPingSuccessCallback (MakeCallback (&PennSearch::HandleChordPingSuccess, this)); 
   m_chord->SetPingFailureCallback (MakeCallback (&PennSearch::HandleChordPingFailure, this));
   m_chord->SetPingRecvCallback (MakeCallback (&PennSearch::HandleChordPingRecv, this)); 
+  m_chord->SetLookupSuccessCallback (MakeCallback (&PennSearch::HandleLookupSuccess, this));
   // Start Chord
   m_chord->SetStartTime (Simulator::Now());
   m_chord->Start ();
@@ -380,6 +381,11 @@ PennSearch::HandleChordPingRecv (Ipv4Address destAddress, std::string message)
   SEARCH_LOG ("Chord Layer Received Ping! Source nodeId: " << ReverseLookup(destAddress) << " IP: " << destAddress << " Message: " << message);
 }
 
+void
+PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address)
+{
+  // TODO: for Rob  
+}
 // Override PennLog
 
 void

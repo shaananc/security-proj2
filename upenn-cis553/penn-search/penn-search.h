@@ -57,6 +57,7 @@ class PennSearch : public PennApplication
     void HandleChordPingSuccess (Ipv4Address destAddress, std::string message);
     void HandleChordPingFailure (Ipv4Address destAddress, std::string message);
     void HandleChordPingRecv (Ipv4Address destAddress, std::string message);
+    void HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address);
 
     // From PennApplication
     virtual void ProcessCommand (std::vector<std::string> tokens);

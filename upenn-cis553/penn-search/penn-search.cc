@@ -377,7 +377,7 @@ PennSearch::HandleChordPingRecv (Ipv4Address destAddress, std::string message)
 }
 
 void
-PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address)
+PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId)
 {
   // TODO: for Rob  
 }

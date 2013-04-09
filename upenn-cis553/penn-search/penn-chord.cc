@@ -299,6 +299,16 @@ PennChord::SetPingRecvCallback(Callback <void, Ipv4Address, std::string> pingRec
     m_pingRecvFn = pingRecvFn;
 }
 
+void PennChord::SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4Address, uint32_t> lookupSuccessFn)
+{
+  m_lookupSuccessFn = lookupSuccessFn;
+}
+
+void PennChord::SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t, uint32_t> lookupFailureFn)
+{
+  m_lookupFailureFn = lookupFailureFn;
+}
+
 // TODO Implement
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
@@ -330,7 +340,7 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 
 }
 
-void PennChord::Lookup(unsigned char location[]) {
+uint32_t PennChord::Lookup(unsigned char location[]) {
     // Sends a request for the location of the landmark
     GetNextTransactionId();
     PennChordMessage::PennChordPacket chordPacket = m_remoteNodeSelf->find_successor(m_info, location, m_currentTransactionId);
@@ -338,6 +348,7 @@ void PennChord::Lookup(unsigned char location[]) {
     m_chordTracker[m_currentTransactionId] = transaction;
     EventId requestTimeoutId = Simulator::Schedule (transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
     transaction->m_requestTimeoutEventId = requestTimeoutId;
+    return m_currentTransactionId;
 }
 
 void PennChord::CreateOverlay() {
@@ -483,16 +494,6 @@ void PennChord::LeaveOverlay() {
     // Cancel timers
     // m_stabilizeTimer.Cancel();
 
-}
-
-void PennChord::SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4Address> lookupSuccessFn)
-{
-  m_lookupSuccessFn = lookupSuccessFn;
-}
-
-void PennChord::SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t> lookupFailureFn)
-{
-  m_lookupFailureFn = lookupFailureFn;
 }
 
 void PennChord::HandleRequestTimeout(uint32_t transactionId)

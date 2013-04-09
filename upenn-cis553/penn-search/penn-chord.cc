@@ -59,6 +59,18 @@ PennChord::GetTypeId() {
             TimeValue(MilliSeconds(900)),
             MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
+
+            .AddAttribute ("RequestTimeout",
+            "Timeout value for request retransmission in milli seconds",
+            TimeValue (MilliSeconds (2000)),
+            MakeTimeAccessor (&PennChord::m_requestTimeout),
+            MakeTimeChecker ())
+
+            .AddAttribute ("MaxRequestRetries",
+            "Number of request retries before giving up",
+            UintegerValue (3),
+            MakeUintegerAccessor (&PennChord::m_maxRequestRetries),
+            MakeUintegerChecker<uint8_t> ())
             ;
     return tid;
 }
@@ -105,12 +117,12 @@ PennChord::StartApplication(void) {
     m_local.Serialize(ip_string);
     SHA1((const unsigned char *) ip_string, sizeof (ip_string), m_info.location);
     m_info.address = m_local;
-    m_remoteNodeSelf = remote_node(m_info, m_socket, m_appPort);
+    m_remoteNodeSelf = Create<remote_node> (m_info, m_socket, m_appPort);
 
     NodeInfo b;
     b.address = Ipv4Address("0.0.0.0");
-    m_predecessor = remote_node(b, m_socket, m_appPort);
-    m_successor = remote_node(b, m_socket, m_appPort);
+    m_predecessor = Create<remote_node> (b, m_socket, m_appPort);
+    m_successor = Create<remote_node> (b, m_socket, m_appPort);
 
 
 
@@ -157,7 +169,7 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         LeaveInitiate();
     } else if (command == "ringstate" || command == "RINGSTATE") {
         PrintInfo();
-        m_successor.RingDebug(m_info, 1);
+        m_successor->RingDebug(m_info, 1);
     }
 
 
@@ -301,13 +313,16 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
     joined = true;
     NodeInfo info;
     info.address = landmark;
-    remote_node s(info, m_socket, m_appPort);
-    m_landmark = s;
-    // Sends a request for the location of the landmark
-    m_landmark.find_successor(m_info, m_info.location, m_currentTransactionId);
-    //uint32_t transaction_id = m_landmark.find_successor(m_info);
-    m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_SUC, this);
+    m_landmark = Create<remote_node> (info, m_socket, m_appPort);
+    // update TransactionId
     GetNextTransactionId();
+    // Sends a request for the location of the landmark
+    PennChordMessage::PennChordPacket chordPacket = m_landmark->find_successor(m_info, m_info.location, m_currentTransactionId);
+    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback (&PennChord::procRSP_SUC, this), m_currentTransactionId, chordPacket, m_landmark, m_requestTimeout, m_maxRequestRetries);
+    m_chordTracker[m_currentTransactionId] = transaction;
+    EventId requestTimeoutId = Simulator::Schedule (transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
+    transaction->m_requestTimeoutEventId = requestTimeoutId;
+
     // Configure timers
     m_stabilizeTimer.SetFunction(&PennChord::stabilize, this);
     // Start timers
@@ -317,9 +332,12 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 
 void PennChord::Lookup(unsigned char location[]) {
     // Sends a request for the location of the landmark
-    m_remoteNodeSelf.find_successor(m_info, location, m_currentTransactionId);
-    m_chordTracker[m_currentTransactionId] = MakeCallback (&PennChord::procRSP_LOOK, this);
     GetNextTransactionId();
+    PennChordMessage::PennChordPacket chordPacket = m_remoteNodeSelf->find_successor(m_info, location, m_currentTransactionId);
+    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback (&PennChord::procRSP_LOOK, this), m_currentTransactionId, chordPacket, m_remoteNodeSelf, m_requestTimeout, m_maxRequestRetries);
+    m_chordTracker[m_currentTransactionId] = transaction;
+    EventId requestTimeoutId = Simulator::Schedule (transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
+    transaction->m_requestTimeoutEventId = requestTimeoutId;
 }
 
 void PennChord::CreateOverlay() {
@@ -332,13 +350,12 @@ void PennChord::CreateOverlay() {
 //    cout << std::endl << std::dec;
 
     joined = true;
-    remote_node i_node(m_info, m_socket, m_appPort);
-    m_successor = i_node;
+    m_successor = Create<remote_node> (m_info, m_socket, m_appPort);
 
     // TODO Use an enum? Find a better way
     NodeInfo blank;
     blank.address = Ipv4Address("0.0.0.0");
-    remote_node blank_node(blank, m_socket, m_appPort);
+    Ptr<remote_node> blank_node = Create<remote_node> (blank, m_socket, m_appPort);
 
     // set predecessor to self as well as successor
     m_predecessor = blank_node;
@@ -363,9 +380,10 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
     //    DEBUG_LOG("Packet Received");
 
-    map<uint32_t, Callback<void, PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
+    map<uint32_t, Ptr<PennChordTransaction> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
     if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address && p.m_resolved == true) {
-        callback_pair->second(p, sourceAddress, sourcePort);
+        callback_pair->second->m_replyProcFn(p, sourceAddress, sourcePort);
+        m_chordTracker.erase(callback_pair);
 
     } else {
 
@@ -443,21 +461,21 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
 void PennChord::stabilize() {
     //PrintInfo();
-    m_successor.closest_preceeding(m_info);
+    m_successor->closest_preceeding(m_info);
     m_stabilizeTimer.Schedule(m_stabilizeFreq);
 }
 
 void PennChord::LeaveInitiate() {
     //CHORD_LOG("Leaving Ring");
     m_stabilizeTimer.Cancel();
-    m_predecessor.Leave_Suc(m_info, m_successor.m_info);
+    m_predecessor->Leave_Suc(m_info, m_successor->m_info);
 }
 
 void PennChord::LeaveOverlay() {
     // CHORD_LOG("Leaving Overlay");
     NodeInfo blank;
     blank.address = Ipv4Address("0.0.0.0");
-    remote_node blank_node(blank, m_socket, m_appPort);
+    Ptr<remote_node> blank_node = Create<remote_node> (blank, m_socket, m_appPort);
     m_landmark = blank_node;
     m_predecessor = blank_node;
     m_successor = blank_node;
@@ -475,6 +493,38 @@ void PennChord::SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4A
 void PennChord::SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t> lookupFailureFn)
 {
   m_lookupFailureFn = lookupFailureFn;
+}
+
+void PennChord::HandleRequestTimeout(uint32_t transactionId)
+{
+  // Find transaction
+  Ptr<PennChordTransaction> chordTransaction = m_chordTracker [transactionId];
+  if (!chordTransaction)
+    {
+      // Transaction does not exist
+      return;
+    }
+  // Retransmit and reschedule if needed
+  if (chordTransaction->m_retries > chordTransaction->m_maxRetries)
+    {
+      // Report failure
+      if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOK)
+        {
+          CHORD_LOG ("Lookup failed!");
+          m_chordTracker.erase(transactionId);
+        }
+      return;
+    }
+  else
+    {
+      // Retransmit
+      //CHORD_LOG ("Retransmission Req\n" << chordPacket);
+      chordTransaction->m_remoteNode->SendRPC (chordTransaction->m_chordPacket);
+      // Reschedule
+      // Start transaction timer
+      EventId requestTimeoutId = Simulator::Schedule (chordTransaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, transactionId);
+      chordTransaction->m_requestTimeoutEventId = requestTimeoutId;
+    }
 }
 
 bool PennChord::RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high) {
@@ -559,9 +609,9 @@ void PennChord::PrintInfo() {
     //CHORD_LOG("\nRingState: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
 
     CHORD_LOG("\nRingState<" << strHash(m_info.location) << ">: Pred<"
-            << ReverseLookup(m_predecessor.m_info.address)<< "," << strHash(m_predecessor.m_info.location)
-            << ">,Succ<" << ReverseLookup(m_successor.m_info.address) <<
-            "," << strHash(m_successor.m_info.location) << ">"
+            << ReverseLookup(m_predecessor->m_info.address)<< "," << strHash(m_predecessor->m_info.location)
+            << ">,Succ<" << ReverseLookup(m_successor->m_info.address) <<
+            "," << strHash(m_successor->m_info.location) << ">"
             );
 
 }

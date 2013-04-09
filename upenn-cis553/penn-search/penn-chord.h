@@ -21,6 +21,7 @@
 
 #include "ns3/penn-application.h"
 #include "ns3/penn-chord-message.h"
+#include "ns3/penn-chord-transaction.h"
 #include "ns3/ping-request.h"
 
 #include "ns3/ipv4-address.h"
@@ -94,7 +95,8 @@ public:
 
     bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
     
-    
+    void HandleRequestTimeout(uint32_t transactionId);
+       
     // TODO Later
     void fix_fingers();
 
@@ -109,7 +111,9 @@ private:
     Ptr<Socket> m_socket;
     Time m_pingTimeout;
     Time m_stabilizeFreq;
+    Time m_requestTimeout;
     uint16_t m_appPort;
+    uint8_t m_maxRequestRetries;
     // Timers
     Timer m_auditPingsTimer;
     Timer m_stabilizeTimer;
@@ -125,13 +129,13 @@ private:
     bool joined;
     NodeInfo m_info;
     // node: self 
-    remote_node m_remoteNodeSelf; 
+    Ptr<remote_node> m_remoteNodeSelf; 
     // node: successor
-    remote_node m_successor; 
+    Ptr<remote_node> m_successor; 
     // node: predecessor
-    remote_node m_predecessor;
-    std::map<uint32_t, Callback<void ,PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> > m_chordTracker;
-    remote_node m_landmark;
+    Ptr<remote_node> m_predecessor;
+    std::map<uint32_t, Ptr<PennChordTransaction> > m_chordTracker;
+    Ptr<remote_node> m_landmark;
 };
 
 #endif

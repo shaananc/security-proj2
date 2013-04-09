@@ -566,7 +566,8 @@ void PennChord::PrintInfo() {
 
 }
 
-string strHash(unsigned char *hash) {
+string 
+PennChord::strHash(unsigned char *hash) {
     stringstream s;
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
         s << std::hex << (int) hash[i];

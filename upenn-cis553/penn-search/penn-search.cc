@@ -20,6 +20,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <string>
 #include "penn-search.h"
 
 #include "ns3/random-variable.h"
@@ -327,6 +328,43 @@ PennSearch::ProcessPingRsp (PennSearchMessage message, Ipv4Address sourceAddress
 }
 
 void
+PennSearch::ProcessSearchRes (Ipv4Address queryNode, std::vector<string> keywords, std::vector<string> docs)
+{
+  std::vector<string> res = SearchComp (keywords.front(), docs);
+  if (res.empty()) {
+    SEARCH_LOG("\nSearchResults<" << ReverseLookup(queryNode) << ", \"Empty List\">");
+    //Send list back to originating node
+  }
+  keywords.erase(keywords.front());
+  if (keywords.empty()) {
+    SEARCH_LOG("\nSearchResults<" <<ReverseLookup(queryNode) << ", " << printDocs(res));
+    //Send list back to originating node
+  }
+  else {
+    //lookup hash of kewords.front(), then send keywords and docs to appropriate node
+  }
+
+}
+
+std::vector<string>
+PennSearch::SearchComp (string keyword, std::vector<string> search_list)
+{
+  std::vector<string> results;
+  std::map<string, std::vector<string> >::iterator iter = m_documents.find (keyword);
+  if (iter != m_documents.end()) {
+    for (std::vector<string>::iterator i = search_list.begin(); i != search_list.end(); i++) {
+      if (m_documents[iter]->second.find(search_list[i]) != m_documents[iter]->second.end()) {
+        results.push_back(search_list[i]);
+      }
+    }
+  }
+  else {
+    DEBUG_LOG("Keyword not found at node");
+  }
+  return results;
+}
+
+void
 PennSearch::AuditPings ()
 {
   std::map<uint32_t, Ptr<PingRequest> >::iterator iter;
@@ -352,6 +390,21 @@ uint32_t
 PennSearch::GetNextTransactionId ()
 {
   return m_currentTransactionId++;
+}
+
+string
+PennSearch::printDocs (std::vector<string> docList) 
+{
+  stringstream s;
+  for(std::vector<string>::iterator i = docList.begin(); i != docList.end(); i++) {
+    s << docList[i];
+    std::vector<string>::iterator j = i;
+    j++;
+    if (j != docList.end()){
+      s << ", ";
+    }
+  }
+  return s.str();
 }
 
 // Handle Chord Callbacks
@@ -424,3 +477,4 @@ PennSearch::SetSearchVerbose (bool on)
   m_chord->SetSearchVerbose (on);
   g_searchVerbose = on;
 }
+

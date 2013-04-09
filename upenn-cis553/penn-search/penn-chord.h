@@ -94,7 +94,8 @@ public:
 
     bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
     
-    
+    string strHash(unsigned char *hash);    
+
     // TODO Later
     void fix_fingers();
 

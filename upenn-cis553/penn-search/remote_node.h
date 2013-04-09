@@ -59,6 +59,9 @@ public:
 
     void update_node(NodeInfo node, std::map<std::string, std::vector<string> > &docs);
 
+    void update_publish_list(NodeInfo node, std::map<std::string, std::vector<string> > &keyDocs); 
+
+    void remove_publish_list(NodeInfo node, std::vector<std::string> &keys);
 
     NodeInfo m_info;
     // This represents the latest up to date info
@@ -76,6 +79,7 @@ public:
 
     //Maintains the list of (key, document) lists that have to be publsihed
     std::map<std::string, vector<std::string> > need_to_publish;
+
 
 private:
 

@@ -66,6 +66,9 @@ PennSearchMessage::GetSerializedSize (void) const
       case PING_RSP:
         size += m_message.pingRsp.GetSerializedSize ();
         break;
+      case PUBLISH_REQ:
+        size += m_message.publishReq.GetSerializedSize ();
+        break;
       default:
         NS_ASSERT (false);
     }
@@ -88,6 +91,9 @@ PennSearchMessage::Print (std::ostream &os) const
       case PING_RSP:
         m_message.pingRsp.Print (os);
         break;
+      case PUBLISH_REQ:
+        m_message.publishReq.Print (os);
+        break;
       default:
         break;  
     }
@@ -108,6 +114,9 @@ PennSearchMessage::Serialize (Buffer::Iterator start) const
         break;
       case PING_RSP:
         m_message.pingRsp.Serialize (i);
+        break;
+      case PUBLISH_REQ:
+        m_message.publishReq.Serialize (i);
         break;
       default:
         NS_ASSERT (false);   
@@ -131,6 +140,9 @@ PennSearchMessage::Deserialize (Buffer::Iterator start)
         break;
       case PING_RSP:
         size += m_message.pingRsp.Deserialize (i);
+        break;
+      case PUBLISH_REQ:
+        size += m_message.publishReq.Deserialize (i);
         break;
       default:
         NS_ASSERT (false);
@@ -246,7 +258,25 @@ PennSearchMessage::GetPingRsp ()
   return m_message.pingRsp;
 }
 
+PennSearchMessage::PublishReq
+PennSearchMessage::GetPublishReq ()
+{
+  return m_message.publishReq;
+}
 
+PennSearchMessage::SetPublishReq (std::map<std::string, std::vector<std::string> > &publishMessage)
+{
+    if(m_messageType == 0){
+        m_messageType = PUBLISH_REQ;
+    }
+    else{
+        NS_ASSERT (m_messageType == PUBLISH_REQ);
+    }
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    for(it = publishMessage.begin(); it!=publishMessage.end(); it++){
+        m_message.publishReq.publishMessage.insert(std::make_pair(it->first, it->second));   
+    }
+}
 //
 //
 //

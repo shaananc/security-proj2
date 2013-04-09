@@ -251,3 +251,29 @@ void remote_node::update_node(NodeInfo node, std::map<std::string, std::vector<s
         }
     }
 }
+
+void remote_node::update_publish_list(NodeInfo node, std::map<std::string, std::vector<std::string> > &docs){
+    for(std::map<std::string, std::vector<std::string> >::iterator it=docs.begin(); it!=docs.end(); it++){
+        
+        //If the document is not in the list of keys maintained at the node
+        if(need_to_publish.find(it->first) == need_to_publish.end()){
+            need_to_publish.insert(std::make_pair(it->first, it->second));
+        }
+        else{       //if the key exists in the list of keys maintained at the node
+            
+            //std::vector<std::string> st = documents.find(it->first)->second; 
+            std::vector<string>::iterator strItr;
+            for(strItr = it->second.begin(); strItr!=it->second.end(); strItr++){
+                (need_to_publish.find(it->first)->second).push_back(*strItr);
+            }
+        }
+    }
+}
+
+void remote_node::remove_publish_list(NodeInfo node, std::vector<std::string> &keys){
+        //erase the keys that have been sent
+        for(std::vector<std::string>::iterator it=keys.begin(); it!=keys.end(); it++){
+            need_to_publish.erase(*it);
+        }
+
+}

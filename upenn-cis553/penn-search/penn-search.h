@@ -68,6 +68,12 @@ class PennSearch : public PennApplication
     virtual void SetStatusVerbose (bool on);
     virtual void SetChordVerbose (bool on);
     virtual void SetSearchVerbose (bool on);
+    
+    //Publish functions
+    void update_node(std::map<std::string, std::vector<string> > &docs);
+    void update_publish_list(std::map<std::string, std::vector<string> > &keyDocs);
+    void remove_publish_list(std::vector<std::string> &keys);
+
 
   protected:
     virtual void DoDispose ();
@@ -85,6 +91,10 @@ class PennSearch : public PennApplication
     Timer m_auditPingsTimer;
     // Ping tracker
     std::map<uint32_t, Ptr<PingRequest> > m_pingTracker;
+
+    std::map<std::string, vector<std::string> > m_documents;
+
+    std::map<std::string, vector<std::string> > m_need_to_publish;
 };
 
 #endif

@@ -214,6 +214,8 @@ PennSearchMessage::PingRsp::GetSerializedSize (void) const
   return size;
 }
 
+
+
 void
 PennSearchMessage::PingRsp::Print (std::ostream &os) const
 {
@@ -238,6 +240,7 @@ PennSearchMessage::PingRsp::Deserialize (Buffer::Iterator &start)
   return PingRsp::GetSerializedSize ();
 }
 
+
 void
 PennSearchMessage::SetPingRsp (std::string pingMessage)
 {
@@ -258,13 +261,87 @@ PennSearchMessage::GetPingRsp ()
   return m_message.pingRsp;
 }
 
+void
+PennSearchMessage::PublishReq::Print (std::ostream &os) const
+{
+  for(std::map<std::string, std::vector<std::string> >::const_iterator it=publishMessage.begin(); it!=publishMessage.end(); it++){   
+    os << "PublishReq:: Key: " << it->first << "\n";
+    for(std::vector<std::string>::const_iterator iter=(it->second).begin(); iter!=(it->second).end(); it++){
+        os << "PublishReq:: Docs: " << (*iter) << "\n";
+    }
+  }
+}
+
+void
+PennSearchMessage::PublishReq::Serialize (Buffer::Iterator &start) const
+{
+  //Input the size of the map first for ease of deserialization
+  start.WriteU16 (publishMessage.size());
+
+  for(std::map<std::string, std::vector<std::string> >::const_iterator it=publishMessage.begin(); it!=publishMessage.end(); it++){
+        start.WriteU16 (it->first.length());
+        start.Write ((uint8_t *) ((char*) (it->first.c_str())), it->first.length());
+        
+        //Save the size of the vector of docs for ease of deserialization
+        start.WriteU16 (it->second.size());
+
+        for(std::vector<std::string>::const_iterator iter=it->second.begin(); iter!=it->second.end(); iter++){
+            start.WriteU16 ((*iter).length());
+            start.Write ((uint8_t *) ((char*) ((*iter).c_str())), (*iter).length());
+        }
+  }
+
+
+}
+
+uint32_t
+PennSearchMessage::PublishReq::Deserialize (Buffer::Iterator &start)
+{  
+  std::vector<std::string> documents;
+  uint16_t size = start.ReadU16 ();
+  for(int s=0; s<size; s++){
+        uint16_t length1 = start.ReadU16 ();
+        char* str = (char*) malloc (length1);
+        start.Read ((uint8_t*)str, length1);
+        uint16_t size2 = start.ReadU16 ();
+        for(int j=0; j<size2; j++){
+            uint16_t length2 = start.ReadU16 ();
+            char* doc = (char*) malloc (length2);
+            start.Read ((uint8_t*)doc, length2);
+            documents.push_back(doc);
+        }
+        publishMessage.insert(std::make_pair(str, documents));
+        free(str);
+        documents.clear();
+  }
+
+  return PublishReq::GetSerializedSize ();
+
+}
+
+uint32_t 
+PennSearchMessage::PublishReq::GetSerializedSize (void) const
+{
+  uint32_t size;
+  size = sizeof(uint16_t) + publishMessage.size();
+  for(std::map<std::string, std::vector<std::string> >::const_iterator it=publishMessage.begin(); it!=publishMessage.end(); it++){
+        size = size + it->first.length() + it->second.size();
+        for(std::vector<std::string>::const_iterator iter=it->second.begin(); iter!=it->second.end(); iter++){
+            size = size + (*iter).length();
+        }
+  }
+  return size;
+}
+
+
+
 PennSearchMessage::PublishReq
 PennSearchMessage::GetPublishReq ()
 {
   return m_message.publishReq;
 }
 
-PennSearchMessage::SetPublishReq (std::map<std::string, std::vector<std::string> > &publishMessage)
+void PennSearchMessage::SetPublishReq (std::map<std::string, std::vector<std::string> > &publishMessage)
 {
     if(m_messageType == 0){
         m_messageType = PUBLISH_REQ;

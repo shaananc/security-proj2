@@ -17,6 +17,8 @@
 #ifndef PENN_SEARCH_MESSAGE_H
 #define PENN_SEARCH_MESSAGE_H
 
+#include <vector>
+#include <map>
 #include "ns3/header.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/packet.h"

@@ -221,7 +221,7 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
         }
 
         //Update the local node publishing-to-do list
-        //m_chord->update_publish_list(info, &inverted); 
+        update_publish_list(inverted); 
         
         /* //This section needs to be moved into a function of it's own
          * that is called periodically 
@@ -429,3 +429,39 @@ PennSearch::SetSearchVerbose (bool on)
   m_chord->SetSearchVerbose (on);
   g_searchVerbose = on;
 }
+
+void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &docs){
+    for(std::map<std::string, std::vector<std::string> >::iterator it = docs.begin(); it!=docs.end(); it++){
+        if(m_documents.find(it->first) == m_documents.end()){
+            m_documents.insert(std::make_pair(it->first, it->second));
+        }
+        else{
+            std::vector<string>::iterator strItr;
+            for(strItr = it->second.begin(); strItr!=it->second.end(); strItr++){
+            (m_documents.find(it->first)->second).push_back(*strItr);
+            }
+        }
+    }
+}
+
+void PennSearch::update_publish_list(std::map<std::string, std::vector<std::string> > &docs){
+    for(std::map<std::string, std::vector<std::string> >::iterator it = docs.begin(); it!=docs.end(); it++){
+        if(m_need_to_publish.find(it->first) == m_need_to_publish.end()){
+            m_need_to_publish.insert(std::make_pair(it->first, it->second));
+        }
+        else{
+            std::vector<string>::iterator strItr;
+            for(strItr = it->second.begin(); strItr!=it->second.end(); strItr++){
+            (m_need_to_publish.find(it->first)->second).push_back(*strItr);
+            }
+        }
+    }
+}
+
+void PennSearch::remove_publish_list(std::vector<std::string> &keys){
+
+    for(std::vector<std::string>::iterator it=keys.begin(); it!=keys.end(); it++){
+        m_need_to_publish.erase(*it);
+    }
+}
+

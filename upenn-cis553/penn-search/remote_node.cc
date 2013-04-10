@@ -234,6 +234,7 @@ void remote_node::reply_look(NodeInfo originator, NodeInfo result) {
     SendRPC(p);
 }
 
+/*
 void remote_node::update_node(NodeInfo node, std::map<std::string, std::vector<std::string> > &docs){
     for(std::map<std::string, std::vector<std::string> >::iterator it=docs.begin(); it!=docs.end(); it++){
         
@@ -276,4 +277,4 @@ void remote_node::remove_publish_list(NodeInfo node, std::vector<std::string> &k
             need_to_publish.erase(*it);
         }
 
-}
+} */

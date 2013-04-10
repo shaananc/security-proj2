@@ -20,7 +20,7 @@
 using namespace std;
 using namespace ns3;
 
-class remote_node {
+class remote_node : public SimpleRefCount<remote_node>  {
 public:
     remote_node();
 
@@ -29,31 +29,31 @@ public:
     remote_node(const remote_node& orig);
     virtual ~remote_node();
 
-    void getLocation(NodeInfo originator);
-    void reply_location(NodeInfo location);
+    PennChordMessage::PennChordPacket getLocation(NodeInfo originator);
+    PennChordMessage::PennChordPacket reply_location(NodeInfo location);
 
-    void join();
-    void find_successor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
-    void reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
+    PennChordMessage::PennChordPacket join();
+    PennChordMessage::PennChordPacket find_successor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
+    PennChordMessage::PennChordPacket reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
     
-    void find_predecessor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
-    void reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
+    PennChordMessage::PennChordPacket find_predecessor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
+    PennChordMessage::PennChordPacket reply_predecessor(NodeInfo predecessor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
 
-    void closest_preceeding(NodeInfo originator);
-    void reply_preceeding(NodeInfo originator, NodeInfo predecessor);
+    PennChordMessage::PennChordPacket closest_preceeding(NodeInfo originator);
+    PennChordMessage::PennChordPacket reply_preceeding(NodeInfo originator, NodeInfo predecessor);
 
     void SendRPC(PennChordMessage::PennChordPacket p);
-    void notify(NodeInfo originator);
+    PennChordMessage::PennChordPacket notify(NodeInfo originator);
     void processPacket(PennChordMessage::PennChordPacket p);
     
-    void RingDebug(NodeInfo originator, uint32_t n);
+    PennChordMessage::PennChordPacket RingDebug(NodeInfo originator, uint32_t n);
 
-    void Leave_Suc(NodeInfo originator, NodeInfo successor);
-    void Leave_Pred(NodeInfo originator, NodeInfo predecessor);
-    void Leave_Conf(NodeInfo originator);
+    PennChordMessage::PennChordPacket Leave_Suc(NodeInfo originator, NodeInfo successor);
+    PennChordMessage::PennChordPacket Leave_Pred(NodeInfo originator, NodeInfo predecessor);
+    PennChordMessage::PennChordPacket Leave_Conf(NodeInfo originator);
 
-    void find_look(NodeInfo originator, NodeInfo requested);
-    void reply_look(NodeInfo originator, NodeInfo result);
+    PennChordMessage::PennChordPacket find_look(NodeInfo originator, NodeInfo requested);
+    PennChordMessage::PennChordPacket reply_look(NodeInfo originator, NodeInfo result);
 
     uint32_t GetNextTransactionId();
 

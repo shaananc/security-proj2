@@ -1,0 +1,25 @@
+/* 
+ * File:   SearchRes.h
+ * Author: user
+ *
+ * Created on March 22, 2013, 3:23 AM
+ */
+
+#ifndef SEARCHRES_H
+#define	SEARCHRES_H
+
+#include <string>
+#include <vector>
+
+using namespace ns3;
+
+typedef struct SearchRes {
+  Ipv4Address queryNode;
+  std::vector<string> keywords;
+  std::vector<string> docs;
+} SearchRes;
+
+
+
+#endif	/* SEARCHRES_H */
+

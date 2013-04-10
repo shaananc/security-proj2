@@ -95,13 +95,8 @@ public:
 
     bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
     
-<<<<<<< HEAD
-    string strHash(unsigned char *hash);    
-
-=======
     void HandleRequestTimeout(uint32_t transactionId);
        
->>>>>>> 8b931985d96b870dff3b463b585204586b560036
     // TODO Later
     void fix_fingers();
 

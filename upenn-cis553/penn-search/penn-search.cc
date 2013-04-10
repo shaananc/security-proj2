@@ -341,6 +341,9 @@ PennSearch::ProcessSearchRes (Ipv4Address queryNode, std::vector<string> keyword
     //Send list back to originating node
   }
   else {
+    unsigned char keyHash[SHA_DIGEST_LENGTH];
+    SHA1(keywords.front(), sizeof (keywords.front()), keyHash);
+    //Lookup(keyHash);
     //lookup hash of kewords.front(), then send keywords and docs to appropriate node
   }
 
@@ -363,6 +366,25 @@ PennSearch::SearchComp (string keyword, std::vector<string> search_list)
   }
   return results;
 }
+
+void
+PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
+{
+  if (destAddress != Ipv4Address::GetAny ())
+    {
+      uint32_t transactionId = GetNextTransactionId ();
+      SEARCH_LOG ("InvertedListShip<" << results.keywords.front() << ",  " << PrintDocs(results.docs));
+      Ptr<PingRequest> pingRequest = Create<PingRequest> (transactionId, Simulator::Now(), destAddress, pingMessage);
+      // Add to ??
+      // m_pingTracker.insert (std::make_pair (transactionId, pingRequest));
+      Ptr<Packet> packet = Create<Packet> ();
+      PennSearchMessage message = PennSearchMessage (PennSearchMessage::PING_REQ, transactionId);
+      message.SetPingReq (pingMessage);
+      packet->AddHeader (message);
+      m_socket->SendTo (packet, 0 , InetSocketAddress (destAddress, m_appPort));
+    }
+}
+
 
 void
 PennSearch::AuditPings ()

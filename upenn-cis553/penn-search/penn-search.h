@@ -23,6 +23,7 @@
 #include "ns3/penn-chord.h"
 #include "ns3/penn-search-message.h"
 #include "ns3/ping-request.h"
+#include "SearchRes.h"
 
 #include "ns3/ipv4-address.h"
 #include <map>

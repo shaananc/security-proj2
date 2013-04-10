@@ -142,7 +142,7 @@ void PennChord::procREQ_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address so
 void PennChord::procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //CHORD_LOG("RSP_LOOK from " << p.requestee << " on behalf of " << p.originator.address);
     if (!m_lookupSuccessFn.IsNull())  {
-      m_lookupSuccessFn(p.m_result.location, SHA_DIGEST_LENGTH, p.m_result.address);
+      m_lookupSuccessFn(p.m_result.location, SHA_DIGEST_LENGTH, p.m_result.address, p.m_transactionId);
     }
 }
 

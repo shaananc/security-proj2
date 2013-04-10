@@ -221,6 +221,11 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
             }
         }
 
+        //Update the local node publishing-to-do list
+        update_publish_list(inverted); 
+        
+        /* //This section needs to be moved into a function of it's own
+         * that is called periodically 
         //Iterate over the map, for each key in the map perform a lookup
         //to get the address of the node that key is hashed to
         std::map<std::string, std::vector<string> >::iterator iter;
@@ -230,13 +235,37 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
             //Send new list of documents to the node
             //m_chord->update_node(node, iter->second);
         }
-
+        */
   }
 
-  if (command == "SEARCH"){
+  if (command == "SEARCH") {
+    if (tokens.size() < 3)
+      {
+        ERROR_LOG ("Insufficient SEARCH params...");
+        return;
+      }
 
-      /*Perform search operations*/
-  }
+    SearchRes newSearch;
+    newSearch.queryNode = m_local;
+    iterator++;
+    std::string nodeId = *iterator;
+    iterator++;
+    while (iterator != tokens.end) {
+      newSearch.keywords.push_back(*iterator);
+      iterator++;
+    }
+    Ipv4Address searchAddress = ResolveNodeIpAddress(nodeId);
+    if (searchAddress != m_local) {
+      //Send list to searchAddress
+    }
+    else {
+      unsigned char keyHash[SHA_DIGEST_LENGTH];
+      SHA1(newSearch.keywords.front(), sizeof (newSearch.keywords.front()), keyHash);
+      uint8_t lookRes = Lookup(keyHash);
+      m_searchTracker.insert(std::make_pair(lookRes, newSearch);
+    }
+
+  } // End Search command
 
 }
 
@@ -328,22 +357,32 @@ PennSearch::ProcessPingRsp (PennSearchMessage message, Ipv4Address sourceAddress
 }
 
 void
-PennSearch::ProcessSearchRes (Ipv4Address queryNode, std::vector<string> keywords, std::vector<string> docs)
+PennSearch::ProcessSearchRes (SearchRes results)
 {
-  std::vector<string> res = SearchComp (keywords.front(), docs);
-  if (res.empty()) {
-    SEARCH_LOG("\nSearchResults<" << ReverseLookup(queryNode) << ", \"Empty List\">");
-    //Send list back to originating node
+  std::vector<string> res;
+  if (results.docs.empty()) {
+    res = m_documents.find(results.keywords.front())->second;
   }
-  keywords.erase(keywords.front());
-  if (keywords.empty()) {
-    SEARCH_LOG("\nSearchResults<" <<ReverseLookup(queryNode) << ", " << printDocs(res));
+  else {
+    res = SearchComp (results.keywords.front(), results.docs);
+  }
+  if (res.empty()) {
+    SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", \"Empty List\">");
     //Send list back to originating node
+    return;
+  }
+  results.keywords.erase(results.keywords.front());
+  results.docs = res;
+  if (results.keywords.empty()) {
+    SEARCH_LOG("\nSearchResults<" <<ReverseLookup(results.queryNode) << ", " << printDocs(res));
+    //Send list back to originating node
+    return;
   }
   else {
     unsigned char keyHash[SHA_DIGEST_LENGTH];
-    SHA1(keywords.front(), sizeof (keywords.front()), keyHash);
-    //Lookup(keyHash);
+    SHA1(results.keywords.front(), sizeof (results.keywords.front()), keyHash);
+    uint8_t lookRes = Lookup(keyHash);
+    m_searchTracker.insert(std::make_pair(lookRes, results);
     //lookup hash of kewords.front(), then send keywords and docs to appropriate node
   }
 
@@ -373,7 +412,7 @@ PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
   if (destAddress != Ipv4Address::GetAny ())
     {
       uint32_t transactionId = GetNextTransactionId ();
-      SEARCH_LOG ("InvertedListShip<" << results.keywords.front() << ",  " << PrintDocs(results.docs));
+      /*
       Ptr<PingRequest> pingRequest = Create<PingRequest> (transactionId, Simulator::Now(), destAddress, pingMessage);
       // Add to ??
       // m_pingTracker.insert (std::make_pair (transactionId, pingRequest));
@@ -382,9 +421,21 @@ PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
       message.SetPingReq (pingMessage);
       packet->AddHeader (message);
       m_socket->SendTo (packet, 0 , InetSocketAddress (destAddress, m_appPort));
+      */
     }
 }
 
+void
+  PennSearch::ProcessLookupResult(Ipv4Address destAddress, SearchRes results)
+{
+  if (results.docs.empty()) {
+    SEARCH_LOG("Search< " << PrintDocs(results.keywords) << ">");
+  }
+  else {
+    SEARCH_LOG ("InvertedListShip<" << results.keywords.front() << ",  " << PrintDocs(results.docs));
+  }
+  ForwardPartSearch(destAddress, results);
+}
 
 void
 PennSearch::AuditPings ()
@@ -452,7 +503,7 @@ PennSearch::HandleChordPingRecv (Ipv4Address destAddress, std::string message)
 }
 
 void
-PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address)
+PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId)
 {
   // TODO: for Rob  
 }
@@ -498,5 +549,41 @@ PennSearch::SetSearchVerbose (bool on)
 {
   m_chord->SetSearchVerbose (on);
   g_searchVerbose = on;
+}
+
+
+void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &docs){
+    for(std::map<std::string, std::vector<std::string> >::iterator it = docs.begin(); it!=docs.end(); it++){
+        if(m_documents.find(it->first) == m_documents.end()){
+            m_documents.insert(std::make_pair(it->first, it->second));
+        }
+        else{
+            std::vector<string>::iterator strItr;
+            for(strItr = it->second.begin(); strItr!=it->second.end(); strItr++){
+            (m_documents.find(it->first)->second).push_back(*strItr);
+            }
+        }
+    }
+}
+
+void PennSearch::update_publish_list(std::map<std::string, std::vector<std::string> > &docs){
+    for(std::map<std::string, std::vector<std::string> >::iterator it = docs.begin(); it!=docs.end(); it++){
+        if(m_need_to_publish.find(it->first) == m_need_to_publish.end()){
+            m_need_to_publish.insert(std::make_pair(it->first, it->second));
+        }
+        else{
+            std::vector<string>::iterator strItr;
+            for(strItr = it->second.begin(); strItr!=it->second.end(); strItr++){
+            (m_need_to_publish.find(it->first)->second).push_back(*strItr);
+            }
+        }
+    }
+}
+
+void PennSearch::remove_publish_list(std::vector<std::string> &keys){
+
+    for(std::vector<std::string>::iterator it=keys.begin(); it!=keys.end(); it++){
+        m_need_to_publish.erase(*it);
+    }
 }
 

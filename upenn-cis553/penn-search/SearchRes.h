@@ -15,8 +15,8 @@ using namespace ns3;
 
 typedef struct SearchRes {
   Ipv4Address queryNode;
-  std::vector<string> keywords;
-  std::vector<string> docs;
+  std::vector<std::string> keywords;
+  std::vector<std::string> docs;
 } SearchRes;
 
 

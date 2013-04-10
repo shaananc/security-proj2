@@ -17,6 +17,8 @@
 #ifndef PENN_SEARCH_MESSAGE_H
 #define PENN_SEARCH_MESSAGE_H
 
+#include <vector>
+#include <map>
 #include "ns3/header.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/packet.h"
@@ -37,7 +39,8 @@ class PennSearchMessage : public Header
       {
         PING_REQ = 1,
         PING_RSP = 2,
-        // Define extra message types when needed       
+        // Define extra message types when needed 
+        PUBLISH_REQ = 3,
       };
 
     PennSearchMessage (PennSearchMessage::MessageType messageType, uint32_t transactionId);
@@ -102,12 +105,21 @@ class PennSearchMessage : public Header
         std::string pingMessage;
       };
 
+    struct PublishReq
+    {
+        void Print (std::ostream &os) const;
+        uint32_t GetSerializedSize (void) const;
+        void Serialize (Buffer::Iterator &start) const;
+        uint32_t Deserialize (Buffer::Iterator &start);
+        std::map<std::string, std::vector<std::string> > publishMessage;
+    };
 
   private:
     struct
       {
         PingReq pingReq;
         PingRsp pingRsp;
+        PublishReq publishReq;
       } m_message;
     
   public:
@@ -132,6 +144,12 @@ class PennSearchMessage : public Header
      *  \param message Payload String
      */
     void SetPingRsp (std::string message);
+
+    //Returns PublishReq Struct
+    PublishReq GetPublishReq ();
+
+    //Set the message
+    void SetPublishReq (std::map<std::string, std::vector<std::string> > &message);
 
 }; // class PennSearchMessage
 

@@ -257,12 +257,13 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
     Ipv4Address searchAddress = ResolveNodeIpAddress(nodeId);
     if (searchAddress != m_local) {
       //Send list to searchAddress
+      //Message Type SearchInit
     }
     else {
       unsigned char keyHash[SHA_DIGEST_LENGTH];
       SHA1(newSearch.keywords.front(), sizeof (newSearch.keywords.front()), keyHash);
       uint8_t lookRes = Lookup(keyHash);
-      m_searchTracker.insert(std::make_pair(lookRes, newSearch);
+      m_searchTracker.insert(std::make_pair(lookRes, newSearch));
     }
 
   } // End Search command
@@ -357,6 +358,15 @@ PennSearch::ProcessPingRsp (PennSearchMessage message, Ipv4Address sourceAddress
 }
 
 void
+PennSearch::ProcessSearchInit (SearchRes newSearch)
+{
+  unsigned char keyHash[SHA_DIGEST_LENGTH];
+  SHA1(newSearch.keywords.front(), sizeof (newSearch.keywords.front()), keyHash);
+  uint8_t lookRes = Lookup(keyHash);
+  m_searchTracker.insert(std::make_pair(lookRes, newSearch));
+}
+
+void
 PennSearch::ProcessSearchRes (SearchRes results)
 {
   std::vector<string> res;
@@ -369,6 +379,7 @@ PennSearch::ProcessSearchRes (SearchRes results)
   if (res.empty()) {
     SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", \"Empty List\">");
     //Send list back to originating node
+    //Message Type SearchFin
     return;
   }
   results.keywords.erase(results.keywords.front());
@@ -376,13 +387,14 @@ PennSearch::ProcessSearchRes (SearchRes results)
   if (results.keywords.empty()) {
     SEARCH_LOG("\nSearchResults<" <<ReverseLookup(results.queryNode) << ", " << printDocs(res));
     //Send list back to originating node
+    //Message Type SearchFin
     return;
   }
   else {
     unsigned char keyHash[SHA_DIGEST_LENGTH];
     SHA1(results.keywords.front(), sizeof (results.keywords.front()), keyHash);
     uint8_t lookRes = Lookup(keyHash);
-    m_searchTracker.insert(std::make_pair(lookRes, results);
+    m_searchTracker.insert(std::make_pair(lookRes, results));
     //lookup hash of kewords.front(), then send keywords and docs to appropriate node
   }
 
@@ -417,7 +429,7 @@ PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
       // Add to ??
       // m_pingTracker.insert (std::make_pair (transactionId, pingRequest));
       Ptr<Packet> packet = Create<Packet> ();
-      PennSearchMessage message = PennSearchMessage (PennSearchMessage::PING_REQ, transactionId);
+      PennSearchMessage message = PennSearchMessage (PennSearchMessage::SEARCH_RES, transactionId);
       message.SetPingReq (pingMessage);
       packet->AddHeader (message);
       m_socket->SendTo (packet, 0 , InetSocketAddress (destAddress, m_appPort));
@@ -426,7 +438,7 @@ PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
 }
 
 void
-  PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results)
+PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results)
 {
   if (results.docs.empty()) {
     SEARCH_LOG("Search< " << PrintDocs(results.keywords) << ">");

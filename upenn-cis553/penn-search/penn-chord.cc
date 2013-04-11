@@ -82,7 +82,8 @@ PennChord::PennChord()
     random = UniformVariable(0x00000000, 0xFFFFFFFF);
     m_currentTransactionId = random.GetInteger();
 
-
+    num_hops = 0;
+    num_lookups = 0;
 
 }
 
@@ -494,6 +495,14 @@ void PennChord::LeaveOverlay() {
     // Cancel timers
     // m_stabilizeTimer.Cancel();
 
+}
+
+void PennChord::inc_hops(){
+  num_hops++;
+}
+
+void PennChord::inc_lookups(){
+  num_lookups++;
 }
 
 void PennChord::HandleRequestTimeout(uint32_t transactionId)

@@ -97,6 +97,8 @@ public:
     
     void HandleRequestTimeout(uint32_t transactionId);
        
+    void inc_lookups();
+    void inc_hops();
     // TODO Later
     void fix_fingers();
 
@@ -125,6 +127,9 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
     Callback <void, uint8_t*, uint8_t, Ipv4Address, uint32_t> m_lookupSuccessFn;
     Callback <void, uint8_t*, uint8_t, uint32_t> m_lookupFailureFn;
+
+    uint32_t num_lookups;
+    uint32_t num_hops;
 
     bool joined;
     NodeInfo m_info;

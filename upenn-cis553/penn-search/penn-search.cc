@@ -426,7 +426,7 @@ PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
 }
 
 void
-  PennSearch::ProcessLookupResult(Ipv4Address destAddress, SearchRes results)
+  PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results)
 {
   if (results.docs.empty()) {
     SEARCH_LOG("Search< " << PrintDocs(results.keywords) << ">");
@@ -505,7 +505,16 @@ PennSearch::HandleChordPingRecv (Ipv4Address destAddress, std::string message)
 void
 PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId)
 {
-  // TODO: for Rob  
+  map<uint8_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
+  if (iter != m_searchTracker.end()) {
+    SearchRes results = m_searchTracker[iter]->second;
+    m_searchTracker.erase(iter);
+    ProcessSearchLookupResult(address, results);
+
+  }
+
+
+  // TODO: Publish lookup 
 }
 // Override PennLog
 

@@ -354,6 +354,8 @@ void PennSearchMessage::SetPublishReq (std::map<std::string, std::vector<std::st
         m_message.publishReq.publishMessage.insert(std::make_pair(it->first, it->second));   
     }
 }
+
+
 //
 //
 //

@@ -250,7 +250,7 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
     iterator++;
     std::string nodeId = *iterator;
     iterator++;
-    while (iterator != tokens.end) {
+    while (iterator != tokens.end()) {
       newSearch.keywords.push_back(*iterator);
       iterator++;
     }
@@ -261,8 +261,12 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
     }
     else {
       unsigned char keyHash[SHA_DIGEST_LENGTH];
-      SHA1(newSearch.keywords.front(), sizeof (newSearch.keywords.front()), keyHash);
-      uint8_t lookRes = Lookup(keyHash);
+      unsigned char keyword[sizeof (newSearch.keywords.front())];
+      for (int l = 0; l < sizeof (newSearch.keywords.front()); l++) {
+        keyword[l] = newSearch.keywords.front()[l];
+      }
+      SHA1(keyword, sizeof (keyword), keyHash);
+      uint32_t lookRes = PennChord::Lookup(*keyHash);
       m_searchTracker.insert(std::make_pair(lookRes, newSearch));
     }
 
@@ -361,15 +365,16 @@ void
 PennSearch::ProcessSearchInit (SearchRes newSearch)
 {
   unsigned char keyHash[SHA_DIGEST_LENGTH];
-  SHA1(newSearch.keywords.front(), sizeof (newSearch.keywords.front()), keyHash);
-  uint8_t lookRes = Lookup(keyHash);
+  std::vector<std::string>::iterator iter = newSearch.keywords.begin();
+  SHA1(newSearch.keywords[iter], sizeof (newSearch.keywords[iter]), keyHash);
+  uint32_t lookRes = PennChord::Lookup(keyHash);
   m_searchTracker.insert(std::make_pair(lookRes, newSearch));
 }
 
 void
 PennSearch::ProcessSearchRes (SearchRes results)
 {
-  std::vector<string> res;
+  std::vector<std::string> res;
   if (results.docs.empty()) {
     res = m_documents.find(results.keywords.front())->second;
   }
@@ -392,21 +397,22 @@ PennSearch::ProcessSearchRes (SearchRes results)
   }
   else {
     unsigned char keyHash[SHA_DIGEST_LENGTH];
-    SHA1(results.keywords.front(), sizeof (results.keywords.front()), keyHash);
-    uint8_t lookRes = Lookup(keyHash);
+    std::vector<std::string>::iterator iter = results.keywords.begin();
+    SHA1(results.keywords[iter], sizeof (results.keywords[iter]), keyHash);
+    uint32_t lookRes = PennChord::Lookup(keyHash);
     m_searchTracker.insert(std::make_pair(lookRes, results));
     //lookup hash of kewords.front(), then send keywords and docs to appropriate node
   }
 
 }
 
-std::vector<string>
-PennSearch::SearchComp (string keyword, std::vector<string> search_list)
+std::vector<std::string>
+PennSearch::SearchComp (std::string keyword, std::vector<std::string> search_list)
 {
-  std::vector<string> results;
-  std::map<string, std::vector<string> >::iterator iter = m_documents.find (keyword);
+  std::vector<std::string> results;
+  std::map<std::string, std::vector<std::string> >::iterator iter = m_documents.find (keyword);
   if (iter != m_documents.end()) {
-    for (std::vector<string>::iterator i = search_list.begin(); i != search_list.end(); i++) {
+    for (std::vector<std::string>::iterator i = search_list.begin(); i != search_list.end(); i++) {
       if (m_documents[iter]->second.find(search_list[i]) != m_documents[iter]->second.end()) {
         results.push_back(search_list[i]);
       }
@@ -419,7 +425,7 @@ PennSearch::SearchComp (string keyword, std::vector<string> search_list)
 }
 
 void
-PennSearch::FowardPartSearch (Ipv4Address destAddress, SearchRes results)
+PennSearch::ForwardPartSearch (Ipv4Address destAddress, SearchRes results)
 {
   if (destAddress != Ipv4Address::GetAny ())
     {
@@ -441,10 +447,10 @@ void
 PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results)
 {
   if (results.docs.empty()) {
-    SEARCH_LOG("Search< " << PrintDocs(results.keywords) << ">");
+    SEARCH_LOG("Search< " << printDocs(results.keywords) << ">");
   }
   else {
-    SEARCH_LOG ("InvertedListShip<" << results.keywords.front() << ",  " << PrintDocs(results.docs));
+    SEARCH_LOG ("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs));
   }
   ForwardPartSearch(destAddress, results);
 }
@@ -477,13 +483,13 @@ PennSearch::GetNextTransactionId ()
   return m_currentTransactionId++;
 }
 
-string
-PennSearch::printDocs (std::vector<string> docList) 
+std::string
+PennSearch::printDocs (std::vector<std::string> docList) 
 {
   stringstream s;
-  for(std::vector<string>::iterator i = docList.begin(); i != docList.end(); i++) {
+  for(std::vector<std::string>::iterator i = docList.begin(); i != docList.end(); i++) {
     s << docList[i];
-    std::vector<string>::iterator j = i;
+    std::vector<std::string>::iterator j = i;
     j++;
     if (j != docList.end()){
       s << ", ";
@@ -517,7 +523,7 @@ PennSearch::HandleChordPingRecv (Ipv4Address destAddress, std::string message)
 void
 PennSearch::HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId)
 {
-  map<uint8_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
+  map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
   if (iter != m_searchTracker.end()) {
     SearchRes results = m_searchTracker[iter]->second;
     m_searchTracker.erase(iter);

@@ -54,7 +54,9 @@ class PennSearch : public PennApplication
    
     
     void ProcessPublishReq(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
-
+    void ProcessPublishRsp(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void ProcessLeave();
+    
     // Chord Callbacks
     void HandleChordPingSuccess (Ipv4Address destAddress, std::string message);
     void HandleChordPingFailure (Ipv4Address destAddress, std::string message);

@@ -139,6 +139,8 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
         tokens.erase(iterator);
         if ((*iterator).compare("JOIN") == 0 || (*iterator).compare("join") == 0) {
             m_chord->SetJoinCallback(MakeCallback(&PennSearch::chordJoined, this));
+        } else if ((*iterator).compare("leave") == 0 || (*iterator).compare("LEAVE") == 0) {
+            ProcessLeave();
         }
 
         m_chord->ProcessCommand(tokens);
@@ -288,11 +290,14 @@ PennSearch::RecvMessage(Ptr<Socket> socket) {
         case PennSearchMessage::PING_RSP:
             ProcessPingRsp(message, sourceAddress, sourcePort);
             break;
+        case PennSearchMessage::PUBLISH_RSP:
+            ProcessPublishRsp(message, sourceAddress, sourcePort);
+            break;
         case PennSearchMessage::PUBLISH_REQ:
             ProcessPublishReq(message, sourceAddress, sourcePort);
             break;
         default:
-            ERROR_LOG("Unknown Message Type!");
+            ERROR_LOG("Unknown Message Type! " << message.GetMessageType());
             break;
     }
 }
@@ -330,7 +335,7 @@ PennSearch::ProcessPublishReq(PennSearchMessage message, Ipv4Address sourceAddre
     SEARCH_LOG("Received Publish Request from " << sourceAddress);
     // Find all documents in the range, remove them and add them to a publish request.
     std::map<std::string, std::vector<string> > transferMap;
-    
+
     std::map<std::string, std::vector<string> >::iterator itr = m_documents.begin();
     while (itr != m_documents.end()) {
 
@@ -349,22 +354,33 @@ PennSearch::ProcessPublishReq(PennSearchMessage message, Ipv4Address sourceAddre
         PrintHash(location, std::cout);
         // Compare range of keyword
         if (RangeCompare(m_chord->getPredecessor().location, location, sourcelocation) == 1) {
-             // add to list of keywords to be transferred
+            // add to list of keywords to be transferred
             transferMap.insert(*itr);
-            
+
             // Remove from m_documents
             std::map<std::string, std::vector<string> >::iterator e_itr = itr;
             itr++;
             m_documents.erase(e_itr);
-           
+
         } else {
             itr++;
         }
-        
+
         // Send publish with transferMap
-        
+        Ptr<Packet> packet = Create<Packet> ();
+        PennSearchMessage message = PennSearchMessage(PennSearchMessage::PUBLISH_RSP, GetNextTransactionId());
+        message.SetPublishRsp(transferMap);
+        packet->AddHeader(message);
+        m_socket->SendTo(packet, 0, InetSocketAddress(sourceAddress, m_appPort));
+
+
+
     }
 
+}
+
+void PennSearch::ProcessPublishRsp(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort){
+    SEARCH_LOG("PROCESS_PUBLISH_RSP: NOT YET IMPLEMENTED");
 }
 
 void
@@ -498,3 +514,12 @@ void PennSearch::chordJoined() {
 
 }
 
+void PennSearch::ProcessLeave() {
+    //Shift all m_documents to successor
+    Ptr<Packet> packet = Create<Packet> ();
+    PennSearchMessage message = PennSearchMessage(PennSearchMessage::PUBLISH_RSP, GetNextTransactionId());
+    message.SetPublishRsp(m_documents);
+    packet->AddHeader(message);
+    m_socket->SendTo(packet, 0, InetSocketAddress(m_chord->getSuccessor().address, m_appPort));
+
+}

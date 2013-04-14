@@ -87,6 +87,7 @@ public:
     uint32_t Lookup(unsigned char location[]);
     void SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4Address, uint32_t> lookupSuccessFn);
     void SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t, uint32_t> lookupFailureFn);
+    void SetJoinCallback(Callback<void> cb);
 
     void PrintInfo();
     
@@ -127,11 +128,12 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
     Callback <void, uint8_t*, uint8_t, Ipv4Address, uint32_t> m_lookupSuccessFn;
     Callback <void, uint8_t*, uint8_t, uint32_t> m_lookupFailureFn;
+    Callback<void> m_joinedCallback;
 
     uint32_t num_lookups;
     uint32_t num_hops;
 
-    bool joined;
+    int joined;
     NodeInfo m_info;
     // node: self 
     Ptr<remote_node> m_remoteNodeSelf; 

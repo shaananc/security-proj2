@@ -321,7 +321,7 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 //    }
 //    cout << std::endl << std::dec;
 
-    joined = true;
+    joined = 1;
     NodeInfo info;
     info.address = landmark;
     m_landmark = Create<remote_node> (info, m_socket, m_appPort);
@@ -361,7 +361,7 @@ void PennChord::CreateOverlay() {
 //    }
 //    cout << std::endl << std::dec;
 
-    joined = true;
+    joined = 2;
     m_successor = Create<remote_node> (m_info, m_socket, m_appPort);
 
     // TODO Use an enum? Find a better way
@@ -385,7 +385,7 @@ void PennChord::CreateOverlay() {
 // Fix requestee value
 
 void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    if (joined == false) {
+    if (joined == 0) {
         return;
     }
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
@@ -626,6 +626,10 @@ void PennChord::PrintInfo() {
 
 }
 
+void PennChord::SetJoinCallback(Callback<void> cb){
+    m_joinedCallback = cb;
+}
+
 string strHash(unsigned char *hash) {
     stringstream s;
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
@@ -634,3 +638,4 @@ string strHash(unsigned char *hash) {
     s << std::dec;
     return s.str();
 }
+

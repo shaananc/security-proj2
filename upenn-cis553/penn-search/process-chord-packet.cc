@@ -52,6 +52,11 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
 void PennChord::procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //DEBUG_LOG("RSP SUCCESSOR from " << p.originator.address);
     //CHORD_LOG("RSP_SUCCESSOR: Setting Successor to " << ReverseLookup(p.m_result.address));
+    if(joined == 1){
+        joined++;
+        m_joinedCallback();
+    }
+    
     m_successor->m_info = p.m_result;
     m_successor->notify(m_info);
 }

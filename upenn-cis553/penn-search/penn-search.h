@@ -73,6 +73,8 @@ class PennSearch : public PennApplication
     void update_node(std::map<std::string, std::vector<string> > &docs);
     void update_publish_list(std::map<std::string, std::vector<string> > &keyDocs);
     void remove_publish_list(std::vector<std::string> &keys);
+    
+    void chordJoined();
 
 
   protected:
@@ -81,6 +83,8 @@ class PennSearch : public PennApplication
   private:
     virtual void StartApplication (void);
     virtual void StopApplication (void);
+    
+    
 
     Ptr<PennChord> m_chord;
     uint32_t m_currentTransactionId;

@@ -145,6 +145,10 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
     { 
       // Send to Chord Sub-Layer
       tokens.erase (iterator);
+      if((*iterator).compare("JOIN") == 0 || (*iterator).compare("join") == 0){
+          m_chord->SetJoinCallback(MakeCallback(&PennSearch::chordJoined,this));
+      }
+      
       m_chord->ProcessCommand (tokens);
     } 
   if (command == "PING")
@@ -463,5 +467,11 @@ void PennSearch::remove_publish_list(std::vector<std::string> &keys){
     for(std::vector<std::string>::iterator it=keys.begin(); it!=keys.end(); it++){
         m_need_to_publish.erase(*it);
     }
+}
+
+void PennSearch::chordJoined(){
+    // TODO this is where we have to send a message that we want to move the associated lists
+    std::cout << "Did join callback! Yay!! " << ReverseLookup(m_local) << std::endl;
+
 }
 

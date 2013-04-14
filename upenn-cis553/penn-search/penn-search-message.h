@@ -37,8 +37,8 @@ public:
         PING_REQ = 1,
         PING_RSP = 2,
         // Define extra message types when needed 
-        PUBLISH_RSP = 3,
-        PUBLISH_REQ = 4,
+        PUBLISH_RSP = 9,
+        PUBLISH_REQ = 8,
     };
 
     PennSearchMessage(PennSearchMessage::MessageType messageType, uint32_t transactionId);

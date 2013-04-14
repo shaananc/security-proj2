@@ -561,6 +561,9 @@ void PennChord::SetJoinCallback(Callback<void> cb){
 NodeInfo PennChord::getSuccessor(){
     return m_successor->m_info;
 }
+NodeInfo PennChord::getPredecessor(){
+    return m_predecessor->m_info;
+}
 
 
 

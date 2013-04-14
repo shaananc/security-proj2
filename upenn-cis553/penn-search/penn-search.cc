@@ -329,18 +329,40 @@ void
 PennSearch::ProcessPublishReq(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     SEARCH_LOG("Received Publish Request from " << sourceAddress);
     // Find all documents in the range, remove them and add them to a publish request.
+    std::map<std::string, std::vector<string> > transferMap;
+    
     std::map<std::string, std::vector<string> >::iterator itr = m_documents.begin();
     while (itr != m_documents.end()) {
-        
+
         // Generate hash for keyword
         const unsigned char *keyword = (const unsigned char *) itr->first.c_str();
         unsigned char location[SHA_DIGEST_LENGTH];
         SHA1(keyword, sizeof (keyword), location);
+
+        // Generate hash for sourceAddress
+        unsigned char sourcelocation[SHA_DIGEST_LENGTH];
+        uint8_t ip_string[4];
+        sourceAddress.Serialize(ip_string);
+        SHA1((const unsigned char *) ip_string, sizeof (ip_string), sourcelocation);
+
         SEARCH_LOG("KEYWORD " << itr->first << "HASHES TO ")
-        PrintHash(location,std::cout);
+        PrintHash(location, std::cout);
         // Compare range of keyword
+        if (RangeCompare(m_chord->getPredecessor().location, location, sourcelocation) == 1) {
+             // add to list of keywords to be transferred
+            transferMap.insert(*itr);
+            
+            // Remove from m_documents
+            std::map<std::string, std::vector<string> >::iterator e_itr = itr;
+            itr++;
+            m_documents.erase(e_itr);
+           
+        } else {
+            itr++;
+        }
         
-        itr++;
+        // Send publish with transferMap
+        
     }
 
 }

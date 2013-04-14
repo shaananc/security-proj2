@@ -83,7 +83,8 @@ public:
     void procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
 
     NodeInfo getSuccessor();
-
+    NodeInfo getPredecessor();
+    
     void JoinOverlay(Ipv4Address landmark);
     void LeaveInitiate();
     void LeaveOverlay();

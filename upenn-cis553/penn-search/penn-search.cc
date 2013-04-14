@@ -225,18 +225,6 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
         //Update the local node publishing-to-do list
         update_publish_list(inverted); 
         
-        /* //This section needs to be moved into a function of it's own
-         * that is called periodically 
-        //Iterate over the map, for each key in the map perform a lookup
-        //to get the address of the node that key is hashed to
-        std::map<std::string, std::vector<string> >::iterator iter;
-        for(iter = inverted.begin(); iter != inverted.end(); iter++){
-            //Perform a lookup in the chord table with the keyword as key
-            //Ipv4Address node = chord_lookup(iter->first);
-            //Send new list of documents to the node
-            //m_chord->update_node(node, iter->second);
-        }
-        */
   }
 
   if (command == "SEARCH") {

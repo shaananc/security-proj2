@@ -75,7 +75,7 @@ class PennSearch : public PennApplication
     void update_node(std::map<std::string, std::vector<string> > &docs);
     void update_publish_list(std::map<std::string, std::vector<string> > &keyDocs);
     void remove_publish_list(std::vector<std::string> &keys);
-    void publish_lookup_keyword();
+    void publish_lookup();
     void chordJoined();
 
 
@@ -102,7 +102,7 @@ class PennSearch : public PennApplication
     //map of keys->documents this node still has to publish
     std::map<std::string, vector<std::string> > m_need_to_publish;
     //map of transactionID's->keys that this node is waiting on
-    std::map<uint32_t, std::string> m_transactions;
+    std::map<uint32_t, std::string> m_trackPublish;
 };
 
 #endif

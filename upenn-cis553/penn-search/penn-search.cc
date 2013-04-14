@@ -211,7 +211,8 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
-
+        
+        publish_lookup();
     
     }
 
@@ -248,12 +249,25 @@ PennSearch::SendPennSearchPing(Ipv4Address destAddress, std::string pingMessage)
 
 }
 
+//Periodic lookup function
 void
-PennSearch::publish_lookup_keyword(){
-
+PennSearch::publish_lookup(){
     //perform lookup's on keywords yet to publish
-
-        
+    for(std::map<std::string, std::vector<std::string> >::iterator iter = m_need_to_publish.begin(); iter!=m_need_to_publish.end(); iter++){
+        //only do lookups for those elements which don't already have 
+        //a lookup request in progress
+        if(m_trackPublish.find(iter->first)==m_trackPublish.end()){
+            unsigned char keyHash[SHA_DIGEST_LENGTH];
+            std::string key = iter->first;
+            unsigned char keyword[key.size()];
+            for(int h=0; h< key.size(); h++){
+                keyword[h] = key[h];
+            }
+            SHA1(keyword, sizeof(keyword), keyHash);
+            uint32_t lookRes = m_chord->Lookup(keyHash);
+            m_trackPublish.insert(std::make_pair(lookRes, key));
+        }
+    }
 }
 
 void

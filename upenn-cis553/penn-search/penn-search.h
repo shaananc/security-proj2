@@ -23,6 +23,7 @@
 #include "ns3/penn-chord.h"
 #include "ns3/penn-search-message.h"
 #include "ns3/ping-request.h"
+#include "ns3/SearchRes.h"
 
 #include "ns3/ipv4-address.h"
 #include <map>
@@ -36,13 +37,13 @@
 #include "ns3/boolean.h"
 
 using namespace ns3;
-
+/*
 typedef struct SearchRes {
   Ipv4Address queryNode;
   std::vector<std::string> keywords;
   std::vector<std::string> docs;
 } SearchRes;
-
+*/
 
 class PennSearch : public PennApplication
 {
@@ -82,8 +83,8 @@ class PennSearch : public PennApplication
     void remove_publish_list(std::vector<std::string> &keys);
 
     //Search functions
-    void ProcessSearchInit (SearchRes newSearch);
-    void ProcessSearchRes (SearchRes results);
+    void ProcessSearchInit (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void ProcessSearchRes (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     std::vector<std::string> SearchComp (std::string keyword, std::vector<std::string> search_list);
     void ForwardPartSearch (Ipv4Address destAddress, SearchRes results);
     void ProcessSearchLookupResult (Ipv4Address destAddress, SearchRes results);

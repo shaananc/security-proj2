@@ -393,7 +393,7 @@ void PennSearchMessage::SetPublishReq (std::map<std::string, std::vector<std::st
     }
 }
 
-
+// SearchInit Message
 
 PennSearchMessage::SearchInit
 PennSearchMessage::GetSearchInit ()
@@ -409,7 +409,7 @@ void PennSearchMessage::SetSearchInit (SearchRes &message)
     else{
         NS_ASSERT (m_messageType == SEARCH_INIT);
     }
-    m_message.SearchInit.searchMessage = message;
+    m_message.searchInit.searchMessage = message;
 }
 void
 PennSearchMessage::SearchInit::Print (std::ostream &os) const
@@ -417,21 +417,18 @@ PennSearchMessage::SearchInit::Print (std::ostream &os) const
   os << "SearchInit:: IP" << searchMessage.queryNode << "\n";
 
   for(int i=0; i<searchMessage.keywords.size(); i++){
-    os << "SearchInit::Keywords" << searchMessage.keywords.at(i) << "\n";
-  }
-  for(int i=0; i<searchMessage.docs.size(); i++){
-    os << "SearchInit::docs" << searchMessage.docs.at(i) << "\n";
+    os << "SearchInit::Keywords " << searchMessage.keywords.at(i) << "\n";
   }
 }
 
 void
 PennSearchMessage::SearchInit::Serialize (Buffer::Iterator &start) const
 {
-  start.WriteU16 (searchMessage.size());
-
-  //Save the size of the vector of docs for ease of deserialization
+  //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
   start.WriteU16 (searchMessage.docs.size());
+
+  start.WriteHtonU32 (searchMessage.queryNode.Get ());
 
   for(std::vector<std::string>::const_iterator iter=searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
             start.WriteU16 ((*iter).length());
@@ -446,35 +443,27 @@ PennSearchMessage::SearchInit::Serialize (Buffer::Iterator &start) const
 
 uint32_t
 PennSearchMessage::SearchInit::Deserialize (Buffer::Iterator &start)
-{  
-  std::vector<std::string> documents;
-  std::vector<std::string> keywords;
-  SearchRes msg;
-  uint16_t size = start.ReadU16 ();
-  for(int s=0; s<size; s++){
+{   
+  uint16_t keySize = start.ReadU16 ();
+  uint16_t docSize = start.ReadU16 ();
+
+  searchMessage.queryNode = Ipv4Address (start.ReadNtohU32 ());
+
+  for(int s=0; s<keySize; s++){
     uint16_t length = start.ReadU16 ();
     char* doc = (char*) malloc (length);
     start.Read ((uint8_t*)doc, length);
-    documents.push_back(doc);
+    searchMessage.keywords.push_back(doc);
     }
 
 
-  for(int s=0; s<size; s++){
+  for(int s=0; s<docSize; s++){
     uint16_t length = start.ReadU16 ();
     char* doc = (char*) malloc (length);
     start.Read ((uint8_t*)doc, length);
-    keywords.push_back(doc);
+    searchMessage.docs.push_back(doc);
     }
-
-  msg.keywords = keywords;
-  msg.docs = documents;
-
-  searchMessage.insert(msg);
-  free(str);
-  documents.clear();
-  keywords.clear();
-  }
-
+  
   return SearchInit::GetSerializedSize ();
 
 }
@@ -483,22 +472,24 @@ uint32_t
 PennSearchMessage::SearchInit::GetSerializedSize (void) const
 {
   uint32_t size;
-  size = searchMessage.size();
-  for(std::vector<std::string>::const_iterator iter=searchMessage.docs.begin(); iter!=searchMessage.docs.end(); iter++){
-    size = size + (*iter).length();
+  size = sizeof(uint16_t) + sizeof(uint16_t) + IPV4_ADDRESS_SIZE;
+  for(std::vector<std::string>::const_iterator iter = searchMessage.docs.begin(); iter!=searchMessage.docs.end(); iter++){
+    size = size + sizeof(uint16_t) + (*iter).length();
   }
 
-  for(std::vector<std::string>::const_iterator iter=it->searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
-    size = size + (*iter).length();
+  for(std::vector<std::string>::const_iterator it = searchMessage.keywords.begin(); it!=searchMessage.keywords.end(); it++){
+    size = size + sizeof(uint16_t) + (*it).length();
   }
 
   return size;
 }
 
+// SearchRsp Message
+
 PennSearchMessage::SearchRsp
 PennSearchMessage::GetSearchRsp ()
 {
-  return m_message.searchInit;
+  return m_message.searchRes;
 }
 
 void PennSearchMessage::SetSearchRsp (SearchRes &message)
@@ -509,7 +500,7 @@ void PennSearchMessage::SetSearchRsp (SearchRes &message)
     else{
         NS_ASSERT (m_messageType == SEARCH_INIT);
     }
-    m_message.SearchRsp.searchMessage = message;
+    m_message.searchRes.searchMessage = message;
 }
 void
 PennSearchMessage::SearchRsp::Print (std::ostream &os) const
@@ -527,11 +518,11 @@ PennSearchMessage::SearchRsp::Print (std::ostream &os) const
 void
 PennSearchMessage::SearchRsp::Serialize (Buffer::Iterator &start) const
 {
-  start.WriteU16 (searchMessage.size());
-
-  //Save the size of the vector of docs for ease of deserialization
+  //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
   start.WriteU16 (searchMessage.docs.size());
+
+  start.WriteHtonU32 (searchMessage.queryNode.Get ());
 
   for(std::vector<std::string>::const_iterator iter=searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
             start.WriteU16 ((*iter).length());
@@ -546,50 +537,42 @@ PennSearchMessage::SearchRsp::Serialize (Buffer::Iterator &start) const
 
 uint32_t
 PennSearchMessage::SearchRsp::Deserialize (Buffer::Iterator &start)
-{  
-  std::vector<std::string> documents;
-  std::vector<std::string> keywords;
-  SearchRes msg;
-  uint16_t size = start.ReadU16 ();
-  for(int s=0; s<size; s++){
+{   
+  uint16_t keySize = start.ReadU16 ();
+  uint16_t docSize = start.ReadU16 ();
+
+  searchMessage.queryNode = Ipv4Address (start.ReadNtohU32 ());
+
+  for(int s=0; s<keySize; s++){
     uint16_t length = start.ReadU16 ();
     char* doc = (char*) malloc (length);
     start.Read ((uint8_t*)doc, length);
-    documents.push_back(doc);
+    searchMessage.keywords.push_back(doc);
     }
 
 
-  for(int s=0; s<size; s++){
+  for(int s=0; s<docSize; s++){
     uint16_t length = start.ReadU16 ();
     char* doc = (char*) malloc (length);
     start.Read ((uint8_t*)doc, length);
-    keywords.push_back(doc);
+    searchMessage.docs.push_back(doc);
     }
-
-  msg.keywords = keywords;
-  msg.docs = documents;
-
-  searchMessage.insert(msg);
-  free(str);
-  documents.clear();
-  keywords.clear();
-  }
-
+  
   return SearchRsp::GetSerializedSize ();
 
 }
 
 uint32_t 
-PennSearchMessage::SearchInit::GetSerializedSize (void) const
+PennSearchMessage::SearchRsp::GetSerializedSize (void) const
 {
   uint32_t size;
-  size = searchMessage.size();
-  for(std::vector<std::string>::const_iterator iter=searchMessage.docs.begin(); iter!=searchMessage.docs.end(); iter++){
-    size = size + (*iter).length();
+  size = sizeof(uint16_t) + sizeof(uint16_t) + IPV4_ADDRESS_SIZE;
+  for(std::vector<std::string>::const_iterator iter = searchMessage.docs.begin(); iter!=searchMessage.docs.end(); iter++){
+    size = size + sizeof(uint16_t) + (*iter).length();
   }
 
-  for(std::vector<std::string>::const_iterator iter=it->searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
-    size = size + (*iter).length();
+  for(std::vector<std::string>::const_iterator it = searchMessage.keywords.begin(); it!=searchMessage.keywords.end(); it++){
+    size = size + sizeof(uint16_t) + (*it).length();
   }
 
   return size;
@@ -599,7 +582,7 @@ PennSearchMessage::SearchInit::GetSerializedSize (void) const
 PennSearchMessage::SearchFin
 PennSearchMessage::GetSearchFin ()
 {
-  return m_message.searchInit;
+  return m_message.searchFin;
 }
 
 void PennSearchMessage::SetSearchFin (SearchRes &message)
@@ -610,8 +593,9 @@ void PennSearchMessage::SetSearchFin (SearchRes &message)
     else{
         NS_ASSERT (m_messageType == SEARCH_INIT);
     }
-    m_message.SearchFin.searchMessage = message;
+    m_message.searchFin.searchMessage = message;
 }
+
 void
 PennSearchMessage::SearchFin::Print (std::ostream &os) const
 {
@@ -628,11 +612,11 @@ PennSearchMessage::SearchFin::Print (std::ostream &os) const
 void
 PennSearchMessage::SearchFin::Serialize (Buffer::Iterator &start) const
 {
-  start.WriteU16 (searchMessage.size());
-
-  //Save the size of the vector of docs for ease of deserialization
+  //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
   start.WriteU16 (searchMessage.docs.size());
+
+  start.WriteHtonU32 (searchMessage.queryNode.Get ());
 
   for(std::vector<std::string>::const_iterator iter=searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
             start.WriteU16 ((*iter).length());
@@ -647,35 +631,27 @@ PennSearchMessage::SearchFin::Serialize (Buffer::Iterator &start) const
 
 uint32_t
 PennSearchMessage::SearchFin::Deserialize (Buffer::Iterator &start)
-{  
-  std::vector<std::string> documents;
-  std::vector<std::string> keywords;
-  SearchRes msg;
-  uint16_t size = start.ReadU16 ();
-  for(int s=0; s<size; s++){
+{   
+  uint16_t keySize = start.ReadU16 ();
+  uint16_t docSize = start.ReadU16 ();
+
+  searchMessage.queryNode = Ipv4Address (start.ReadNtohU32 ());
+
+  for(int s=0; s<keySize; s++){
     uint16_t length = start.ReadU16 ();
     char* doc = (char*) malloc (length);
     start.Read ((uint8_t*)doc, length);
-    documents.push_back(doc);
+    searchMessage.keywords.push_back(doc);
     }
 
 
-  for(int s=0; s<size; s++){
+  for(int s=0; s<docSize; s++){
     uint16_t length = start.ReadU16 ();
     char* doc = (char*) malloc (length);
     start.Read ((uint8_t*)doc, length);
-    keywords.push_back(doc);
+    searchMessage.docs.push_back(doc);
     }
-
-  msg.keywords = keywords;
-  msg.docs = documents;
-
-  searchMessage.insert(msg);
-  free(str);
-  documents.clear();
-  keywords.clear();
-  }
-
+  
   return SearchFin::GetSerializedSize ();
 
 }
@@ -684,13 +660,13 @@ uint32_t
 PennSearchMessage::SearchFin::GetSerializedSize (void) const
 {
   uint32_t size;
-  size = searchMessage.size();
-  for(std::vector<std::string>::const_iterator iter=searchMessage.docs.begin(); iter!=searchMessage.docs.end(); iter++){
-    size = size + (*iter).length();
+  size = sizeof(uint16_t) + sizeof(uint16_t) + IPV4_ADDRESS_SIZE;
+  for(std::vector<std::string>::const_iterator iter = searchMessage.docs.begin(); iter!=searchMessage.docs.end(); iter++){
+    size = size + sizeof(uint16_t) + (*iter).length();
   }
 
-  for(std::vector<std::string>::const_iterator iter=it->searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
-    size = size + (*iter).length();
+  for(std::vector<std::string>::const_iterator it = searchMessage.keywords.begin(); it!=searchMessage.keywords.end(); it++){
+    size = size + sizeof(uint16_t) + (*it).length();
   }
 
   return size;

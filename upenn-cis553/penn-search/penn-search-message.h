@@ -23,7 +23,8 @@
 #include "ns3/ipv4-address.h"
 #include "ns3/packet.h"
 #include "ns3/object.h"
-//#include "SearchRes.h"
+//#include "ns3/penn-search.h"
+#include "ns3/SearchRes.h"
 
 using namespace ns3;
 
@@ -191,19 +192,19 @@ class PennSearchMessage : public Header
     //Set the message
     void SetPublishReq (std::map<std::string, std::vector<std::string> > &message);
 
-    //Returns PublishReq Struct
+    //Returns searchInit Struct
     SearchInit GetSearchInit ();
 
     //Set the message
     void SetSearchInit (SearchRes &message);
 
-    //Returns PublishReq Struct
+    //Returns searchRes Struct
     SearchRsp GetSearchRsp ();
 
     //Set the message
     void SetSearchRsp (SearchRes &message);
 
-    //Returns PublishReq Struct
+    //Returns searchFin Struct
     SearchFin GetSearchFin ();
 
     //Set the message

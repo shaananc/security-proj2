@@ -537,7 +537,43 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId)
     }
 }
 
-bool PennChord::RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high) {
+
+
+void PennChord::PrintInfo() {
+    //    cout << "Hash ";
+    //    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+    //        cout << std::hex << (int) m_info.location[i];
+    //    }
+    //    cout << std::endl << std::dec;
+    //CHORD_LOG("\nRingState: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
+
+    CHORD_LOG("\nRingState<" << strHash(m_info.location) << ">: Pred<"
+            << ReverseLookup(m_predecessor->m_info.address)<< "," << strHash(m_predecessor->m_info.location)
+            << ">,Succ<" << ReverseLookup(m_successor->m_info.address) <<
+            "," << strHash(m_successor->m_info.location) << ">"
+            );
+
+}
+
+void PennChord::SetJoinCallback(Callback<void> cb){
+    m_joinedCallback = cb;
+}
+NodeInfo PennChord::getSuccessor(){
+    return m_successor->m_info;
+}
+
+
+
+string strHash(unsigned char *hash) {
+    stringstream s;
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        s << std::hex << (int) hash[i];
+    }
+    s << std::dec;
+    return s.str();
+}
+
+bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high) {
     string me = string((const char *) mid);
     string pred = string((const char *) low);
     string suc = string((const char *) high);
@@ -584,58 +620,11 @@ bool PennChord::RangeCompare(unsigned char *low, unsigned char *mid, unsigned ch
       return 2;
     }
 
-    /*
-    //  DEBUG_LOG("RC " << pre_cmp << " pre and post " << cur_cmp << endl);
-    //  DEBUG_LOG("RC " << (pre_cmp > 0 && cur_cmp <= 0) << endl);
-
-    // For open interval
-    bool strict_order = pre_cmp > 0 && cur_cmp < 0;
-    bool wrap_order1 = pre_cmp > 0 && both_cmp < 0;
-    bool wrap_order2 = cur_cmp < 0 && both_cmp > 0 && 0;
-
-
-
-    //    CHORD_LOG("Strict: " << strict_order << " Wrap1 " << wrap_order1 << " Wrap2 " << wrap_order2);
-    //    CHORD_LOG("Precmp: " << pre_cmp << " Mecmp " << cur_cmp << " Succmp " << both_cmp);
-
-    if (strict_order || wrap_order1 || wrap_order2) {
-        return 1;
-    }// For half closed interval
-    else if (pre_cmp > 0 && cur_cmp <= 0) {
-        return 2;
-    } else {
-        // Check to see if only single node
-        return (string((const char *) low).compare(string((const char *) high)) == 0);
-    }
-    */
 }
 
-void PennChord::PrintInfo() {
-    //    cout << "Hash ";
-    //    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-    //        cout << std::hex << (int) m_info.location[i];
-    //    }
-    //    cout << std::endl << std::dec;
-    //CHORD_LOG("\nRingState: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
-
-    CHORD_LOG("\nRingState<" << strHash(m_info.location) << ">: Pred<"
-            << ReverseLookup(m_predecessor->m_info.address)<< "," << strHash(m_predecessor->m_info.location)
-            << ">,Succ<" << ReverseLookup(m_successor->m_info.address) <<
-            "," << strHash(m_successor->m_info.location) << ">"
-            );
-
-}
-
-void PennChord::SetJoinCallback(Callback<void> cb){
-    m_joinedCallback = cb;
-}
-
-string strHash(unsigned char *hash) {
-    stringstream s;
+void PrintHash(unsigned char *hash, std::ostream &os){
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-        s << std::hex << (int) hash[i];
+        os << std::hex << (int) hash[i];
     }
-    s << std::dec;
-    return s.str();
+    os << std::endl << std::dec;
 }
-

@@ -52,6 +52,8 @@ class PennSearch : public PennApplication
     void AuditPings ();
     uint32_t GetNextTransactionId ();
    
+    
+    void ProcessPublishReq(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
 
     // Chord Callbacks
     void HandleChordPingSuccess (Ipv4Address destAddress, std::string message);

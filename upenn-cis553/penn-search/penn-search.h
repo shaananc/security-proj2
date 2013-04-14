@@ -102,7 +102,7 @@ class PennSearch : public PennApplication
     //map of keys->documents this node still has to publish
     std::map<std::string, vector<std::string> > m_need_to_publish;
     //map of transactionID's->keys that this node is waiting on
-    std::map<uint32_t, std::string> m_trackPublish;
+    std::map<std::string, uint32_t> m_trackPublish;
 };
 
 #endif

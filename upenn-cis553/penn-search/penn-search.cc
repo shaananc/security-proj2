@@ -260,12 +260,12 @@ PennSearch::publish_lookup(){
             unsigned char keyHash[SHA_DIGEST_LENGTH];
             std::string key = iter->first;
             unsigned char keyword[key.size()];
-            for(int h=0; h< key.size(); h++){
+            for(int h=0; h < key.size(); h++){
                 keyword[h] = key[h];
             }
             SHA1(keyword, sizeof(keyword), keyHash);
             uint32_t lookRes = m_chord->Lookup(keyHash);
-            m_trackPublish.insert(std::make_pair(lookRes, key));
+            m_trackPublish.insert(std::make_pair(key, lookRes));
         }
     }
 }

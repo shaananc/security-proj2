@@ -23,6 +23,8 @@
 #include "ns3/ipv4-address.h"
 #include "ns3/packet.h"
 #include "ns3/object.h"
+//#include "ns3/penn-search.h"
+#include "ns3/SearchRes.h"
 
 using namespace ns3;
 
@@ -37,9 +39,12 @@ public:
         PING_REQ = 1,
         PING_RSP = 2,
         // Define extra message types when needed 
-        PUBLISH_RSP = 9,
-        PUBLISH_REQ = 8,
-    };
+        PUBLISH_REQ = 3,
+        PUBLISH_RSP = 4,
+        SEARCH_INIT = 5,
+        SEARCH_RES = 6,
+        SEARCH_FIN = 7,
+      };
 
     PennSearchMessage(PennSearchMessage::MessageType messageType, uint32_t transactionId);
 
@@ -98,9 +103,9 @@ public:
         uint32_t Deserialize(Buffer::Iterator &start);
         // Payload
         std::string pingMessage;
-    };
+      };
 
-    struct PublishRsp {
+ struct PublishRsp {
         void Print(std::ostream &os) const;
         uint32_t GetSerializedSize(void) const;
         void Serialize(Buffer::Iterator &start) const;
@@ -115,16 +120,51 @@ public:
         uint32_t Deserialize(Buffer::Iterator &start);
     };
 
-private:
+    struct SearchInit
+    {
 
-    struct {
+        void Print (std::ostream &os) const;
+        uint32_t GetSerializedSize (void) const;
+        void Serialize (Buffer::Iterator &start) const;
+        uint32_t Deserialize (Buffer::Iterator &start);
+      //Check this - should be type of struct
+        SearchRes searchMessage;
+    };
+
+    struct SearchRsp
+    {
+
+        void Print (std::ostream &os) const;
+        uint32_t GetSerializedSize (void) const;
+        void Serialize (Buffer::Iterator &start) const;
+        uint32_t Deserialize (Buffer::Iterator &start);
+      //Check this
+        SearchRes searchMessage;
+    };
+
+    struct SearchFin
+    {
+
+        void Print (std::ostream &os) const;
+        uint32_t GetSerializedSize (void) const;
+        void Serialize (Buffer::Iterator &start) const;
+        uint32_t Deserialize (Buffer::Iterator &start);
+        SearchRes searchMessage;
+    };
+
+  private:
+    struct
+      {
         PingReq pingReq;
         PingRsp pingRsp;
         PublishRsp publishRsp;
         PublishReq publishReq;
-    } m_message;
-
-public:
+        SearchInit searchInit;
+        SearchRsp searchRes;
+        SearchFin searchFin;
+      } m_message;
+    
+  public:
     /**
      *  \returns PingReq Struct
      */
@@ -152,6 +192,25 @@ public:
 
     //Set the message
     void SetPublishRsp(std::map<std::string, std::vector<std::string> > &message);
+
+    //Returns searchInit Struct
+    SearchInit GetSearchInit ();
+
+    //Set the message
+    void SetSearchInit (SearchRes &message);
+
+    //Returns searchRes Struct
+    SearchRsp GetSearchRsp ();
+
+    //Set the message
+    void SetSearchRsp (SearchRes &message);
+
+    //Returns searchFin Struct
+    SearchFin GetSearchFin ();
+
+    //Set the message
+    void SetSearchFin (SearchRes &message);
+
 
 }; // class PennSearchMessage
 

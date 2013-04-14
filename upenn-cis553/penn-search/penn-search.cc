@@ -258,7 +258,7 @@ PennSearch::ProcessCommand (std::vector<std::string> tokens)
     Ipv4Address searchAddress = ResolveNodeIpAddress(nodeId);
     if (searchAddress != m_local) {
       //Send list to searchAddress
-      //Message Type SearchInit
+      SendSearchInit (searchAddress, newSearch);
     }
     else {
       unsigned char keyHash[SHA_DIGEST_LENGTH];
@@ -329,6 +329,9 @@ PennSearch::RecvMessage (Ptr<Socket> socket)
       case PennSearchMessage::SEARCH_RES:
         ProcessSearchRes (message, sourceAddress, sourcePort);
         break;
+      case PennSearchMessage::SEARCH_FIN:
+        ProcessSearchFin (message, sourceAddress, sourcePort);
+        break;
       default:
         ERROR_LOG ("Unknown Message Type!");
         break;
@@ -372,6 +375,7 @@ void
 PennSearch::ProcessSearchInit (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort)
 {
   SearchRes newSearch = message.GetSearchInit().searchMessage;
+  SEARCH_LOG("Searching for<" << printDocs(newSearch.keywords) << ">");
 
   unsigned char keyHash[SHA_DIGEST_LENGTH];
   unsigned char keyword[sizeof (newSearch.keywords.front())];
@@ -398,7 +402,7 @@ PennSearch::ProcessSearchRes (PennSearchMessage message, Ipv4Address sourceAddre
   if (res.empty()) {
     SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", \"Empty List\">");
     //Send list back to originating node
-    //Message Type SearchFin
+    SendSearchFin(results.queryNode, results);
     return;
   }
   results.keywords.erase(results.keywords.begin());
@@ -406,7 +410,7 @@ PennSearch::ProcessSearchRes (PennSearchMessage message, Ipv4Address sourceAddre
   if (results.keywords.empty()) {
     SEARCH_LOG("\nSearchResults<" <<ReverseLookup(results.queryNode) << ", " << printDocs(res));
     //Send list back to originating node
-    //Message Type SearchFin
+    SendSearchFin(results.queryNode, results);
     return;
   }
   else {
@@ -421,6 +425,13 @@ PennSearch::ProcessSearchRes (PennSearchMessage message, Ipv4Address sourceAddre
     //lookup hash of kewords.front(), then send keywords and docs to appropriate node
   }
 
+}
+
+void
+PennSearch::ProcessSearchFin (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort)
+{
+  SearchRes results = message.GetSearchRsp().searchMessage;
+  SEARCH_LOG("\nSearchResults<" <<ReverseLookup(results.queryNode) << ", " << printDocs(results.docs));
 }
 
 std::vector<std::string>
@@ -449,24 +460,48 @@ PennSearch::ForwardPartSearch (Ipv4Address destAddress, SearchRes results)
   if (destAddress != Ipv4Address::GetAny ())
     {
       uint32_t transactionId = GetNextTransactionId ();
-      /*
-      Ptr<PingRequest> pingRequest = Create<PingRequest> (transactionId, Simulator::Now(), destAddress, pingMessage);
-      // Add to ??
-      // m_pingTracker.insert (std::make_pair (transactionId, pingRequest));
       Ptr<Packet> packet = Create<Packet> ();
       PennSearchMessage message = PennSearchMessage (PennSearchMessage::SEARCH_RES, transactionId);
-      message.SetPingReq (pingMessage);
+      message.SetSearchRsp (results);
       packet->AddHeader (message);
       m_socket->SendTo (packet, 0 , InetSocketAddress (destAddress, m_appPort));
-      */
     }
 }
+
+void
+PennSearch::SendSearchInit (Ipv4Address destAddress, SearchRes newSearch)
+{
+  if (destAddress != Ipv4Address::GetAny ())
+    {
+      uint32_t transactionId = GetNextTransactionId ();
+      Ptr<Packet> packet = Create<Packet> ();
+      PennSearchMessage message = PennSearchMessage (PennSearchMessage::SEARCH_INIT, transactionId);
+      message.SetSearchInit (newSearch);
+      packet->AddHeader (message);
+      m_socket->SendTo (packet, 0 , InetSocketAddress (destAddress, m_appPort));
+    }
+}
+
+void
+PennSearch::SendSearchFin (Ipv4Address destAddress, SearchRes results)
+{
+  if (destAddress != Ipv4Address::GetAny ())
+    {
+      uint32_t transactionId = GetNextTransactionId ();
+      Ptr<Packet> packet = Create<Packet> ();
+      PennSearchMessage message = PennSearchMessage (PennSearchMessage::SEARCH_FIN, transactionId);
+      message.SetSearchFin (results);
+      packet->AddHeader (message);
+      m_socket->SendTo (packet, 0 , InetSocketAddress (destAddress, m_appPort));
+    }
+}
+
 
 void
 PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results)
 {
   if (results.docs.empty()) {
-    SEARCH_LOG("Search< " << printDocs(results.keywords) << ">");
+    SEARCH_LOG("Search<" << printDocs(results.keywords) << ">");
   }
   else {
     SEARCH_LOG ("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs));

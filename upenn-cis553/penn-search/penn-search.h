@@ -85,8 +85,11 @@ class PennSearch : public PennApplication
     //Search functions
     void ProcessSearchInit (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     void ProcessSearchRes (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void ProcessSearchFin (PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     std::vector<std::string> SearchComp (std::string keyword, std::vector<std::string> search_list);
     void ForwardPartSearch (Ipv4Address destAddress, SearchRes results);
+    void SendSearchInit (Ipv4Address destAddress, SearchRes newSearch);
+    void SendSearchFin (Ipv4Address destAddress, SearchRes results);
     void ProcessSearchLookupResult (Ipv4Address destAddress, SearchRes results);
     std::string printDocs (std::vector<std::string> docList);
 

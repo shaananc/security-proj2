@@ -32,6 +32,7 @@ void PennChord::procRSP_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sou
     //CHORD_LOG("RSP_SUCCESSOR: Setting Successor to " << ReverseLookup(p.m_result.address));
     m_successor->m_info = p.m_result;
     m_successor->notify(m_info);
+    m_chordTracker.erase(p.m_transactionId);
 }
 
 void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
@@ -55,8 +56,6 @@ void PennChord::procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
 
     m_successor->m_info = p.m_result;
     m_successor->notify(m_info);
-
-
 
 }
 
@@ -153,6 +152,7 @@ void PennChord::procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address so
     if (!m_lookupSuccessFn.IsNull()) {
         m_lookupSuccessFn(p.m_result.location, SHA_DIGEST_LENGTH, p.m_result.address, p.m_transactionId);
     }
+    m_chordTracker.erase(p.m_transactionId);
 }
 
 void PennChord::procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {

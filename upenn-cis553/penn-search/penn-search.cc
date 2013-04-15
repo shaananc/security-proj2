@@ -537,7 +537,10 @@ PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results
 }
 
 void PennSearch::ProcessPublishRsp(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    SEARCH_LOG("PROCESS_PUBLISH_RSP: NOT YET IMPLEMENTED");
+    //SEARCH_LOG("PROCESS_PUBLISH_RSP: NOT YET IMPLEMENTED");
+    std::map<std::string, std::vector<std::string> > documents = message.GetPublishRsp().publishMessage;
+    //update the local <key, docs> at the node
+    update_node(documents);
 }
 
 void
@@ -606,10 +609,28 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
         ProcessSearchLookupResult(address, results);
 
     }
-
-
-    // TODO: Publish lookup 
+    else{
+        map<std::string, uint32_t>::iterator itr;
+        for(itr=m_trackPublish.begin(); itr!=m_trackPublish.end(); itr++){
+            if(transactionId == itr->second){
+                std::map<std::string,std::vector<std::string> >::iterator it = m_need_to_publish.find(itr->first);
+                if(it != m_need_to_publish.end()){
+                std::map<std::string, std::vector<std::string> > message;
+                message.insert(std::make_pair(it->first, it->second));
+                uint32_t tId = GetNextTransactionId();
+                //Send PennSearchMessage to the node with the corresponding <key, doc> map
+                PennSearchMessage resp = PennSearchMessage(PennSearchMessage::PUBLISH_RSP, tId);
+                resp.SetPublishRsp(message);
+                Ptr<Packet> packet = Create<Packet> ();
+                packet->AddHeader(resp);
+                m_socket->SendTo(packet, 0, InetSocketAddress(address, m_appPort));
+                
+                }
+            }
+        }
+    }
 }
+    // TODO: Publish lookup 
 // Override PennLog
 
 void

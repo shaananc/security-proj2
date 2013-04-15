@@ -27,28 +27,44 @@ using namespace ns3;
 void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
     switch (m_messageType) {
         case(REQ_CP):
-	  //	  DEBUG_LOG("REQ PREDECESSOR");
+            os << "REQ PREDECESSOR";
             break;
         case(REQ_NOT):
-	  // DEBUG_LOG("REQ NOTIFY");
+            os << "REQ NOTIFY";
             break;
         case(REQ_SUC):
-	  // DEBUG_LOG("REQ SUCCESSOR");
+            os << "REQ SUCCESSOR";
             break;
         case(RSP_CP):
-	  // DEBUG_LOG("RSP PREDECESSOR");
+            os << "RSP PREDECESSOR";
             break;
         case(RSP_SUC):
-	  // DEBUG_LOG("RSP SUCCESSOR");
+            os << "RSP SUCCESSOR";
             break;
         case(RING_DBG):
-	  // DEBUG_LOG("RING DEUBG");
+            os << "RING DEUBG";
             break;
+        case(LEAVE_SUC):
+            os << "LEAVE SUCCSSOR";
+            break;
+        case(LEAVE_PRED):
+            os << "LEAVE PREDECESSOR";
+            break;
+        case(LEAVE_CONF):
+            os << "LEAVE CONFIRMED";
+            break;
+        case(REQ_LOOK):
+            os << "REQ LOOK";
+            break;
+        case(RSP_LOOK):
+            os << "RSP LOOK";
+            break;
+            
         default:
-	  // DEBUG_LOG("INVALID MESSAGE TYPE");
+            os << "INVALID MESSAGE TYPE: " << m_messageType;
             break;
     }
-    /*
+
     os << std::endl;
     os << "Result Address " << m_result.address << std::endl;
     os << "Result Location ";
@@ -65,7 +81,7 @@ void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
     os << std::endl;
 
     os << std::dec << m_transactionId << " transaction id" << std::endl;
-    */
+    os << "\n\n\n";
 }
 
 uint32_t PennChordMessage::PennChordPacket::GetSerializedSize(void)const {

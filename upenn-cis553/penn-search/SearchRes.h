@@ -8,8 +8,9 @@
 #ifndef SEARCHRES_H
 #define	SEARCHRES_H
 
-#include <string>
 #include <vector>
+#include <string>
+#include "ns3/ipv4-address.h"
 
 using namespace ns3;
 

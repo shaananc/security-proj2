@@ -41,6 +41,8 @@
 using namespace ns3;
 
 string strHash(unsigned char *hash);
+bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
+void PrintHash(unsigned char *hash, std::ostream &os);
 
 class PennChord : public PennApplication {
 public:
@@ -64,7 +66,7 @@ public:
     // From PennApplication
     virtual void ProcessCommand(std::vector<std::string> tokens);
 
-    
+
     void ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
@@ -79,6 +81,9 @@ public:
     void procLEAVE_PRED(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+
+    NodeInfo getSuccessor();
+    NodeInfo getPredecessor();
     
     void JoinOverlay(Ipv4Address landmark);
     void LeaveInitiate();
@@ -87,16 +92,17 @@ public:
     uint32_t Lookup(unsigned char location[]);
     void SetLookupSuccessCallback(Callback<void, uint8_t*, uint8_t, Ipv4Address, uint32_t> lookupSuccessFn);
     void SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t, uint32_t> lookupFailureFn);
+    void SetJoinCallback(Callback<void> cb);
 
     void PrintInfo();
-    
+
     void stabilize();
     bool notify(int32_t address);
 
-    bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
-    
+
+
     void HandleRequestTimeout(uint32_t transactionId);
-       
+
     void inc_lookups();
     void inc_hops();
     // TODO Later
@@ -127,16 +133,17 @@ private:
     Callback <void, Ipv4Address, std::string> m_pingRecvFn;
     Callback <void, uint8_t*, uint8_t, Ipv4Address, uint32_t> m_lookupSuccessFn;
     Callback <void, uint8_t*, uint8_t, uint32_t> m_lookupFailureFn;
+    Callback<void> m_joinedCallback;
 
     uint32_t num_lookups;
     uint32_t num_hops;
 
-    bool joined;
+    int joined;
     NodeInfo m_info;
     // node: self 
-    Ptr<remote_node> m_remoteNodeSelf; 
+    Ptr<remote_node> m_remoteNodeSelf;
     // node: successor
-    Ptr<remote_node> m_successor; 
+    Ptr<remote_node> m_successor;
     // node: predecessor
     Ptr<remote_node> m_predecessor;
     std::map<uint32_t, Ptr<PennChordTransaction> > m_chordTracker;

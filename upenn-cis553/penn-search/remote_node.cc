@@ -40,7 +40,7 @@ remote_node::remote_node(NodeInfo info,
     this->m_successor = s;
     NodeInfo t;
     t.address = Ipv4Address("0.0.0.0");
-    m_predecessor = t;
+    this->m_predecessor = t;
 
 
 }
@@ -61,8 +61,8 @@ void remote_node::SendRPC(PennChordMessage::PennChordPacket p) {
     message.SetChordPacket(p);
     packet->AddHeader(message);
     m_socket->SendTo(packet, 0, InetSocketAddress(m_info.address, m_appPort));
-//    p.Print(std::cout);
-//    std::cout << "That is being sent to " << m_info.address << std::endl;
+    //p.Print(std::cout);
+    //std::cout << "That is being sent to " << m_info.address << std::endl;
 }
 
 PennChordMessage::PennChordPacket remote_node::getLocation(NodeInfo originator) {

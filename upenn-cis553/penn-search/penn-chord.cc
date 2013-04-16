@@ -410,13 +410,13 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             }
             case (PennChordMessage::PennChordPacket::REQ_SUC):
             {
-                // being handled through callbacks
-                //procREQ_SUC(p, sourceAddress, sourcePort);
+                procREQ_SUC(p, sourceAddress, sourcePort);
                 break;
             }
             case (PennChordMessage::PennChordPacket::RSP_SUC):
             {
-                procRSP_SUC(p, sourceAddress, sourcePort);
+                // being handled through callbacks
+                //procRSP_SUC(p, sourceAddress, sourcePort);
                 break;
             }
             case (PennChordMessage::PennChordPacket::REQ_NOT):

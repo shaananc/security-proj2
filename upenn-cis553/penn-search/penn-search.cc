@@ -205,6 +205,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
                 //add document to doc list and insert into map
                 docs.push_back(doc);
                 inverted.insert(std::make_pair(item, docs));
+                SEARCH_LOG ("/nPUBLISH <keyword: " << item << ", docID: " << doc);
                 //keep track of how many tokes there are in the string
                 i++;
             }
@@ -252,6 +253,44 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
         }
 
     } // End Search command
+
+    if (command == "SET4")
+      {
+
+    // Populate document list for debugging - comment out actual
+    std::string key1 = "HELP";
+    //std::string key2 = "MAYBE";
+    std::string doc1 = "RLM1";
+    std::string doc2 = "RLM2";
+    //std::string doc3 = "Doc3";
+    std::vector<std::string> inv1;
+    inv1.push_back(doc1);
+    inv1.push_back(doc2);
+    //std::vector<std::string> inv2;
+    //inv2.push_back(doc2);
+    //inv2.push_back(doc3);
+    m_documents.insert(std::make_pair(key1, inv1));
+    //m_documents.insert(std::make_pair(key2, inv2));
+      }
+
+    if (command == "SET0")
+      {
+
+    // Populate document list for debugging - comment out actual
+        // std::string key1 = "HELP";
+    std::string key2 = "MAYBE";
+    //std::string doc1 = "Doc1";
+    std::string doc2 = "RLM2";
+    std::string doc3 = "RLM3";
+    //std::vector<std::string> inv1;
+    //inv1.push_back(doc1);
+    //inv1.push_back(doc2);
+    std::vector<std::string> inv2;
+    inv2.push_back(doc2);
+    inv2.push_back(doc3);
+    //m_documents.insert(std::make_pair(key1, inv1));
+    m_documents.insert(std::make_pair(key2, inv2));
+      }
 
 }
 
@@ -453,7 +492,7 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
     results.keywords.erase(results.keywords.begin());
     results.docs = res;
     if (results.keywords.empty()) {
-        SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res));
+      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res) << ">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
         return;
@@ -679,12 +718,17 @@ PennSearch::SetSearchVerbose(bool on) {
 
 void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &docs) {
     for (std::map<std::string, std::vector<std::string> >::iterator it = docs.begin(); it != docs.end(); it++) {
+        //Keyword doesn't exist
         if (m_documents.find(it->first) == m_documents.end()) {
             m_documents.insert(std::make_pair(it->first, it->second));
-        } else {
+            for(std::vector<std::string>::iterator iter = it->second.begin(); iter != it->second.end(); iter++){
+             SEARCH_LOG ("/nPUBLISH <keyword: " << it->first << ", docID: " << *iter);
+            }
+        } else { //keyword exists in map
             std::vector<string>::iterator strItr;
             for (strItr = it->second.begin(); strItr != it->second.end(); strItr++) {
                 (m_documents.find(it->first)->second).push_back(*strItr);
+                 SEARCH_LOG ("/nPUBLISH <keyword: " << it->first << ", docID: " << *strItr);
             }
         }
     }

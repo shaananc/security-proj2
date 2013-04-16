@@ -352,6 +352,7 @@ uint32_t PennChord::Lookup(unsigned char location[]) {
   inLookup = true;
     num_lookups++;
     GetNextTransactionId();
+    CHORD_LOG("\nLookupIssue <current:" << strHash(m_info.location) << ", target: " << strHash(location) << ">");
     PennChordMessage::PennChordPacket chordPacket = m_remoteNodeSelf->find_successor(m_info, location, m_currentTransactionId);
     Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRSP_LOOK, this), m_currentTransactionId, chordPacket, m_remoteNodeSelf, m_requestTimeout, m_maxRequestRetries);
     m_chordTracker[m_currentTransactionId] = transaction;
@@ -572,9 +573,9 @@ NodeInfo PennChord::getPredecessor() {
 string strHash(unsigned char *hash) {
     stringstream s;
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
-      /*if (i > 0 && (i%2 == 0)) {
+      if (i > 0 && (i%2 == 0)) {
         s << ".";
-        }*/
+      }
         s << std::hex << (int) hash[i];
     }
     s << std::dec;

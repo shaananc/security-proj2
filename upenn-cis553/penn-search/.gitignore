@@ -1,0 +1,7 @@
+.lock-wscript
+regression.pyc
+waf-tools/cflags.pyc
+waf-tools/command.pyc
+waf-tools/pkgconfig.pyc
+waf-tools/shellcmd.pyc
+wutils.pyc

@@ -237,6 +237,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
         if (searchAddress != m_local) {
             //Send list to searchAddress
             SendSearchInit(searchAddress, newSearch);
+            //ForwardPartSearch(searchAddress, newSearch);
         } else {
             unsigned char keyHash[SHA_DIGEST_LENGTH];
             unsigned char keyword[sizeof (newSearch.keywords.front())];
@@ -321,6 +322,7 @@ PennSearch::RecvMessage(Ptr<Socket> socket) {
             ProcessSearchInit(message, sourceAddress, sourcePort);
             break;
         case PennSearchMessage::SEARCH_RES:
+          SEARCH_LOG("Got SearchRes...Processing");
             ProcessSearchRes(message, sourceAddress, sourcePort);
             break;
         case PennSearchMessage::SEARCH_FIN:
@@ -431,6 +433,7 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
 
 void
 PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
+  SEARCH_LOG("SearchRes received from " << sourceAddress);
     SearchRes results = message.GetSearchRsp().searchMessage;
 
     std::vector<std::string> res;
@@ -468,8 +471,8 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
 
 void
 PennSearch::ProcessSearchFin(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    SearchRes results = message.GetSearchRsp().searchMessage;
-    SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(results.docs));
+    SearchRes results = message.GetSearchFin().searchMessage;
+    SEARCH_LOG("\nSearchResults<" << /*ReverseLookup(*/results.queryNode/*)*/ << ", " << printDocs(results.docs) <<">");
 }
 
 std::vector<std::string>
@@ -498,7 +501,10 @@ PennSearch::ForwardPartSearch(Ipv4Address destAddress, SearchRes results) {
         PennSearchMessage message = PennSearchMessage(PennSearchMessage::SEARCH_RES, transactionId);
         message.SetSearchRsp(results);
         packet->AddHeader(message);
+        //SEARCH_LOG ("SearchRes packet ready");
         m_socket->SendTo(packet, 0, InetSocketAddress(destAddress, m_appPort));
+        //sleep(5);
+        //SEARCH_LOG ("SearchRes sent to " << ReverseLookup(destAddress));
     }
 }
 
@@ -537,7 +543,10 @@ PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results
 }
 
 void PennSearch::ProcessPublishRsp(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    SEARCH_LOG("PROCESS_PUBLISH_RSP: NOT YET IMPLEMENTED");
+    //SEARCH_LOG("PROCESS_PUBLISH_RSP: NOT YET IMPLEMENTED");
+    std::map<std::string, std::vector<std::string> > documents = message.GetPublishRsp().publishMessage;
+    //update the local <key, docs> at the node
+    update_node(documents);
 }
 
 void
@@ -597,7 +606,7 @@ PennSearch::HandleChordPingRecv(Ipv4Address destAddress, std::string message) {
 
 void
 PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId) {
-    // TODO: for Rob  
+  SEARCH_LOG("Lookup Success " << transactionId << ", IP: " << address);
 
     map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
     if (iter != m_searchTracker.end()) {
@@ -606,10 +615,28 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
         ProcessSearchLookupResult(address, results);
 
     }
-
-
-    // TODO: Publish lookup 
+    else{
+        map<std::string, uint32_t>::iterator itr;
+        for(itr=m_trackPublish.begin(); itr!=m_trackPublish.end(); itr++){
+            if(transactionId == itr->second){
+                std::map<std::string,std::vector<std::string> >::iterator it = m_need_to_publish.find(itr->first);
+                if(it != m_need_to_publish.end()){
+                std::map<std::string, std::vector<std::string> > message;
+                message.insert(std::make_pair(it->first, it->second));
+                uint32_t tId = GetNextTransactionId();
+                //Send PennSearchMessage to the node with the corresponding <key, doc> map
+                PennSearchMessage resp = PennSearchMessage(PennSearchMessage::PUBLISH_RSP, tId);
+                resp.SetPublishRsp(message);
+                Ptr<Packet> packet = Create<Packet> ();
+                packet->AddHeader(resp);
+                m_socket->SendTo(packet, 0, InetSocketAddress(address, m_appPort));
+                
+                }
+            }
+        }
+    }
 }
+    // TODO: Publish lookup 
 // Override PennLog
 
 void

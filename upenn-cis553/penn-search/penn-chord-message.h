@@ -117,6 +117,8 @@ public:
             RSP_LOOK = 14,
             REQ_PRE = 15,
             RSP_PRE = 16,
+            REQ_FINGER = 17,
+            RSP_FINGER = 18,
         };
 
 

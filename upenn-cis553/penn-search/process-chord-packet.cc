@@ -169,3 +169,9 @@ void PennChord::procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address 
     LeaveOverlay();
 }
 
+void PennChord::procREQ_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+}
+
+void PennChord::procRSP_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+}
+

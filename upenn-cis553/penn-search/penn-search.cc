@@ -251,6 +251,44 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
 
     } // End Search command
 
+    if (command == "SET4")
+      {
+
+    // Populate document list for debugging - comment out actual
+    std::string key1 = "HELP";
+    //std::string key2 = "MAYBE";
+    std::string doc1 = "RLM1";
+    std::string doc2 = "RLM2";
+    //std::string doc3 = "Doc3";
+    std::vector<std::string> inv1;
+    inv1.push_back(doc1);
+    inv1.push_back(doc2);
+    //std::vector<std::string> inv2;
+    //inv2.push_back(doc2);
+    //inv2.push_back(doc3);
+    m_documents.insert(std::make_pair(key1, inv1));
+    //m_documents.insert(std::make_pair(key2, inv2));
+      }
+
+    if (command == "SET0")
+      {
+
+    // Populate document list for debugging - comment out actual
+        // std::string key1 = "HELP";
+    std::string key2 = "MAYBE";
+    //std::string doc1 = "Doc1";
+    std::string doc2 = "RLM2";
+    std::string doc3 = "RLM3";
+    //std::vector<std::string> inv1;
+    //inv1.push_back(doc1);
+    //inv1.push_back(doc2);
+    std::vector<std::string> inv2;
+    inv2.push_back(doc2);
+    inv2.push_back(doc3);
+    //m_documents.insert(std::make_pair(key1, inv1));
+    m_documents.insert(std::make_pair(key2, inv2));
+      }
+
 }
 
 void
@@ -451,7 +489,7 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
     results.keywords.erase(results.keywords.begin());
     results.docs = res;
     if (results.keywords.empty()) {
-        SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res));
+      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res) << ">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
         return;

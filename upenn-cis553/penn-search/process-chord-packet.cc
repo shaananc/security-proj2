@@ -33,8 +33,8 @@ void PennChord::procRSP_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sou
     if (RangeCompare(m_info.location, p.m_result.location, m_successor->m_info.location) == 1) {
         m_successor->m_info = p.m_result;
     }
-    m_successor->notify(m_info);
-    m_chordTracker.erase(p.m_transactionId);
+    //m_successor->notify(m_info);
+    //m_chordTracker.erase(p.m_transactionId);
 }
 
 void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
@@ -48,6 +48,7 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
     } else {
         CHORD_LOG("No successor. Forwarding");
         p.m_resolved = false;
+        // TODO: do find_predecessor after consulting finger table instead
         m_successor->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
     }
 }
@@ -133,6 +134,7 @@ void PennChord::procREQ_NOT(PennChordMessage::PennChordPacket p, Ipv4Address sou
 
 void PennChord::procREQ_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     // CHORD_LOG("LOOK from " << p.requestee << " on behalf of " << p.originator.address);
+
     if (RangeCompare(m_predecessor->m_info.location, p.m_result.location, m_info.location)) {
         // Current node correct lookup
         remote_node req(p.originator, m_socket, m_appPort);
@@ -150,11 +152,13 @@ void PennChord::procREQ_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address so
 }
 
 void PennChord::procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    // TODO: process depending on RSP_PRE or RSP_SUC
+    // start a new transaction in case of RSP_PRE
     //CHORD_LOG("RSP_LOOK from " << p.requestee << " on behalf of " << p.originator.address);
     if (!m_lookupSuccessFn.IsNull()) {
         m_lookupSuccessFn(p.m_result.location, SHA_DIGEST_LENGTH, p.m_result.address, p.m_transactionId);
     }
-    m_chordTracker.erase(p.m_transactionId);
+    //m_chordTracker.erase(p.m_transactionId);
 }
 
 void PennChord::procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {

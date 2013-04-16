@@ -303,18 +303,19 @@ PennSearchMessage::PublishRsp::Print(std::ostream &os) const {
 void
 PennSearchMessage::PublishRsp::Serialize(Buffer::Iterator &start) const {
     //Input the size of the map first for ease of deserialization
+    //(this is the number of keys)
     start.WriteU16(publishMessage.size());
 
     for (std::map<std::string, std::vector<std::string> >::const_iterator it = publishMessage.begin(); it != publishMessage.end(); it++) {
         start.WriteU16(it->first.length());
-        start.Write((uint8_t *) ((char*) (it->first.c_str())), it->first.length());
+        start.Write((uint8_t *) (const_cast<char*> (it->first.c_str())), (it->first.length()));
 
         //Save the size of the vector of docs for ease of deserialization
         start.WriteU16(it->second.size());
 
         for (std::vector<std::string>::const_iterator iter = it->second.begin(); iter != it->second.end(); iter++) {
             start.WriteU16((*iter).length());
-            start.Write((uint8_t *) ((char*) ((*iter).c_str())), (*iter).length());
+            start.Write((uint8_t *) (const_cast<char*> ((*iter).c_str())), (*iter).length());
         }
     }
 
@@ -348,11 +349,14 @@ PennSearchMessage::PublishRsp::Deserialize(Buffer::Iterator &start) {
 uint32_t
 PennSearchMessage::PublishRsp::GetSerializedSize(void) const {
     uint32_t size;
-    size = sizeof (uint16_t) + publishMessage.size();
+    //size of map
+    size = sizeof(uint16_t);
     for (std::map<std::string, std::vector<std::string> >::const_iterator it = publishMessage.begin(); it != publishMessage.end(); it++) {
-        size = size + it->first.length() + it->second.size();
+        size = size + sizeof(uint16_t) + it->first.length(); 
+        //Size of document vector for this specific key
+        size = size + sizeof(uint16_t);
         for (std::vector<std::string>::const_iterator iter = it->second.begin(); iter != it->second.end(); iter++) {
-            size = size + (*iter).length();
+            size = size + sizeof(uint16_t) + (*iter).length();
         }
     }
     return size;

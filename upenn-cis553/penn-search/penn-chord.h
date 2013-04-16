@@ -40,6 +40,8 @@
 
 using namespace ns3;
 
+extern uint32_t num_hops;
+extern uint32_t num_lookups;
 string strHash(unsigned char *hash);
 bool RangeCompare(unsigned char *low, unsigned char *mid, unsigned char *high);
 void PrintHash(unsigned char *hash, std::ostream &os);
@@ -103,8 +105,6 @@ public:
 
     void HandleRequestTimeout(uint32_t transactionId);
 
-    void inc_lookups();
-    void inc_hops();
     // TODO Later
     void fix_fingers();
 
@@ -134,9 +134,6 @@ private:
     Callback <void, uint8_t*, uint8_t, Ipv4Address, uint32_t> m_lookupSuccessFn;
     Callback <void, uint8_t*, uint8_t, uint32_t> m_lookupFailureFn;
     Callback<void> m_joinedCallback;
-
-    uint32_t num_lookups;
-    uint32_t num_hops;
 
     int joined;
     NodeInfo m_info;

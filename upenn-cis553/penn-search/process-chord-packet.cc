@@ -1,3 +1,4 @@
+
 #include "penn-chord.h"
 
 #include "ns3/random-variable.h"
@@ -8,7 +9,7 @@
 #include <openssl/sha.h>
 
 using namespace ns3;
-
+extern bool inLookup;
 class remote_node;
 
 /*************************************************************
@@ -46,6 +47,8 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
         p.m_resolved = true;
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
     } else {
+      
+      if(inLookup) num_hops++; //Need to separate out this from normal traffic
         CHORD_LOG("No successor. Forwarding");
         p.m_resolved = false;
         // TODO: do find_predecessor after consulting finger table instead
@@ -133,8 +136,8 @@ void PennChord::procREQ_NOT(PennChordMessage::PennChordPacket p, Ipv4Address sou
     }
 
 void PennChord::procREQ_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    // CHORD_LOG("LOOK from " << p.requestee << " on behalf of " << p.originator.address);
-
+  //     CHORD_LOG("LOOK from " << p.requestee << " on behalf of " << p.originator.address);
+  // num_lookups++; 
     if (RangeCompare(m_predecessor->m_info.location, p.m_result.location, m_info.location)) {
         // Current node correct lookup
         remote_node req(p.originator, m_socket, m_appPort);

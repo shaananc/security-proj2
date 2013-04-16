@@ -32,6 +32,8 @@
 
 using namespace ns3;
 
+extern bool inLookup;
+
 TypeId
 PennSearch::GetTypeId() {
     static TypeId tid = TypeId("PennSearch")
@@ -607,7 +609,7 @@ PennSearch::HandleChordPingRecv(Ipv4Address destAddress, std::string message) {
 void
 PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId) {
   SEARCH_LOG("Lookup Success " << transactionId << ", IP: " << address);
-
+  inLookup = false;
     map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
     if (iter != m_searchTracker.end()) {
         SearchRes results = iter->second;

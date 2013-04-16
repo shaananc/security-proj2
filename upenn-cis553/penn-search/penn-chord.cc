@@ -49,7 +49,7 @@ PennChord::GetTypeId() {
             .AddConstructor<PennChord> ()
             .AddAttribute("AppPort",
             "Listening port for Application",
-            UintegerValue(10001),
+            UintegerValue(19481),
             MakeUintegerAccessor(&PennChord::m_appPort),
             MakeUintegerChecker<uint16_t> ())
             .AddAttribute("PingTimeout",

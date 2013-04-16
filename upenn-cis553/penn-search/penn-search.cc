@@ -218,6 +218,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
+        publish_lookup();
 
     }
 

@@ -39,7 +39,7 @@ PennSearch::GetTypeId() {
             .AddConstructor<PennSearch> ()
             .AddAttribute("AppPort",
             "Listening port for Application",
-            UintegerValue(10000),
+            UintegerValue(10278),
             MakeUintegerAccessor(&PennSearch::m_appPort),
             MakeUintegerChecker<uint16_t> ())
             .AddAttribute("ChordPort",
@@ -461,10 +461,12 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
     SEARCH_LOG("Searching for<" << printDocs(newSearch.keywords) << ">");
 
     unsigned char keyHash[SHA_DIGEST_LENGTH];
+    std::cout << newSearch.keywords.front() << std::endl;
     unsigned char keyword[sizeof (newSearch.keywords.front())];
     for (int h = 0; h < sizeof (newSearch.keywords.front()); h++) {
         keyword[h] = newSearch.keywords.front()[h];
     }
+    std::cout << keyword << std::endl;
     SHA1(keyword, sizeof (keyword), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
     m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -576,7 +578,7 @@ PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results
     if (results.docs.empty()) {
         SEARCH_LOG("Search<" << printDocs(results.keywords) << ">");
     } else {
-        SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs));
+      SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs) << ">");
     }
     ForwardPartSearch(destAddress, results);
 }

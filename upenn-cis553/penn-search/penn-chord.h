@@ -115,6 +115,9 @@ private:
     virtual void StartApplication(void);
     virtual void StopApplication(void);
 
+    void PopulateFingerLocationList();
+    void AddPowerOfTwo (unsigned char location[], uint16_t powerOfTwo);
+
     uint32_t m_currentTransactionId;
     Ptr<Socket> m_socket;
     Time m_pingTimeout;
@@ -148,6 +151,7 @@ private:
     Ptr<remote_node> m_predecessor;
     std::map<uint32_t, Ptr<PennChordTransaction> > m_chordTracker;
     Ptr<remote_node> m_landmark;
+    std::vector<unsigned uint8_t*> m_fingerLocationList;
 };
 
 #endif

@@ -119,7 +119,7 @@ PennChord::StartApplication(void) {
     SHA1((const unsigned char *) ip_string, sizeof (ip_string), m_info.location);
     m_info.address = m_local;
     m_remoteNodeSelf = Create<remote_node> (m_info, m_socket, m_appPort);
-
+    PopulateFingerLocationList();
     NodeInfo b;
     b.address = Ipv4Address("0.0.0.0");
     m_predecessor = Create<remote_node> (b, m_socket, m_appPort);
@@ -143,6 +143,39 @@ PennChord::StopApplication(void) {
     m_auditPingsTimer.Cancel();
 
     m_pingTracker.clear();
+}
+
+void
+PennChord::PopulateFingerLocationList ()
+{
+  for (uint16_t i = 0; i < (SHA_DIGEST_LENGTH * 8); i++)
+    {
+      // Make copy
+      unsigned char location[SHA_DIGEST_LENGTH];
+      // Add power of two
+      AddPowerOfTwo (location, i);
+      m_fingerLocationList.push_back (location);
+    }
+}
+
+void
+PennChord::AddPowerOfTwo (unsigned char location[], uint16_t powerOfTwo)
+{
+  uint8_t powZero = 0x01;
+  // Find the position of byte in location
+  uint8_t position = powerOfTwo / 8;
+  NS_ASSERT (position < SHA_DIGEST_LENGTH);
+  uint8_t shift = powerOfTwo % 8;
+  uint8_t prevVal = location[position];
+  // Add power
+  location[position] = location[position] + (powZero << shift);
+  // Take care of carry
+  while ((location[position] < prevVal) && (position <= (SHA_DIGEST_LENGTH - 1)))
+    {
+      position++;
+      prevVal = location[position];
+      location[position] = location[position] + 0x01;
+    }
 }
 
 void

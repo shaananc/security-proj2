@@ -407,7 +407,9 @@ PennSearchMessage::SearchInit::Serialize (Buffer::Iterator &start) const
 {
   //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
+  std::cout << "key size: " << searchMessage.keywords.size() << std::endl;
   start.WriteU16 (searchMessage.docs.size());
+  std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
 
   start.WriteHtonU32 (searchMessage.queryNode.Get ());
 
@@ -476,10 +478,10 @@ PennSearchMessage::GetSearchRsp ()
 void PennSearchMessage::SetSearchRsp (SearchRes &message)
 {
     if(m_messageType == 0){
-        m_messageType = SEARCH_INIT;
+        m_messageType = SEARCH_RES;
     }
     else{
-        NS_ASSERT (m_messageType == SEARCH_INIT);
+        NS_ASSERT (m_messageType == SEARCH_RES);
     }
     m_message.searchRes.searchMessage = message;
 }
@@ -501,9 +503,12 @@ PennSearchMessage::SearchRsp::Serialize (Buffer::Iterator &start) const
 {
   //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
+  std::cout << "key size: " << searchMessage.keywords.size() << std::endl;
   start.WriteU16 (searchMessage.docs.size());
+  std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
 
   start.WriteHtonU32 (searchMessage.queryNode.Get ());
+  std::cout << "queryNode: " << searchMessage.queryNode << std::endl;
 
   for(std::vector<std::string>::const_iterator iter=searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
             start.WriteU16 ((*iter).length());
@@ -523,6 +528,7 @@ PennSearchMessage::SearchRsp::Deserialize (Buffer::Iterator &start)
   uint16_t docSize = start.ReadU16 ();
 
   searchMessage.queryNode = Ipv4Address (start.ReadNtohU32 ());
+  std::cout << "queryNode received: " << searchMessage.queryNode << std::endl;
 
   for(int s=0; s<keySize; s++){
     uint16_t length = start.ReadU16 ();
@@ -569,10 +575,10 @@ PennSearchMessage::GetSearchFin ()
 void PennSearchMessage::SetSearchFin (SearchRes &message)
 {
     if(m_messageType == 0){
-        m_messageType = SEARCH_INIT;
+        m_messageType = SEARCH_FIN;
     }
     else{
-        NS_ASSERT (m_messageType == SEARCH_INIT);
+        NS_ASSERT (m_messageType == SEARCH_FIN);
     }
     m_message.searchFin.searchMessage = message;
 }
@@ -598,6 +604,7 @@ PennSearchMessage::SearchFin::Serialize (Buffer::Iterator &start) const
   start.WriteU16 (searchMessage.docs.size());
 
   start.WriteHtonU32 (searchMessage.queryNode.Get ());
+  std::cout << "Fin queryNode: " << searchMessage.queryNode << std::endl;
 
   for(std::vector<std::string>::const_iterator iter=searchMessage.keywords.begin(); iter!=searchMessage.keywords.end(); iter++){
             start.WriteU16 ((*iter).length());
@@ -617,6 +624,7 @@ PennSearchMessage::SearchFin::Deserialize (Buffer::Iterator &start)
   uint16_t docSize = start.ReadU16 ();
 
   searchMessage.queryNode = Ipv4Address (start.ReadNtohU32 ());
+  std::cout << "Fin rec queryNode: " << searchMessage.queryNode << std::endl;
 
   for(int s=0; s<keySize; s++){
     uint16_t length = start.ReadU16 ();

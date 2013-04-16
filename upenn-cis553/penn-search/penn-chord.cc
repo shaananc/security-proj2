@@ -544,9 +544,9 @@ void PennChord::PrintInfo() {
     //CHORD_LOG("\nRingState: " << ReverseLookup(m_local) << " Predecessor: " << ReverseLookup(m_predecessor.m_info.address) << " Successor: " << ReverseLookup(m_successor.m_info.address));
 
     CHORD_LOG("\nRingState<" << strHash(m_info.location) << ">: Pred<"
-            << ReverseLookup(m_predecessor->m_info.address) << "," << strHash(m_predecessor->m_info.location)
+            << ReverseLookup(m_predecessor->m_info.address) << ", " << strHash(m_predecessor->m_info.location)
             << ">,Succ<" << ReverseLookup(m_successor->m_info.address) <<
-            "," << strHash(m_successor->m_info.location) << ">"
+            ", " << strHash(m_successor->m_info.location) << ">"
             );
 
 }
@@ -566,6 +566,9 @@ NodeInfo PennChord::getPredecessor() {
 string strHash(unsigned char *hash) {
     stringstream s;
     for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+      /*if (i > 0 && (i%2 == 0)) {
+        s << ".";
+        }*/
         s << std::hex << (int) hash[i];
     }
     s << std::dec;

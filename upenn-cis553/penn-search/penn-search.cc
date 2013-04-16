@@ -32,6 +32,8 @@
 
 using namespace ns3;
 
+extern bool inLookup;
+
 TypeId
 PennSearch::GetTypeId() {
     static TypeId tid = TypeId("PennSearch")
@@ -39,7 +41,7 @@ PennSearch::GetTypeId() {
             .AddConstructor<PennSearch> ()
             .AddAttribute("AppPort",
             "Listening port for Application",
-            UintegerValue(10000),
+            UintegerValue(10278),
             MakeUintegerAccessor(&PennSearch::m_appPort),
             MakeUintegerChecker<uint16_t> ())
             .AddAttribute("ChordPort",
@@ -203,6 +205,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
                 //add document to doc list and insert into map
                 docs.push_back(doc);
                 inverted.insert(std::make_pair(item, docs));
+                SEARCH_LOG ("/nPUBLISH <keyword: " << item << ", docID: " << doc);
                 //keep track of how many tokes there are in the string
                 i++;
             }
@@ -215,6 +218,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
+        publish_lookup();
 
     }
 
@@ -250,6 +254,44 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
         }
 
     } // End Search command
+
+    if (command == "SET4")
+      {
+
+    // Populate document list for debugging - comment out actual
+    std::string key1 = "HELP";
+    //std::string key2 = "MAYBE";
+    std::string doc1 = "RLM1";
+    std::string doc2 = "RLM2";
+    //std::string doc3 = "Doc3";
+    std::vector<std::string> inv1;
+    inv1.push_back(doc1);
+    inv1.push_back(doc2);
+    //std::vector<std::string> inv2;
+    //inv2.push_back(doc2);
+    //inv2.push_back(doc3);
+    m_documents.insert(std::make_pair(key1, inv1));
+    //m_documents.insert(std::make_pair(key2, inv2));
+      }
+
+    if (command == "SET0")
+      {
+
+    // Populate document list for debugging - comment out actual
+        // std::string key1 = "HELP";
+    std::string key2 = "MAYBE";
+    //std::string doc1 = "Doc1";
+    std::string doc2 = "RLM2";
+    std::string doc3 = "RLM3";
+    //std::vector<std::string> inv1;
+    //inv1.push_back(doc1);
+    //inv1.push_back(doc2);
+    std::vector<std::string> inv2;
+    inv2.push_back(doc2);
+    inv2.push_back(doc3);
+    //m_documents.insert(std::make_pair(key1, inv1));
+    m_documents.insert(std::make_pair(key2, inv2));
+      }
 
 }
 
@@ -422,10 +464,12 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
     SEARCH_LOG("Searching for<" << printDocs(newSearch.keywords) << ">");
 
     unsigned char keyHash[SHA_DIGEST_LENGTH];
+    std::cout << newSearch.keywords.front() << std::endl;
     unsigned char keyword[sizeof (newSearch.keywords.front())];
     for (int h = 0; h < sizeof (newSearch.keywords.front()); h++) {
         keyword[h] = newSearch.keywords.front()[h];
     }
+    std::cout << keyword << std::endl;
     SHA1(keyword, sizeof (keyword), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
     m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -451,7 +495,7 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
     results.keywords.erase(results.keywords.begin());
     results.docs = res;
     if (results.keywords.empty()) {
-        SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res));
+      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res) << ">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
         return;
@@ -537,7 +581,7 @@ PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results
     if (results.docs.empty()) {
         SEARCH_LOG("Search<" << printDocs(results.keywords) << ">");
     } else {
-        SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs));
+      SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs) << ">");
     }
     ForwardPartSearch(destAddress, results);
 }
@@ -607,7 +651,7 @@ PennSearch::HandleChordPingRecv(Ipv4Address destAddress, std::string message) {
 void
 PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId) {
   SEARCH_LOG("Lookup Success " << transactionId << ", IP: " << address);
-
+  inLookup = false;
     map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
     if (iter != m_searchTracker.end()) {
         SearchRes results = iter->second;
@@ -677,12 +721,17 @@ PennSearch::SetSearchVerbose(bool on) {
 
 void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &docs) {
     for (std::map<std::string, std::vector<std::string> >::iterator it = docs.begin(); it != docs.end(); it++) {
+        //Keyword doesn't exist
         if (m_documents.find(it->first) == m_documents.end()) {
             m_documents.insert(std::make_pair(it->first, it->second));
-        } else {
+            for(std::vector<std::string>::iterator iter = it->second.begin(); iter != it->second.end(); iter++){
+             SEARCH_LOG ("/nPUBLISH <keyword: " << it->first << ", docID: " << *iter);
+            }
+        } else { //keyword exists in map
             std::vector<string>::iterator strItr;
             for (strItr = it->second.begin(); strItr != it->second.end(); strItr++) {
                 (m_documents.find(it->first)->second).push_back(*strItr);
+                 SEARCH_LOG ("/nPUBLISH <keyword: " << it->first << ", docID: " << *strItr);
             }
         }
     }

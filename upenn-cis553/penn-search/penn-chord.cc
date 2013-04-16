@@ -36,6 +36,10 @@
 
 using namespace ns3;
 
+uint32_t num_hops = 0;
+uint32_t num_lookups = 0;
+bool inLookup = false;
+
 class remote_node;
 
 TypeId
@@ -45,7 +49,7 @@ PennChord::GetTypeId() {
             .AddConstructor<PennChord> ()
             .AddAttribute("AppPort",
             "Listening port for Application",
-            UintegerValue(10001),
+            UintegerValue(19481),
             MakeUintegerAccessor(&PennChord::m_appPort),
             MakeUintegerChecker<uint16_t> ())
             .AddAttribute("PingTimeout",
@@ -81,9 +85,6 @@ PennChord::PennChord()
     SeedManager::SetSeed(time(NULL));
     random = UniformVariable(0x00000000, 0xFFFFFFFF);
     m_currentTransactionId = random.GetInteger();
-
-    num_hops = 0;
-    num_lookups = 0;
 
 }
 
@@ -132,13 +133,13 @@ PennChord::StartApplication(void) {
 
 void
 PennChord::StopApplication(void) {
+
     // Close socket
     if (m_socket) {
         m_socket->Close();
         m_socket->SetRecvCallback(MakeNullCallback<void, Ptr<Socket> > ());
         m_socket = 0;
     }
-
     // Cancel timers
     m_auditPingsTimer.Cancel();
 
@@ -315,6 +316,14 @@ PennChord::GetNextTransactionId() {
 
 void
 PennChord::StopChord() {
+  //Print results
+  float avg_lookups = 0.0;
+  if(num_lookups != 0){
+    avg_lookups = num_hops/num_lookups;
+  }
+
+  CHORD_LOG("Average hop count: " << avg_lookups << std::endl);
+
     StopApplication();
 }
 
@@ -373,6 +382,8 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 
 uint32_t PennChord::Lookup(unsigned char location[]) {
     // Sends a request for the location of the landmark
+  inLookup = true;
+    num_lookups++;
     GetNextTransactionId();
     PennChordMessage::PennChordPacket chordPacket = m_remoteNodeSelf->find_successor(m_info, location, m_currentTransactionId);
     Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRSP_LOOK, this), m_currentTransactionId, chordPacket, m_remoteNodeSelf, m_requestTimeout, m_maxRequestRetries);
@@ -536,13 +547,6 @@ void PennChord::LeaveOverlay() {
 
 }
 
-void PennChord::inc_hops() {
-    num_hops++;
-}
-
-void PennChord::inc_lookups() {
-    num_lookups++;
-}
 
 void PennChord::HandleRequestTimeout(uint32_t transactionId) {
     // Find transaction

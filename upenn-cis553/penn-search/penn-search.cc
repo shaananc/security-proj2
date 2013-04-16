@@ -205,7 +205,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
                 //add document to doc list and insert into map
                 docs.push_back(doc);
                 inverted.insert(std::make_pair(item, docs));
-                SEARCH_LOG ("/nPUBLISH <keyword: " << item << ", docID: " << doc);
+                SEARCH_LOG ("\nPUBLISH <keyword: " << item << ", docID: " << doc << ">");
                 //keep track of how many tokes there are in the string
                 i++;
             }
@@ -581,7 +581,7 @@ PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results
     if (results.docs.empty()) {
         SEARCH_LOG("Search<" << printDocs(results.keywords) << ">");
     } else {
-      SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs) << ">");
+      SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ", " << printDocs(results.docs) << ">");
     }
     ForwardPartSearch(destAddress, results);
 }

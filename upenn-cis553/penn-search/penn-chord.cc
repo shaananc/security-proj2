@@ -410,7 +410,8 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             }
             case (PennChordMessage::PennChordPacket::REQ_SUC):
             {
-                procREQ_SUC(p, sourceAddress, sourcePort);
+                // being handled through callbacks
+                //procREQ_SUC(p, sourceAddress, sourcePort);
                 break;
             }
             case (PennChordMessage::PennChordPacket::RSP_SUC):
@@ -460,7 +461,8 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             }
             case (PennChordMessage::PennChordPacket::RSP_LOOK):
             {
-                procRSP_LOOK(p, sourceAddress, sourcePort);
+                // being handled by callback
+                //procRSP_LOOK(p, sourceAddress, sourcePort);
                 break;
             }
             default:

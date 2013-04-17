@@ -21,6 +21,7 @@
 #include <map>
 #include <fstream>
 #include <string>
+#include <cstdio>
 #include "penn-search.h"
 #include <openssl/sha.h>
 
@@ -196,19 +197,21 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             getline(ss, doc, ' ');
             while (getline(ss, item, ' ')) {
                 std::vector<string> docs;
-                //keyword doesn't exist in map
+                //keyword exists in map
                 if (inverted.count(item) != 0) {
-                    //keyword exists in map
                     std::map<std::string, std::vector<string> >::iterator it = inverted.find(item);
                     std::vector<string> docs = it->second;
                 }
                 //add document to doc list and insert into map
-                docs.push_back(doc);
-                inverted.insert(std::make_pair(item, docs));
+                docs.push_back(doc.c_str());
+                inverted.insert(std::make_pair(item.c_str(), docs));
+                
                 SEARCH_LOG ("\nPUBLISH <keyword: " << item << ", docID: " << doc << ">");
                 //keep track of how many tokes there are in the string
                 i++;
+                item.clear();
             }
+            doc.clear();
             //junk entry in file
             if (i < 2) {
                 ERROR_LOG("\nInsufficient Params in File...\n");
@@ -247,18 +250,12 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
             
             SHA1(keyword, sizeof (keyword), keyHash);
+            //DEBUG MESSAGE
+            SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
+ 
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
             
-            /*unsigned char keyHash[SHA_DIGEST_LENGTH];
-            std::string key = newSearch.keywords.front();
-            unsigned char keyword[key.size()];
-            for(int h=0; h<key.size(); h++){
-                keyword[h] = key[h];
-            }
-            SHA1(keyword, sizeof (keyword), keyHash);
-            uint32_t lookRes = m_chord->Lookup(keyHash);
-            m_searchTracker.insert(std::make_pair(lookRes, newSearch));*/
         }
     
 
@@ -345,10 +342,11 @@ PennSearch::publish_lookup() {
             unsigned char *keyword = (unsigned char *)key.c_str();
             
             SHA1(keyword, sizeof (keyword), keyHash);
-            SEARCH_LOG("\nLook Pair String: " << key << ", " << strHash(keyHash) << 
-                       "\nLook Pair Char: " << keyword << ", " << strHash(keyHash));
-            uint32_t lookRes = m_chord->Lookup(keyHash);
-            m_trackPublish.insert(std::make_pair(key, lookRes));
+            //debug messages
+            SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword));
+            key.clear();
+            //uint32_t lookRes = m_chord->Lookup(keyHash);
+            //m_trackPublish.insert(std::make_pair(key, lookRes));
         }
     }
 }
@@ -679,6 +677,7 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
                 resp.SetPublishRsp(message);
                 Ptr<Packet> packet = Create<Packet> ();
                 packet->AddHeader(resp);
+                DEBUG_LOG("\nKeyword: " << it->first << "Node: " << ReverseLookup(address));
                 m_socket->SendTo(packet, 0, InetSocketAddress(address, m_appPort));
                 
                 }
@@ -742,11 +741,11 @@ void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &d
         }
     }
     //printing local m_documents to confirm elements were added
-    SEARCH_LOG("\nPrinting local m_documents\n");
+    printf("\nPrinting local m_documents\n");
     for(std::map<std::string, std::vector<std::string> >::iterator iter = m_documents.begin(); iter!=m_documents.end(); iter++){
-        SEARCH_LOG ("\nKEY: " << iter->first);
+        DEBUG_LOG("\nKEY: " << iter->first);
         for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
-            SEARCH_LOG ("\nDOC: " << *itr);
+            DEBUG_LOG("\nDOC: " << *itr);
         }
     }
 

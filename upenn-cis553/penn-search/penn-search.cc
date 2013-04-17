@@ -337,6 +337,8 @@ PennSearch::publish_lookup() {
                 keyword[h] = key[h];
             }
             SHA1(keyword, sizeof (keyword), keyHash);
+            SEARCH_LOG("\nLook Pair String: " << key << ", " << strHash(keyHash) << 
+                       "\nLook Pair Char: " << keyword << ", " << strHash(keyHash));
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_trackPublish.insert(std::make_pair(key, lookRes));
         }

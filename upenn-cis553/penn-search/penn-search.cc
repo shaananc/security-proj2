@@ -249,16 +249,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             SHA1(keyword, sizeof (keyword), keyHash);
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
-            
-            /*unsigned char keyHash[SHA_DIGEST_LENGTH];
-            std::string key = newSearch.keywords.front();
-            unsigned char keyword[key.size()];
-            for(int h=0; h<key.size(); h++){
-                keyword[h] = key[h];
-            }
-            SHA1(keyword, sizeof (keyword), keyHash);
-            uint32_t lookRes = m_chord->Lookup(keyHash);
-            m_searchTracker.insert(std::make_pair(lookRes, newSearch));*/
+            newSearch.keywords.clear();
         }
     
 

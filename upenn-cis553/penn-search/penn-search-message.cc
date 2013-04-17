@@ -174,7 +174,8 @@ PennSearchMessage::Deserialize (Buffer::Iterator start)
         size += m_message.pingRsp.Deserialize (i);
         break;
       case PUBLISH_RSP:
-          size += m_message.publishRsp.Deserialize(i);
+        size += m_message.publishRsp.Deserialize(i);
+        break;
       case PUBLISH_REQ:
         size += m_message.publishReq.Deserialize (i);
         break;
@@ -330,14 +331,17 @@ PennSearchMessage::PublishRsp::Deserialize(Buffer::Iterator &start) {
         uint16_t length1 = start.ReadU16();
         char* str = (char*) malloc(length1);
         start.Read((uint8_t*) str, length1);
+        std::string strstr = std::string (str, length1);
         uint16_t size2 = start.ReadU16();
         for (int j = 0; j < size2; j++) {
             uint16_t length2 = start.ReadU16();
             char* doc = (char*) malloc(length2);
             start.Read((uint8_t*) doc, length2);
-            documents.push_back(doc);
+            std::string docstr = std::string (doc, length2);
+            documents.push_back(docstr);
+            free(doc);
         }
-        publishMessage.insert(std::make_pair(str, documents));
+        publishMessage.insert(std::make_pair(strstr, documents));
         free(str);
         documents.clear();
     }

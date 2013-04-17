@@ -205,7 +205,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
                 //add document to doc list and insert into map
                 docs.push_back(doc);
                 inverted.insert(std::make_pair(item, docs));
-                SEARCH_LOG ("/nPUBLISH <keyword: " << item << ", docID: " << doc);
+                SEARCH_LOG ("\nPUBLISH <keyword: " << item << ", docID: " << doc << ">");
                 //keep track of how many tokes there are in the string
                 i++;
             }
@@ -581,7 +581,7 @@ PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results
     if (results.docs.empty()) {
         SEARCH_LOG("Search<" << printDocs(results.keywords) << ">");
     } else {
-      SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ",  " << printDocs(results.docs) << ">");
+      SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ", " << printDocs(results.docs) << ">");
     }
     ForwardPartSearch(destAddress, results);
 }
@@ -725,13 +725,13 @@ void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &d
         if (m_documents.find(it->first) == m_documents.end()) {
             m_documents.insert(std::make_pair(it->first, it->second));
             for(std::vector<std::string>::iterator iter = it->second.begin(); iter != it->second.end(); iter++){
-             SEARCH_LOG ("/nPUBLISH <keyword: " << it->first << ", docID: " << *iter);
+              SEARCH_LOG ("\nStore <keyword: " << it->first << ", docID: " << *iter << ">");
             }
         } else { //keyword exists in map
             std::vector<string>::iterator strItr;
             for (strItr = it->second.begin(); strItr != it->second.end(); strItr++) {
                 (m_documents.find(it->first)->second).push_back(*strItr);
-                 SEARCH_LOG ("/nPUBLISH <keyword: " << it->first << ", docID: " << *strItr);
+                SEARCH_LOG ("\nStore <keyword: " << it->first << ", docID: " << *strItr << ">");
             }
         }
     }

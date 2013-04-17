@@ -415,9 +415,9 @@ PennSearchMessage::SearchInit::Serialize (Buffer::Iterator &start) const
 {
   //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
-  std::cout << "key size: " << searchMessage.keywords.size() << std::endl;
+  //  std::cout << "key size: " << searchMessage.keywords.size() << std::endl;
   start.WriteU16 (searchMessage.docs.size());
-  std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
+  //std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
 
   start.WriteHtonU32 (searchMessage.queryNode.Get ());
 
@@ -515,9 +515,9 @@ PennSearchMessage::SearchRsp::Serialize (Buffer::Iterator &start) const
 {
   //Save the size of the vector of docs and keywords for ease of deserialization
   start.WriteU16 (searchMessage.keywords.size());
-  std::cout << "key size: " << searchMessage.keywords.size() << std::endl;
+  //std::cout << "key size: " << searchMessage.keywords.size() << std::endl;
   start.WriteU16 (searchMessage.docs.size());
-  std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
+  //std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
 
   start.WriteHtonU32 (searchMessage.queryNode.Get ());
 

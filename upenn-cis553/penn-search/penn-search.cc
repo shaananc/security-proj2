@@ -366,7 +366,7 @@ PennSearch::RecvMessage(Ptr<Socket> socket) {
             ProcessSearchInit(message, sourceAddress, sourcePort);
             break;
         case PennSearchMessage::SEARCH_RES:
-          SEARCH_LOG("Got SearchRes...Processing");
+          // SEARCH_LOG("Got SearchRes...Processing");
             ProcessSearchRes(message, sourceAddress, sourcePort);
             break;
         case PennSearchMessage::SEARCH_FIN:

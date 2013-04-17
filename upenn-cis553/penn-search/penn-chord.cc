@@ -667,6 +667,22 @@ void PennChord::AuditFingers() {
   m_auditFingerTimer.Schedule(m_fixFingerInterval);
 }
 
+Ptr<remote_node> PennChord::FindFinger(uint8_t location[]) {
+  // stop at largest finger
+  Ptr<remote_node> fingerNode;
+  for (uint8_t fingerNum = 0; fingerNum != SHA_DIGEST_LENGTH * 8; fingerNum++) {
+    if (m_fingerTable.find(fingerNum) != m_fingerTable.end())  {
+      if (RangeCompare(m_info.location, m_fingerTable[fingerNum]->m_info.location, location)) {
+        fingerNode = m_fingerTable[fingerNum];
+      }
+      else  {
+        break;
+      }
+    }
+  }
+  return fingerNode;
+}
+
 void PennChord::SetJoinCallback(Callback<void> cb) {
     m_joinedCallback = cb;
 }

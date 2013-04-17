@@ -52,7 +52,13 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
         CHORD_LOG("No successor. Forwarding");
         p.m_resolved = false;
         // TODO: do find_predecessor after consulting finger table instead
-        m_successor->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
+        Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);
+        if (fingerNode != NULL) {
+          fingerNode->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
+        }
+        else  {
+          m_successor->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
+        }
     }
 }
 
@@ -70,7 +76,13 @@ void PennChord::procREQ_LOOKUP(PennChordMessage::PennChordPacket p, Ipv4Address 
 	//CHORD_LOG("LookupRequestion<");
         p.m_resolved = false;
         // TODO: do find_predecessor after consulting finger table instead
-        m_successor->find_lookup(p.originator, p.lookupLocation, p.m_transactionId);
+        Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);
+        if (fingerNode != NULL) {
+          fingerNode->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
+        }
+        else  {
+          m_successor->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
+        }
     }
 }
 
@@ -174,8 +186,6 @@ void PennChord::procREQ_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address so
 }
 
 void PennChord::procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    // TODO: process depending on RSP_PRE or RSP_SUC
-    // start a new transaction in case of RSP_PRE
     //CHORD_LOG("RSP_LOOK from " << p.requestee << " on behalf of " << p.originator.address);
     if (!m_lookupSuccessFn.IsNull()) {
         m_lookupSuccessFn(p.m_result.location, SHA_DIGEST_LENGTH, p.m_result.address, p.m_transactionId);

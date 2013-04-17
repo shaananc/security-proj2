@@ -602,8 +602,8 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
     // Retransmit and reschedule if needed
     if (chordTransaction->m_retries > chordTransaction->m_maxRetries) {
         // Report failure
-        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOK) {
-            CHORD_LOG("Lookup failed!");
+        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOKUP) {
+            CHORD_LOG("Lookup failed for location " << strHash(chordTransaction->m_chordPacket.lookupLocation));
             m_chordTracker.erase(transactionId);
         }
         return;

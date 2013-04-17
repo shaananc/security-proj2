@@ -1,0 +1,14 @@
+PUBLISH
+
+For the PUBLISH functionality we first identify the PUBLISH command in the ProcessCommand function. We then parse through the keys file provided and create inverted lists of <Key, Documents> form. These lists are stored locally at the node in the m_need_to_publish map. The publish_lookup function is then called that performs lookups for each of the keys in the m_need_to_publish map. The transaction ID of the lookup is stored in a map.
+
+When the lookup returns the node value the key is hashed to, the HandleLookupSuccess function is called which creates a PUBLISH_RSP type packet and sends it to the address of the node. Once the node receives the packet, it appends the <Key, Documents> to the nodes current m_documents map. 
+
+
+SEARCH
+
+For our search functionality, we take the originating IP address, list of keywords we are searching for, and any document results received, and put it all in a struct to keep it together. The keywords and documents are both vectors of strings. This enables easy association on a successful lookup request, as we simply have a map of the chord transaction ID and the struct which gets added at lookup, and then we find on successful lookup, using the struct for the computations.
+
+Since the first step in the search process is to look for the first keyword, the node associated with the first keyword will receive an empty results list. Upon receipt of an empty results list, the node simply takes its list of documents associated with the keyword and puts that into the results. On the other hand, if a node receives a non-empty documents list, it compares its list of documents associated with the first keyword in the current list of keywords to the list of results, keeping those which are a match. Once we do the comparison or add to an empty list, we remove the first keyword from the list. We then check to see if there are additional keywords, or if that was the last keyword. This determines whether we send the result back to the originating node or do a lookup to pass on the partial results to the node responsible for the next (now first) keyword.
+
+In order to facilitate the proper debugging messages, the search process has been split into 3 message types. A SearchInit message is used to send the initial list of keywords and query node to the chord node responsible for initiating the search. If the query node is the responsible node, this message is skipped. All messages that will require a keyword comparison are sent as a SearchRsp message. The final result or an empty list along the way is sent back to the originating node as a SearchFin message.

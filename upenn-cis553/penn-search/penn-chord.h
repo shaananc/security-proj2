@@ -83,6 +83,8 @@ public:
     void procLEAVE_PRED(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_LOOK(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procREQ_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procRSP_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
 
     NodeInfo getSuccessor();
     NodeInfo getPredecessor();
@@ -106,7 +108,7 @@ public:
     void HandleRequestTimeout(uint32_t transactionId);
 
     // TODO Later
-    void fix_fingers();
+    void FixFingers();
 
 protected:
     virtual void DoDispose();
@@ -123,11 +125,13 @@ private:
     Time m_pingTimeout;
     Time m_stabilizeFreq;
     Time m_requestTimeout;
+    Time m_fixFingerInterval;
     uint16_t m_appPort;
     uint8_t m_maxRequestRetries;
     // Timers
     Timer m_auditPingsTimer;
     Timer m_stabilizeTimer;
+    Timer m_fixFingerTimer;
     // Ping tracker
     std::map<uint32_t, Ptr<PingRequest> > m_pingTracker;
     // Callbacks

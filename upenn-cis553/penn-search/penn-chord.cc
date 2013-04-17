@@ -70,6 +70,12 @@ PennChord::GetTypeId() {
             MakeTimeAccessor(&PennChord::m_requestTimeout),
             MakeTimeChecker())
 
+            .AddAttribute("FixFingerInterval",
+            "Fix finger interval in milli seconds",
+            TimeValue(MilliSeconds(10000)),
+            MakeTimeAccessor(&PennChord::m_fixFingerInterval),
+            MakeTimeChecker())
+
             .AddAttribute("MaxRequestRetries",
             "Number of request retries before giving up",
             UintegerValue(3),
@@ -80,7 +86,7 @@ PennChord::GetTypeId() {
 }
 
 PennChord::PennChord()
-: m_auditPingsTimer(Timer::CANCEL_ON_DESTROY) {
+: m_auditPingsTimer(Timer::CANCEL_ON_DESTROY), m_fixFingerTimer(Timer::CANCEL_ON_DESTROY) {
     RandomVariable random;
     SeedManager::SetSeed(time(NULL));
     random = UniformVariable(0x00000000, 0xFFFFFFFF);
@@ -110,8 +116,10 @@ PennChord::StartApplication(void) {
 
     // Configure timers
     m_auditPingsTimer.SetFunction(&PennChord::AuditPings, this);
+    m_fixFingerTimer.SetFunction(&PennChord::FixFingers, this);
     // Start timers
     m_auditPingsTimer.Schedule(m_pingTimeout);
+    m_fixFingerTimer.Schedule(m_fixFingerInterval);
 
 
     // Stores hash into location
@@ -142,6 +150,7 @@ PennChord::StopApplication(void) {
     }
     // Cancel timers
     m_auditPingsTimer.Cancel();
+    m_fixFingerTimer.Cancel();
 
     m_pingTracker.clear();
 }
@@ -510,6 +519,16 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
                 //procRSP_LOOK(p, sourceAddress, sourcePort);
                 break;
             }
+            case (PennChordMessage::PennChordPacket::REQ_FINGER):
+            {
+                procREQ_FINGER(p, sourceAddress, sourcePort);
+                break;
+            }
+            case (PennChordMessage::PennChordPacket::RSP_FINGER):
+            {
+                procRSP_FINGER(p, sourceAddress, sourcePort);
+                break;
+            }
             default:
                 cout << "Invalid Message Type";
         }
@@ -589,6 +608,10 @@ void PennChord::PrintInfo() {
             ", " << strHash(m_successor->m_info.location) << ">"
             );
 
+}
+
+void PennChord::FixFingers() {
+  m_fixFingerTimer.Schedule(m_fixFingerInterval);
 }
 
 void PennChord::SetJoinCallback(Callback<void> cb) {

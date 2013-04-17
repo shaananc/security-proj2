@@ -127,7 +127,7 @@ PennChordMessage::PennChordPacket remote_node::find_successor(NodeInfo originato
     return p;
 }
 
-PennChordMessage::PennChordPacket remote_node::find_finger(NodeInfo originator, unsigned char location[], uint32_t transactionId_original) {
+PennChordMessage::PennChordPacket remote_node::find_finger(NodeInfo originator, unsigned char location[], uint32_t transactionId_original, uint8_t fingerNum) {
 
     PennChordMessage::PennChordPacket p;
     // Change packet variables
@@ -136,6 +136,7 @@ PennChordMessage::PennChordPacket remote_node::find_finger(NodeInfo originator, 
     p.originator = originator;
     p.m_transactionId = transactionId_original;
     p.m_resolved = false;
+    p.fingerNum = fingerNum;
     memcpy (p.lookupLocation, location, SHA_DIGEST_LENGTH);
     SendRPC(p);
     return p;
@@ -170,7 +171,7 @@ PennChordMessage::PennChordPacket remote_node::reply_successor(NodeInfo successo
 
 }
 
-PennChordMessage::PennChordPacket remote_node::reply_finger(NodeInfo finger, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original) {
+PennChordMessage::PennChordPacket remote_node::reply_finger(NodeInfo finger, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original, uint8_t fingerNum) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RSP_FINGER;
@@ -178,6 +179,7 @@ PennChordMessage::PennChordPacket remote_node::reply_finger(NodeInfo finger, Ipv
     p.requestee = requestee;
     p.originator = originator;
     p.m_transactionId = transactionId_original;
+    p.fingerNum = fingerNum;
     SendRPC(p);
     return p;
 

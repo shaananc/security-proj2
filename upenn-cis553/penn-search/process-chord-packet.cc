@@ -191,16 +191,18 @@ void PennChord::procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address 
 void PennChord::procREQ_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     if (RangeCompare(m_info.location, p.lookupLocation, m_successor->m_info.location)) {
         DEBUG_LOG("Finger Found");
-        remote_node(p.originator, m_socket, m_appPort).reply_finger(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
+        remote_node(p.originator, m_socket, m_appPort).reply_finger(m_successor->m_info, p.requestee, p.originator, p.m_transactionId, p.fingerNum);
     } else {
       
       //      if(inLookup) num_hops++; //Need to separate out this from normal traffic
         DEBUG_LOG("Finger not found. Forwarding");
         // TODO: do find_predecessor after consulting finger table instead
-        m_successor->find_finger(p.originator, p.lookupLocation, p.m_transactionId);
+        m_successor->find_finger(p.originator, p.lookupLocation, p.m_transactionId, p.fingerNum);
     }
 }
 
 void PennChord::procRSP_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+  m_fingerTable[p.fingerNum] = Create<remote_node> (p.m_result, m_socket, m_appPort);
+  m_fingerReceipt[p.fingerNum] = true;
 }
 

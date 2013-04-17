@@ -108,8 +108,8 @@ public:
 
     void HandleRequestTimeout(uint32_t transactionId);
 
-    // TODO Later
     void FixFingers();
+    void AuditFingers();
 
 protected:
     virtual void DoDispose();
@@ -127,12 +127,14 @@ private:
     Time m_stabilizeFreq;
     Time m_requestTimeout;
     Time m_fixFingerInterval;
+    Time m_auditFingerInterval;
     uint16_t m_appPort;
     uint8_t m_maxRequestRetries;
     // Timers
     Timer m_auditPingsTimer;
     Timer m_stabilizeTimer;
     Timer m_fixFingerTimer;
+    Timer m_auditFingerTimer;
     // Ping tracker
     std::map<uint32_t, Ptr<PingRequest> > m_pingTracker;
     // Callbacks
@@ -153,8 +155,9 @@ private:
     Ptr<remote_node> m_predecessor;
     std::map<uint32_t, Ptr<PennChordTransaction> > m_chordTracker;
     Ptr<remote_node> m_landmark;
-    std::vector<uint8_t*> m_fingerLocationList;
-    std::map<uint8_t*, Ptr<remote_node> > m_fingerTable;
+    std::map<uint8_t, uint8_t*> m_fingerLocationList;
+    std::map<uint8_t, Ptr<remote_node> > m_fingerTable;
+    std::map<uint8_t, bool> m_fingerReceipt;
 };
 
 #endif

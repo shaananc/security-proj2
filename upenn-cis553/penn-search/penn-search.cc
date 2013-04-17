@@ -244,10 +244,8 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             //ForwardPartSearch(searchAddress, newSearch);
         } else {
             unsigned char keyHash[SHA_DIGEST_LENGTH];
-            unsigned char keyword[sizeof (newSearch.keywords.front())];
-            for (int h = 0; h < sizeof (newSearch.keywords.front()); h++) {
-                keyword[h] = newSearch.keywords.front()[h];
-            }
+            unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
+            
             SHA1(keyword, sizeof (keyword), keyHash);
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -332,10 +330,8 @@ PennSearch::publish_lookup() {
         if (m_trackPublish.find(iter->first) == m_trackPublish.end()) {
             unsigned char keyHash[SHA_DIGEST_LENGTH];
             std::string key = iter->first;
-            unsigned char keyword[key.size()];
-            for (int h = 0; h < key.size(); h++) {
-                keyword[h] = key[h];
-            }
+            unsigned char *keyword = (unsigned char *)key.c_str();
+            
             SHA1(keyword, sizeof (keyword), keyHash);
             SEARCH_LOG("\nLook Pair String: " << key << ", " << strHash(keyHash) << 
                        "\nLook Pair Char: " << keyword << ", " << strHash(keyHash));
@@ -467,10 +463,7 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
 
     unsigned char keyHash[SHA_DIGEST_LENGTH];
     std::cout << newSearch.keywords.front() << std::endl;
-    unsigned char keyword[sizeof (newSearch.keywords.front())];
-    for (int h = 0; h < sizeof (newSearch.keywords.front()); h++) {
-        keyword[h] = newSearch.keywords.front()[h];
-    }
+    unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
     std::cout << keyword << std::endl;
     SHA1(keyword, sizeof (keyword), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
@@ -503,10 +496,7 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
         return;
     } else {
         unsigned char keyHash[SHA_DIGEST_LENGTH];
-        unsigned char keyword[sizeof (results.keywords.front())];
-        for (int h = 0; h < sizeof (results.keywords.front()); h++) {
-            keyword[h] = results.keywords.front()[h];
-        }
+        unsigned char *keyword = (unsigned char *)results.keywords.front().c_str();
         SHA1(keyword, sizeof (keyword), keyHash);
         uint32_t lookRes = m_chord->Lookup(keyHash);
         m_searchTracker.insert(std::make_pair(lookRes, results));

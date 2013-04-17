@@ -609,7 +609,7 @@ PennSearch::GetNextTransactionId() {
 
 std::string
 PennSearch::printDocs(std::vector<std::string> docList) {
-    stringstream s;
+        stringstream s;
     for (std::vector<std::string>::iterator i = docList.begin(); i != docList.end(); i++) {
         s << *i;
         std::vector<std::string>::iterator j = i;

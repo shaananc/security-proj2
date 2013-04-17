@@ -110,6 +110,7 @@ public:
 
     void FixFingers();
     void AuditFingers();
+    Ptr<remote_node> FindFinger(uint8_t location[]);
 
 protected:
     virtual void DoDispose();

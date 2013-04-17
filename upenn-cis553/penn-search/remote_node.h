@@ -34,6 +34,7 @@ public:
 
     PennChordMessage::PennChordPacket join();
     PennChordMessage::PennChordPacket find_successor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
+    PennChordMessage::PennChordPacket find_lookup(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);
     PennChordMessage::PennChordPacket reply_successor(NodeInfo successor, Ipv4Address requestee, NodeInfo originator, uint32_t transactionId_original);
     
     PennChordMessage::PennChordPacket find_predecessor(NodeInfo originator, unsigned char location[], uint32_t transactionId_original);

@@ -328,9 +328,10 @@ PennChord::StopChord() {
   //Print results
   float avg_lookups = 0.0;
   if(num_lookups != 0){
-    avg_lookups = num_hops/num_lookups;
+    avg_lookups = (float)num_hops/num_lookups;
   }
 
+  //  CHORD_LOG("Average hop count: " << avg_lookups << " " << num_hops <<" "<< num_lookups << std::endl);
   CHORD_LOG("Average hop count: " << avg_lookups << std::endl);
 
     StopApplication();
@@ -391,11 +392,11 @@ void PennChord::JoinOverlay(Ipv4Address landmark) {
 
 uint32_t PennChord::Lookup(unsigned char location[]) {
     // Sends a request for the location of the landmark
-  inLookup = true;
+    inLookup = true;
     num_lookups++;
     GetNextTransactionId();
     CHORD_LOG("\nLookupIssue <current:" << strHash(m_info.location) << ", target: " << strHash(location) << ">");
-    PennChordMessage::PennChordPacket chordPacket = m_remoteNodeSelf->find_successor(m_info, location, m_currentTransactionId);
+    PennChordMessage::PennChordPacket chordPacket = m_remoteNodeSelf->find_lookup(m_info, location, m_currentTransactionId);
     Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRSP_LOOK, this), m_currentTransactionId, chordPacket, m_remoteNodeSelf, m_requestTimeout, m_maxRequestRetries);
     m_chordTracker[m_currentTransactionId] = transaction;
     EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
@@ -511,6 +512,11 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
             case (PennChordMessage::PennChordPacket::REQ_LOOK):
             {
                 procREQ_LOOK(p, sourceAddress, sourcePort);
+                break;
+            }
+            case (PennChordMessage::PennChordPacket::REQ_LOOKUP):
+            {
+                procREQ_LOOKUP(p, sourceAddress, sourcePort);
                 break;
             }
             case (PennChordMessage::PennChordPacket::RSP_LOOK):

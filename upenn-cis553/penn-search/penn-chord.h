@@ -71,6 +71,7 @@ public:
 
     void ProcessChordMessage(PennChordMessage message, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
+    void procREQ_LOOKUP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procREQ_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);
     void procRSP_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort);

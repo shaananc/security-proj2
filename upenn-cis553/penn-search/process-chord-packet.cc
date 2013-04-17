@@ -48,13 +48,32 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
     } else {
       
-      if(inLookup) num_hops++; //Need to separate out this from normal traffic
+      //      if(inLookup) num_hops++; //Need to separate out this from normal traffic
         CHORD_LOG("No successor. Forwarding");
         p.m_resolved = false;
         // TODO: do find_predecessor after consulting finger table instead
         m_successor->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
     }
 }
+
+void PennChord::procREQ_LOOKUP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    //CHORD_LOG("REQ SUCCESSOR from " << ReverseLookup(p.originator.address));
+    if (/*m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||*/
+            RangeCompare(m_info.location, p.lookupLocation, m_successor->m_info.location)) {
+
+        CHORD_LOG("Lookup Successor Found");
+        p.m_resolved = true;
+        remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
+    } else {
+      
+        num_hops++; //Need to separate out this from normal traffic
+        CHORD_LOG("Lookup No successor. Forwarding");
+        p.m_resolved = false;
+        // TODO: do find_predecessor after consulting finger table instead
+        m_successor->find_lookup(p.originator, p.lookupLocation, p.m_transactionId);
+    }
+}
+
 
 void PennChord::procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //DEBUG_LOG("RSP SUCCESSOR from " << p.originator.address);

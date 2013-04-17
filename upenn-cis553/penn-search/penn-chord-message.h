@@ -119,6 +119,7 @@ public:
             RSP_PRE = 16,
             REQ_FINGER = 17,
             RSP_FINGER = 18,
+            REQ_LOOKUP = 19,
         };
 
 

@@ -61,13 +61,13 @@ void PennChord::procREQ_LOOKUP(PennChordMessage::PennChordPacket p, Ipv4Address 
     if (/*m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||*/
             RangeCompare(m_info.location, p.lookupLocation, m_successor->m_info.location)) {
 
-        CHORD_LOG("Lookup Successor Found");
+      CHORD_LOG("LookupResult<" << strHash(m_info.location) << "," << strHash(p.lookupLocation) << "," << p.originator.address << ">");
         p.m_resolved = true;
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
     } else {
-      
-        num_hops++; //Need to separate out this from normal traffic
-        CHORD_LOG("Lookup No successor. Forwarding");
+      CHORD_LOG("LookupRequest< " << strHash(m_info.location) << ">: NextHop< " << m_successor->m_info.address << ", " << strHash(m_successor->m_info.location) << ", " << strHash(p.lookupLocation) << ">");  //p_m_result isn't right
+        num_hops++; 
+	//CHORD_LOG("LookupRequestion<");
         p.m_resolved = false;
         // TODO: do find_predecessor after consulting finger table instead
         m_successor->find_lookup(p.originator, p.lookupLocation, p.m_transactionId);
@@ -189,6 +189,16 @@ void PennChord::procLEAVE_CONF(PennChordMessage::PennChordPacket p, Ipv4Address 
 }
 
 void PennChord::procREQ_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
+    if (RangeCompare(m_info.location, p.lookupLocation, m_successor->m_info.location)) {
+        DEBUG_LOG("Finger Found");
+        remote_node(p.originator, m_socket, m_appPort).reply_finger(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
+    } else {
+      
+      //      if(inLookup) num_hops++; //Need to separate out this from normal traffic
+        DEBUG_LOG("Finger not found. Forwarding");
+        // TODO: do find_predecessor after consulting finger table instead
+        m_successor->find_finger(p.originator, p.lookupLocation, p.m_transactionId);
+    }
 }
 
 void PennChord::procRSP_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {

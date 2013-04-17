@@ -180,7 +180,7 @@ PennChord::AddPowerOfTwo (unsigned char location[], uint16_t powerOfTwo)
   // Add power
   location[position] = location[position] + (powZero << shift);
   // Take care of carry
-  while ((location[position] < prevVal) && (position <= (SHA_DIGEST_LENGTH - 1)))
+  while ((location[position] < prevVal) && (position < (SHA_DIGEST_LENGTH - 1)))
     {
       prevVal = location[position];
       location[position] = location[position] + 0x01;

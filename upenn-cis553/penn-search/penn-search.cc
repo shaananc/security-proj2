@@ -725,13 +725,13 @@ void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &d
         if (m_documents.find(it->first) == m_documents.end()) {
             m_documents.insert(std::make_pair(it->first, it->second));
             for(std::vector<std::string>::iterator iter = it->second.begin(); iter != it->second.end(); iter++){
-              SEARCH_LOG ("\nPUBLISH <keyword: " << it->first << ", docID: " << *iter << ">");
+              SEARCH_LOG ("\nStore <keyword: " << it->first << ", docID: " << *iter << ">");
             }
         } else { //keyword exists in map
             std::vector<string>::iterator strItr;
             for (strItr = it->second.begin(); strItr != it->second.end(); strItr++) {
                 (m_documents.find(it->first)->second).push_back(*strItr);
-                SEARCH_LOG ("\nPUBLISH <keyword: " << it->first << ", docID: " << *strItr << ">");
+                SEARCH_LOG ("\nStore <keyword: " << it->first << ", docID: " << *strItr << ">");
             }
         }
     }

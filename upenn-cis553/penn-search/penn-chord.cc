@@ -162,6 +162,7 @@ PennChord::PopulateFingerLocationList ()
     {
       // Make copy
       unsigned char location[SHA_DIGEST_LENGTH];
+      memcpy(location, m_info.location, SHA_DIGEST_LENGTH);
       // Add power of two
       AddPowerOfTwo (location, i);
       m_fingerLocationList.push_back (location);
@@ -182,9 +183,9 @@ PennChord::AddPowerOfTwo (unsigned char location[], uint16_t powerOfTwo)
   // Take care of carry
   while ((location[position] < prevVal) && (position < (SHA_DIGEST_LENGTH - 1)))
     {
+      position++;
       prevVal = location[position];
       location[position] = location[position] + 0x01;
-      position++;
   }
 }
 
@@ -617,6 +618,23 @@ void PennChord::PrintInfo() {
 }
 
 void PennChord::FixFingers() {
+  for (std::vector<uint8_t*>::iterator fingerIter = m_fingerLocationList.begin (); fingerIter != m_fingerLocationList.end (); fingerIter++)
+  {
+    uint8_t *fingerLocation = *fingerIter;
+    // Do not lookup local locations
+    if (RangeCompare(m_predecessor->m_info.location, fingerLocation, m_info.location))
+      {
+        continue;
+      }
+    // Do not lookup fingers between successor and this node
+    if (RangeCompare(m_info.location, fingerLocation, m_successor->m_info.location))
+      {
+        m_fingerTable[fingerLocation] = m_successor;
+        continue;
+      }
+    GetNextTransactionId();
+    PennChordMessage::PennChordPacket chordPacket = m_successor->find_finger(m_info, fingerLocation, m_currentTransactionId);
+  }
   m_fixFingerTimer.Schedule(m_fixFingerInterval);
 }
 

@@ -153,7 +153,8 @@ private:
     Ptr<remote_node> m_predecessor;
     std::map<uint32_t, Ptr<PennChordTransaction> > m_chordTracker;
     Ptr<remote_node> m_landmark;
-    std::vector<unsigned uint8_t*> m_fingerLocationList;
+    std::vector<uint8_t*> m_fingerLocationList;
+    std::map<uint8_t*, Ptr<remote_node> > m_fingerTable;
 };
 
 #endif

@@ -261,3 +261,6 @@ void PennChordMessage::SetChordPacket(PennChordPacket p) {
 PennChordMessage::PennChordPacket PennChordMessage::GetChordPacket(){
     return m_message.chordPacket;
 }
+
+PennChordMessage::PennChordPacket::PennChordPacket() : m_resolved(false) {
+}

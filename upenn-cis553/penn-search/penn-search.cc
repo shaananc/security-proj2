@@ -481,14 +481,16 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
     } else {
         res = SearchComp(results.keywords.front(), results.docs);
     }
+
+    results.keywords.erase(results.keywords.begin());
+    results.docs = res;
+
     if (res.empty()) {
         SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", \"Empty List\">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
         return;
     }
-    results.keywords.erase(results.keywords.begin());
-    results.docs = res;
     if (results.keywords.empty()) {
       SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res) << ">");
         //Send list back to originating node

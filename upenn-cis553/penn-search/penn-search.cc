@@ -243,15 +243,26 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             SendSearchInit(searchAddress, newSearch);
             //ForwardPartSearch(searchAddress, newSearch);
         } else {
-            unsigned char keyHash[SHA_DIGEST_LENGTH];
+            /*unsigned char keyHash[SHA_DIGEST_LENGTH];
             unsigned char keyword[sizeof (newSearch.keywords.front())];
             for (int h = 0; h < sizeof (newSearch.keywords.front()); h++) {
                 keyword[h] = newSearch.keywords.front()[h];
             }
             SHA1(keyword, sizeof (keyword), keyHash);
             uint32_t lookRes = m_chord->Lookup(keyHash);
+            m_searchTracker.insert(std::make_pair(lookRes, newSearch));*/
+            unsigned char keyHash[SHA_DIGEST_LENGTH];
+            std::string key = newSearch.keywords.front();
+            unsigned char keyword[key.size()];
+            for(int h=0; h<key.size(); h++){
+                keyword[h] = key[h];
+            }
+            SHA1(keyword, sizeof (keyword), keyHash);
+            uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
         }
+    
+
 
     } // End Search command
 
@@ -738,13 +749,13 @@ void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &d
         }
     }
     //printing local m_documents to confirm elements were added
-    /*SEARCH_LOG("\nPrinting local m_documents\n");
+    SEARCH_LOG("\nPrinting local m_documents\n");
     for(std::map<std::string, std::vector<std::string> >::iterator iter = m_documents.begin(); iter!=m_documents.end(); iter++){
         SEARCH_LOG ("\nKEY: " << iter->first);
         for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
             SEARCH_LOG ("\nDOC: " << *itr);
         }
-    }*/
+    }
 
 }
 

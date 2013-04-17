@@ -98,8 +98,9 @@ public:
         std::string pingMessage;
     };
 
-    struct PennChordPacket {
+    class PennChordPacket {
 
+        public:
         enum Chord_Type {
             RSP_LOC = 1,
             RSP_NOT = 2,
@@ -122,9 +123,7 @@ public:
             REQ_LOOKUP = 19,
         };
 
-
-
-        public:
+        PennChordPacket();
         virtual void Print(std::ostream &os) const;
         virtual uint32_t GetSerializedSize(void) const;
         virtual void Serialize(Buffer::Iterator start)const;

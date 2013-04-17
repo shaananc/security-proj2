@@ -16,7 +16,7 @@ In order to facilitate the proper debugging messages, the search process has bee
 SET
 In order to facilitate the debugging of the search functionality separate from the publish functionality, we created the Set commands in order to be able to directly assign inverted keyword/document lists to nodes. The command uses a fixed keyword and document list, and directly writes it into the overall inverted list map for the node.
 
-For ease of functionality, we decided to separate out the lookups from the successor finding, and also from finger table fixing. While all functions do basically the same thing, it was easier to keep them separate rather than segregate based on flags within messages.
+For ease of functionality, we decided to separate out the lookups from the successor finding, and also from finger table fixing. We separated these by having each function have its own message types, and therefore its own function that processes those message types. While all functions do basically the same thing, it was easier to keep them separate rather than segregate based on flags within messages. This makes it very easy to globally track chord hop counts and look up numbers as well as debug log messages because we can track them all from the same function.
 
 CHORD JOIN and CREATE
 In order to be compatible between the real stack and simulator modes, we checked to see if the local IP address matched the resolved IP of the entered landmark. By using the resolved IP, we were able to easily handle the simulator node ID, an IP address, or the real stack host name, and differentiate between joins and creates.

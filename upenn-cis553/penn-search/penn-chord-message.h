@@ -143,6 +143,8 @@ public:
         bool m_resolved;
         // flag set for finger fixing lookups (non application)
         bool m_chordLevelLookup;
+        // finger number
+        uint8_t fingerNum;
     };
 
 

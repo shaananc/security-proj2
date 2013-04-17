@@ -76,6 +76,12 @@ PennChord::GetTypeId() {
             MakeTimeAccessor(&PennChord::m_fixFingerInterval),
             MakeTimeChecker())
 
+            .AddAttribute("AuditFingerInterval",
+            "Audit finger intitial interval in milli seconds",
+            TimeValue(MilliSeconds(15000)),
+            MakeTimeAccessor(&PennChord::m_auditFingerInterval),
+            MakeTimeChecker())
+
             .AddAttribute("MaxRequestRetries",
             "Number of request retries before giving up",
             UintegerValue(3),
@@ -86,7 +92,7 @@ PennChord::GetTypeId() {
 }
 
 PennChord::PennChord()
-: m_auditPingsTimer(Timer::CANCEL_ON_DESTROY), m_fixFingerTimer(Timer::CANCEL_ON_DESTROY) {
+: m_auditPingsTimer(Timer::CANCEL_ON_DESTROY), m_fixFingerTimer(Timer::CANCEL_ON_DESTROY), m_auditFingerTimer(Timer::CANCEL_ON_DESTROY) {
     RandomVariable random;
     SeedManager::SetSeed(time(NULL));
     random = UniformVariable(0x00000000, 0xFFFFFFFF);
@@ -117,9 +123,11 @@ PennChord::StartApplication(void) {
     // Configure timers
     m_auditPingsTimer.SetFunction(&PennChord::AuditPings, this);
     m_fixFingerTimer.SetFunction(&PennChord::FixFingers, this);
+    m_auditFingerTimer.SetFunction(&PennChord::AuditFingers, this);
     // Start timers
     m_auditPingsTimer.Schedule(m_pingTimeout);
     m_fixFingerTimer.Schedule(m_fixFingerInterval);
+    m_auditFingerTimer.Schedule(m_auditFingerInterval);
 
 
     // Stores hash into location
@@ -151,6 +159,7 @@ PennChord::StopApplication(void) {
     // Cancel timers
     m_auditPingsTimer.Cancel();
     m_fixFingerTimer.Cancel();
+    m_auditFingerTimer.Cancel();
 
     m_pingTracker.clear();
 }
@@ -158,14 +167,14 @@ PennChord::StopApplication(void) {
 void
 PennChord::PopulateFingerLocationList ()
 {
-  for (uint16_t i = 0; i < (SHA_DIGEST_LENGTH * 8); i++)
+  for (uint8_t i = 0; i < (SHA_DIGEST_LENGTH * 8); i++)
     {
       // Make copy
       unsigned char location[SHA_DIGEST_LENGTH];
       memcpy(location, m_info.location, SHA_DIGEST_LENGTH);
       // Add power of two
       AddPowerOfTwo (location, i);
-      m_fingerLocationList.push_back (location);
+      m_fingerLocationList[i] = (location);
     }
 }
 
@@ -334,6 +343,12 @@ PennChord::StopChord() {
 
   //  CHORD_LOG("Average hop count: " << avg_lookups << " " << num_hops <<" "<< num_lookups << std::endl);
   CHORD_LOG("Average hop count: " << avg_lookups << std::endl);
+  
+  // print finger table
+  DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
+  for (std::map<uint8_t, Ptr<remote_node> >::iterator iter = m_fingerTable.begin(); iter != m_fingerTable.end(); iter++)  {
+    DEBUG_LOG("Finger Entry: " << iter->first << " : " << iter->second->m_info.address);
+  }
 
     StopApplication();
 }
@@ -618,9 +633,11 @@ void PennChord::PrintInfo() {
 }
 
 void PennChord::FixFingers() {
-  for (std::vector<uint8_t*>::iterator fingerIter = m_fingerLocationList.begin (); fingerIter != m_fingerLocationList.end (); fingerIter++)
+  for (std::map<uint8_t, uint8_t*>::iterator fingerIter = m_fingerLocationList.begin (); fingerIter != m_fingerLocationList.end (); fingerIter++)
   {
-    uint8_t *fingerLocation = *fingerIter;
+    uint8_t fingerNum = fingerIter->first;
+    m_fingerReceipt[fingerNum] = false;
+    uint8_t *fingerLocation = fingerIter->second;
     // Do not lookup local locations
     if (RangeCompare(m_predecessor->m_info.location, fingerLocation, m_info.location))
       {
@@ -629,13 +646,41 @@ void PennChord::FixFingers() {
     // Do not lookup fingers between successor and this node
     if (RangeCompare(m_info.location, fingerLocation, m_successor->m_info.location))
       {
-        m_fingerTable[fingerLocation] = m_successor;
+        m_fingerTable[fingerNum] = m_successor;
         continue;
       }
     GetNextTransactionId();
-    PennChordMessage::PennChordPacket chordPacket = m_successor->find_finger(m_info, fingerLocation, m_currentTransactionId);
+    PennChordMessage::PennChordPacket chordPacket = m_successor->find_finger(m_info, fingerLocation, m_currentTransactionId, fingerNum);
   }
   m_fixFingerTimer.Schedule(m_fixFingerInterval);
+}
+
+void PennChord::AuditFingers() {
+  for (std::map<uint8_t, bool>::iterator fingerIter = m_fingerReceipt.begin (); fingerIter != m_fingerReceipt.end (); fingerIter++)
+  {
+    uint8_t fingerNum = fingerIter->first;
+    if (fingerIter->second == false)  {
+      m_fingerTable.erase(fingerNum);
+    }
+  }
+  // peridicity same as fix finger but staggered
+  m_auditFingerTimer.Schedule(m_fixFingerInterval);
+}
+
+Ptr<remote_node> PennChord::FindFinger(uint8_t location[]) {
+  // stop at largest finger
+  Ptr<remote_node> fingerNode;
+  for (uint8_t fingerNum = 0; fingerNum != SHA_DIGEST_LENGTH * 8; fingerNum++) {
+    if (m_fingerTable.find(fingerNum) != m_fingerTable.end())  {
+      if (RangeCompare(m_info.location, m_fingerTable[fingerNum]->m_info.location, location)) {
+        fingerNode = m_fingerTable[fingerNum];
+      }
+      else  {
+        break;
+      }
+    }
+  }
+  return fingerNode;
 }
 
 void PennChord::SetJoinCallback(Callback<void> cb) {

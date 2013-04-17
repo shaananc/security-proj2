@@ -85,7 +85,7 @@ void PennChordMessage::PennChordPacket::Print(std::ostream &os)const {
 }
 
 uint32_t PennChordMessage::PennChordPacket::GetSerializedSize(void)const {
-    return sizeof (uint16_t) + sizeof (uint32_t)*4 + SHA_DIGEST_LENGTH * 3 + 2;
+    return sizeof (uint16_t) + sizeof (uint32_t)*4 + SHA_DIGEST_LENGTH * 3 + 3;
 }
 
 void PennChordMessage::PennChordPacket::Serialize(Buffer::Iterator start)const {
@@ -116,6 +116,7 @@ void PennChordMessage::PennChordPacket::Serialize(Buffer::Iterator start)const {
 
     i.WriteU8(m_resolved);
     i.WriteU8(m_chordLevelLookup);
+    i.WriteU8(fingerNum);
 }
 
 uint32_t PennChordMessage::PennChordPacket::Deserialize(Buffer::Iterator start) {
@@ -147,6 +148,7 @@ uint32_t PennChordMessage::PennChordPacket::Deserialize(Buffer::Iterator start) 
 
     m_resolved = i.ReadU8();
     m_chordLevelLookup = i.ReadU8();
+    fingerNum = i.ReadU8();
 
 
     return GetSerializedSize();

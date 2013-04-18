@@ -381,7 +381,7 @@ void PennChord::SetLookupFailureCallback(Callback<void, uint8_t*, uint8_t, uint3
 // TODO Implement
 
 void PennChord::JoinOverlay(Ipv4Address landmark) {
-    CHORD_LOG("Joining Overlay at " << landmark << std::endl);
+    //CHORD_LOG("Joining Overlay at " << landmark << std::endl);
     //    cout << "Hash ";
     //    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {
     //        cout << std::hex << (int) m_info.location[i];
@@ -423,7 +423,7 @@ uint32_t PennChord::Lookup(unsigned char location[]) {
 }
 
 void PennChord::CreateOverlay() {
-    CHORD_LOG("Creating Overlay" << std::endl);
+    //CHORD_LOG("Creating Overlay" << std::endl);
 
     //    cout << "Hash ";
     //    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i) {

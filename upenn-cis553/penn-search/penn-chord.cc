@@ -49,7 +49,7 @@ PennChord::GetTypeId() {
             .AddConstructor<PennChord> ()
             .AddAttribute("AppPort",
             "Listening port for Application",
-            UintegerValue(19481),
+            UintegerValue(15949),
             MakeUintegerAccessor(&PennChord::m_appPort),
             MakeUintegerChecker<uint16_t> ())
             .AddAttribute("PingTimeout",
@@ -60,25 +60,25 @@ PennChord::GetTypeId() {
 
             .AddAttribute("StabilizeFreq",
             "Frequency to Update Successor",
-            TimeValue(MilliSeconds(900)),
+                          TimeValue(MilliSeconds(1500)),//900
             MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
 
             .AddAttribute("RequestTimeout",
             "Timeout value for request retransmission in milli seconds",
-            TimeValue(MilliSeconds(2000)),
+                          TimeValue(MilliSeconds(2000)),//2000
             MakeTimeAccessor(&PennChord::m_requestTimeout),
             MakeTimeChecker())
 
             .AddAttribute("FixFingerInterval",
             "Fix finger interval in milli seconds",
-            TimeValue(MilliSeconds(10000)),
+                          TimeValue(MilliSeconds(30000)),//10000
             MakeTimeAccessor(&PennChord::m_fixFingerInterval),
             MakeTimeChecker())
 
             .AddAttribute("AuditFingerInterval",
             "Audit finger intitial interval in milli seconds",
-            TimeValue(MilliSeconds(19000)),
+                          TimeValue(MilliSeconds(49000)),//19000
             MakeTimeAccessor(&PennChord::m_auditFingerInterval),
             MakeTimeChecker())
 

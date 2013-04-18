@@ -197,28 +197,49 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             std::string doc;
             getline(ss, doc, ' ');
             while (getline(ss, item, ' ')) {
-                std::vector<string> docs;
+                SEARCH_LOG("\nItem: " << item << "\nDoc: " << doc); 
+                std::vector<std::string> docs;
                 //keyword exists in map
                 if (inverted.count(item) != 0) {
-                    std::map<std::string, std::vector<string> >::iterator it = inverted.find(item);
-                    std::vector<string> docs = it->second;
+                    //std::map<std::string, std::vector<string> >::iterator it = inverted.find(item);
+                    inverted.find(item)->second.push_back(doc);
+                    /*SEARCH_LOG("\nPrinting doc list for item: " << item);
+                    for(std::vector<std::string>::iterator itr = docs.begin(); itr!=docs.end(); itr++){
+                        SEARCH_LOG("\nDoc: " << *itr);
+                    }*/
+                    //docs.push_back(doc);
                 }
+                else{
                 //add document to doc list and insert into map
-                docs.push_back(doc.c_str());
-                inverted.insert(std::make_pair(item.c_str(), docs));
+                docs.push_back(doc);
+                inverted.insert(std::make_pair(item, docs));
+                }
+                /*SEARCH_LOG("\nPrinting doc list again for item: " << item);
+                    for(std::vector<std::string>::iterator itr = docs.begin(); itr!=docs.end(); itr++){
+                        SEARCH_LOG("\nDoc: " << *itr);
+                    }*/
+
+                //inverted.insert(std::make_pair(item, docs));
                 
                 SEARCH_LOG ("\nPUBLISH <keyword: " << item << ", docID: " << doc << ">");
-                //keep track of how many tokes there are in the string
+               //keep track of how many tokes there are in the string
                 i++;
-                item.clear();
+                //item.clear();
             }
-            doc.clear();
+            //doc.clear();
             //junk entry in file
             if (i < 2) {
                 ERROR_LOG("\nInsufficient Params in File...\n");
                 break;
             }
         }
+        //Print the inverted doc list
+        /*for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
+            SEARCH_LOG("\nINV Key: " << iter->first);
+            for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
+                SEARCH_LOG("\nINV Doc: " << *itr);
+            }
+        }*/
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
@@ -250,9 +271,9 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             unsigned char keyHash[SHA_DIGEST_LENGTH];
             unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
             
-            SHA1(keyword, sizeof (keyword), keyHash);
-            //DEBUG MESSAGE
-            SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
+            SHA1(keyword, newSearch.keywords.front().size(), keyHash);
+            //HASH DEBUG MESSAGE
+            //SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
  
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -339,14 +360,14 @@ PennSearch::publish_lookup() {
         if (m_trackPublish.find(iter->first) == m_trackPublish.end()) {
             unsigned char keyHash[SHA_DIGEST_LENGTH];
             std::string key = iter->first;
+            uint8_t size = key.size();
             unsigned char *keyword = (unsigned char *)key.c_str();
-            
-            SHA1(keyword, sizeof (keyword), keyHash);
-            //debug messages
-            SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword));
-            key.clear();
-            //uint32_t lookRes = m_chord->Lookup(keyHash);
-            //m_trackPublish.insert(std::make_pair(key, lookRes));
+            SHA1(keyword, key.size(), keyHash);
+            //hash debug messages
+            //SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
+            //key.clear();
+            uint32_t lookRes = m_chord->Lookup(keyHash);
+            m_trackPublish.insert(std::make_pair(key, lookRes));
         }
     }
 }
@@ -746,14 +767,15 @@ void PennSearch::update_node(std::map<std::string, std::vector<std::string> > &d
             }
         }
     }
-    //printing local m_documents to confirm elements were added
-    printf("\nPrinting local m_documents\n");
+
+    //DEBUG: printing local m_documents to confirm elements were added
+    /*printf("\nPrinting local m_documents\n");
     for(std::map<std::string, std::vector<std::string> >::iterator iter = m_documents.begin(); iter!=m_documents.end(); iter++){
         DEBUG_LOG("\nKEY: " << iter->first);
         for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
             DEBUG_LOG("\nDOC: " << *itr);
         }
-    }
+    }*/
 
 }
 

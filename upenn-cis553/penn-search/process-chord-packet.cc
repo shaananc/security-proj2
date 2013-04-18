@@ -98,7 +98,9 @@ void PennChord::procRSP_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
 
 void PennChord::procREQ_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
     //CHORD_LOG("REQ PREDECESSOR from " << ReverseLookup(p.originator.address));
+    if(m_predecessor->m_info.address.IsEqual("120.120.120.120")){return;}
     remote_node(p.originator, m_socket, m_appPort).reply_preceeding(p.originator, m_predecessor->m_info);
+
 }
 
 void PennChord::procRSP_CP(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {

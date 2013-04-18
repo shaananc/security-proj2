@@ -128,8 +128,8 @@ PennChord::StartApplication(void) {
     m_auditPingsTimer.Schedule(m_pingTimeout);
 
     NormalVariable interval = NormalVariable (m_fixFingerInterval.GetMilliSeconds (), 500);
-    m_fixFingerTimer.Schedule (MilliSeconds (interval.GetValue ()));
-    //m_fixFingerTimer.Schedule(m_fixFingerInterval);
+    //m_fixFingerTimer.Schedule (MilliSeconds (interval.GetValue ()));
+    m_fixFingerTimer.Schedule(m_fixFingerInterval);
 
     m_auditFingerTimer.Schedule(m_auditFingerInterval);
 
@@ -471,7 +471,10 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
         return;
     }
     PennChordMessage::PennChordPacket p = message.GetChordPacket();
-
+    if(p.requestee.IsEqual("10.0.0.1") && !p.originator.address.IsEqual("10.0.0.1")){
+//      p.Print(std::cout);  
+    }
+    
     //    DEBUG_LOG("Packet Received");
 
     map<uint32_t, Ptr<PennChordTransaction> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);

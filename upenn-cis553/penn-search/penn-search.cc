@@ -103,6 +103,7 @@ PennSearch::StartApplication(void) {
     m_chord->SetPingRecvCallback(MakeCallback(&PennSearch::HandleChordPingRecv, this));
     m_chord->SetLookupSuccessCallback(MakeCallback(&PennSearch::HandleLookupSuccess, this));
     m_chord->SetLookupFailureCallback(MakeCallback(&PennSearch::HandleLookupFailure, this));
+
     // Start Chord
     m_chord->SetStartTime(Simulator::Now());
     m_chord->Start();
@@ -234,12 +235,12 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             }
         }
         //Print the inverted doc list
-        /*for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
+        for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
             SEARCH_LOG("\nINV Key: " << iter->first);
             for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
                 SEARCH_LOG("\nINV Doc: " << *itr);
             }
-        }*/
+        }
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
@@ -273,7 +274,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             
             SHA1(keyword, newSearch.keywords.front().size(), keyHash);
             //HASH DEBUG MESSAGE
-            //SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
+            SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
  
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -364,7 +365,7 @@ PennSearch::publish_lookup() {
             unsigned char *keyword = (unsigned char *)key.c_str();
             SHA1(keyword, key.size(), keyHash);
             //hash debug messages
-            //SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
+            SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
             //key.clear();
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_trackPublish.insert(std::make_pair(key, lookRes));
@@ -493,9 +494,9 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
     SEARCH_LOG("Searching for<" << printDocs(newSearch.keywords) << ">");
 
     unsigned char keyHash[SHA_DIGEST_LENGTH];
-    std::cout << newSearch.keywords.front() << std::endl;
+    //std::cout << newSearch.keywords.front() << std::endl;
     unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
-    std::cout << keyword << std::endl;
+    //std::cout << keyword << std::endl;
     SHA1(keyword, (newSearch.keywords.front()).size(), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
     m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -515,18 +516,19 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
 
     results.keywords.erase(results.keywords.begin());
     results.docs = res;
+    res.clear();
 
-    if (res.empty()) {
+    if (results.docs.empty()) {
         SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", \"Empty List\">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
-        return;
+        goto cleanup;
     }
     if (results.keywords.empty()) {
-      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res) << ">");
+      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(results.docs) << ">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
-        return;
+        goto cleanup;
     } else {
         unsigned char keyHash[SHA_DIGEST_LENGTH];
         unsigned char *keyword = (unsigned char *)results.keywords.front().c_str();
@@ -535,7 +537,9 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
         m_searchTracker.insert(std::make_pair(lookRes, results));
         //lookup hash of kewords.front(), then send keywords and docs to appropriate node
     }
-
+    cleanup:
+    results.keywords.clear();
+    results.docs.clear();
 }
 
 void
@@ -677,7 +681,7 @@ void
 PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId) {
   SEARCH_LOG("Lookup Success " << transactionId << ", IP: " << address);
   inLookup = false;
-    map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
+  map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
     if (iter != m_searchTracker.end()) {
         SearchRes results = iter->second;
         m_searchTracker.erase(iter);
@@ -700,16 +704,38 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
                 packet->AddHeader(resp);
                 DEBUG_LOG("\nKeyword: " << it->first << "Node: " << ReverseLookup(address));
                 m_socket->SendTo(packet, 0, InetSocketAddress(address, m_appPort));
-                
                 }
+
+                break;
             }
+        }
+        if(itr!=m_trackPublish.end()){
+            m_trackPublish.erase(itr->first);
         }
     }
 }
 
 void
 PennSearch::HandleLookupFailure(uint8_t *lookupKey, uint8_t lookupKeyBytes, uint32_t transactionId) {
-  //TODO: restart request on failure and print log
+  //Remove transaction from queue/local storage
+
+    SEARCH_LOG("Lookup Failure " << transactionId);
+    if (m_searchTracker.find(transactionId) != m_searchTracker.end()) {
+        m_searchTracker.erase(transactionId);
+    }
+    else{
+        map<std::string, uint32_t>::iterator itr;
+        for(itr=m_trackPublish.begin(); itr!=m_trackPublish.end(); itr++){
+            if(transactionId == itr->second){
+                m_need_to_publish.erase(itr->first);
+                break;
+            }
+        }
+        if(itr!=m_trackPublish.end()){
+            m_trackPublish.erase(itr->first);
+        }
+    }
+
 }
 
     // TODO: Publish lookup 
@@ -801,7 +827,7 @@ void PennSearch::remove_publish_list(std::vector<std::string> &keys) {
 
 void PennSearch::chordJoined() {
     // TODO this is where we have to send a message that we want to move the associated lists
-    std::cout << "Did join callback! Yay!! " << ReverseLookup(m_local) << std::endl;
+    //std::cout << "Did join callback! Yay!! " << ReverseLookup(m_local) << std::endl;
     NodeInfo suc = m_chord->getSuccessor();
 
     Ptr<Packet> packet = Create<Packet> ();

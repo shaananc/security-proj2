@@ -43,13 +43,13 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
     if (/*m_predecessor.m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||*/
             RangeCompare(m_info.location, p.lookupLocation, m_successor->m_info.location)) {
 
-        CHORD_LOG("Successor Found");
+        //CHORD_LOG("Successor Found");
         p.m_resolved = true;
         remote_node(p.originator, m_socket, m_appPort).reply_successor(m_successor->m_info, p.requestee, p.originator, p.m_transactionId);
     } else {
       
       //      if(inLookup) num_hops++; //Need to separate out this from normal traffic
-        CHORD_LOG("No successor. Forwarding");
+        //CHORD_LOG("No successor. Forwarding");
         p.m_resolved = false;
         // consult finger table
         Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);

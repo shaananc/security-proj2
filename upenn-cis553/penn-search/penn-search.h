@@ -70,7 +70,7 @@ class PennSearch : public PennApplication
     void HandleChordPingFailure (Ipv4Address destAddress, std::string message);
     void HandleChordPingRecv (Ipv4Address destAddress, std::string message);
     void HandleLookupSuccess (uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId);
-
+    void HandleLookupFailure(uint8_t *lookupKey, uint8_t lookupKeyBytes, uint32_t transactionId);
     // From PennApplication
     virtual void ProcessCommand (std::vector<std::string> tokens);
     // From PennLog

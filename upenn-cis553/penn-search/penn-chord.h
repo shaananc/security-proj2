@@ -129,6 +129,8 @@ private:
     Time m_requestTimeout;
     Time m_fixFingerInterval;
     Time m_auditFingerInterval;
+    Time m_debugTimeout;
+
     uint16_t m_appPort;
     uint8_t m_maxRequestRetries;
     // Timers

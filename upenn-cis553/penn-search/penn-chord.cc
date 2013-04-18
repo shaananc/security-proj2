@@ -70,6 +70,12 @@ PennChord::GetTypeId() {
             MakeTimeAccessor(&PennChord::m_requestTimeout),
             MakeTimeChecker())
 
+            .AddAttribute("RingDebugTimeout",
+            "Timeout value for debug request retransmission in milli seconds",
+            TimeValue(MilliSeconds(20000)),
+            MakeTimeAccessor(&PennChord::m_debugTimeout),
+            MakeTimeChecker())
+
             .AddAttribute("FixFingerInterval",
             "Fix finger interval in milli seconds",
             TimeValue(MilliSeconds(10000)),
@@ -229,14 +235,13 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         LeaveInitiate();
     } else if (command == "ringstate" || command == "RINGSTATE") {
         PrintInfo();
-/*
         GetNextTransactionId();
         PennChordMessage::PennChordPacket chordPacket = m_successor->RingDebug(m_info, 1, m_currentTransactionId);
-        Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRING_DBG, this), m_currentTransactionId, chordPacket, m_successor, m_requestTimeout, m_maxRequestRetries);
+        Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRING_DBG, this), m_currentTransactionId, chordPacket, m_successor, m_debugTimeout, m_maxRequestRetries);
         m_chordTracker[m_currentTransactionId] = transaction;
         EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
-        transaction->m_requestTimeoutEventId = requestTimeoutId;*/
-        m_successor->RingDebug(m_info, 1, m_currentTransactionId);
+        transaction->m_requestTimeoutEventId = requestTimeoutId;
+        //m_successor->RingDebug(m_info, 1, m_currentTransactionId);
     }
 
 
@@ -358,9 +363,9 @@ PennChord::StopChord() {
   std::cout <<"Average hop count: " << avg_lookups << std::endl;
   
   // print finger table
-  DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
+  //DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
   for (std::map<uint8_t, Ptr<remote_node> >::iterator iter = m_fingerTable.begin(); iter != m_fingerTable.end(); iter++)  {
-    DEBUG_LOG("Finger Entry: " << iter->first << " : " << iter->second->m_info.address);
+    //DEBUG_LOG("Finger Entry: " << iter->first << " : " << iter->second->m_info.address);
   }
 
     StopApplication();
@@ -627,7 +632,9 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
         else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC)  {
           CHORD_LOG("Request Successor failed");
         }
-
+        else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::RING_DBG)  {
+          CHORD_LOG("Ring Debug failed");
+        }
         return;
     }
 

@@ -143,14 +143,14 @@ void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address so
     //CHORD_LOG("RECV DEBUG: " << ReverseLookup(p.originator.address) << " Suc: " << ReverseLookup(m_successor.m_info.address) );
     if (p.originator.address != m_info.address && m_successor->m_info.address != m_info.address) {
         PrintInfo();
-
-        /*GetNextTransactionId();
+/*
+        GetNextTransactionId();
         PennChordMessage::PennChordPacket chordPacket = m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1, m_currentTransactionId);
         Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRING_DBG, this), m_currentTransactionId, chordPacket, m_successor, m_requestTimeout, m_maxRequestRetries);
         m_chordTracker[m_currentTransactionId] = transaction;
         EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
         transaction->m_requestTimeoutEventId = requestTimeoutId;*/
-        m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1, m_currentTransactionId);
+        m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1, p.m_transactionId);
 
 
     } else {

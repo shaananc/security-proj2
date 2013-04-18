@@ -50,7 +50,7 @@ TIME 10000
 #--------------- well-formed ring(ring_size = 20) ---------------#
 3 PENNSEARCH CHORD RINGSTATE
 TIME 5000
-
+QUIT
 #--------------- graceful leaving ---------------#
 
 11 PENNSEARCH CHORD LEAVE

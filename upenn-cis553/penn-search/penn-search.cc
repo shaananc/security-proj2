@@ -495,7 +495,7 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
     std::cout << newSearch.keywords.front() << std::endl;
     unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
     std::cout << keyword << std::endl;
-    SHA1(keyword, sizeof (keyword), keyHash);
+    SHA1(keyword, (newSearch.keywords.front()).size(), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
     m_searchTracker.insert(std::make_pair(lookRes, newSearch));
 }
@@ -529,7 +529,7 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
     } else {
         unsigned char keyHash[SHA_DIGEST_LENGTH];
         unsigned char *keyword = (unsigned char *)results.keywords.front().c_str();
-        SHA1(keyword, sizeof (keyword), keyHash);
+        SHA1(keyword, (results.keywords.front()).size(), keyHash);
         uint32_t lookRes = m_chord->Lookup(keyHash);
         m_searchTracker.insert(std::make_pair(lookRes, results));
         //lookup hash of kewords.front(), then send keywords and docs to appropriate node

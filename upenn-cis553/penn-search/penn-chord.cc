@@ -486,6 +486,7 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address && p.m_resolved == true) {
         callback_pair->second->m_replyProcFn(p, sourceAddress, sourcePort);
         m_chordTracker.erase(callback_pair);
+        return;
 
     } else {
 

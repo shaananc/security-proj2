@@ -51,7 +51,7 @@ public:
     
     PennChordMessage::PennChordPacket RingDebug(NodeInfo originator, uint32_t n, uint32_t transactionId_original);
 
-    PennChordMessage::PennChordPacket Leave_Suc(NodeInfo originator, NodeInfo successor);
+    PennChordMessage::PennChordPacket Leave_Suc(NodeInfo originator, NodeInfo successor, uint32_t transactionId_original);
     PennChordMessage::PennChordPacket Leave_Pred(NodeInfo originator, NodeInfo predecessor);
     PennChordMessage::PennChordPacket Leave_Conf(NodeInfo originator);
 

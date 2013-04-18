@@ -241,13 +241,14 @@ PennChordMessage::PennChordPacket remote_node::RingDebug(NodeInfo originator, ui
     return p;
 }
 
-PennChordMessage::PennChordPacket remote_node::Leave_Suc(NodeInfo originator, NodeInfo successor) {
+PennChordMessage::PennChordPacket remote_node::Leave_Suc(NodeInfo originator, NodeInfo successor, uint32_t transactionId_original) {
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::LEAVE_SUC;
     p.m_result = successor;
     p.requestee = m_info.address;
     p.originator = originator;
+    p.m_transactionId = transactionId_original;
     SendRPC(p);
     return p;
 }

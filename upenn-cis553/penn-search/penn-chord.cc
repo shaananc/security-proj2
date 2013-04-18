@@ -66,7 +66,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("RequestTimeout",
             "Timeout value for request retransmission in milli seconds",
-            TimeValue(MilliSeconds(2000)),
+            TimeValue(MilliSeconds(5000)),
             MakeTimeAccessor(&PennChord::m_requestTimeout),
             MakeTimeChecker())
 
@@ -90,7 +90,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("MaxRequestRetries",
             "Number of request retries before giving up",
-            UintegerValue(3),
+            UintegerValue(10),
             MakeUintegerAccessor(&PennChord::m_maxRequestRetries),
             MakeUintegerChecker<uint8_t> ())
             ;
@@ -484,7 +484,9 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
 
     map<uint32_t, Ptr<PennChordTransaction> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
     if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address && p.m_resolved == true) {
+    //if ((callback_pair != m_chordTracker.end() && p.originator.address == m_info.address) || p.m_) {
         callback_pair->second->m_replyProcFn(p, sourceAddress, sourcePort);
+        CHORD_LOG("deleting transaction " << p.m_transactionId);
         m_chordTracker.erase(callback_pair);
         return;
 
@@ -633,11 +635,11 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
     // Retransmit and reschedule if needed
     if (chordTransaction->m_retries > chordTransaction->m_maxRetries) {
         // Report failure
+        CHORD_LOG("FIALURE: " << " transactionId: " << chordTransaction->m_transactionId );
         if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOKUP) {
             CHORD_LOG("Lookup failed for location " << strHash(chordTransaction->m_chordPacket.lookupLocation));
             if (!m_lookupFailureFn.IsNull()) {
                 m_lookupFailureFn(chordTransaction->m_chordPacket.lookupLocation, SHA_DIGEST_LENGTH, chordTransaction->m_transactionId);
-                m_chordTracker.erase(transactionId);
             }
         }
         else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC)  {
@@ -649,17 +651,27 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
         else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::LEAVE_SUC)  {
           CHORD_LOG("Leave Successor failed");
         }
+
+        m_chordTracker.erase(transactionId);
         return;
     }
 
     else {
-        // Retransmit
-        //CHORD_LOG ("Retransmission Req\n" << chordPacket);
-        chordTransaction->m_remoteNode->SendRPC(chordTransaction->m_chordPacket);
-        // Reschedule
-        // Start transaction timer
-        EventId requestTimeoutId = Simulator::Schedule(chordTransaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, transactionId);
-        chordTransaction->m_requestTimeoutEventId = requestTimeoutId;
+        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC)  {
+          CHORD_LOG("Retransmitting dynamically" << chordTransaction->m_chordPacket.m_messageType << " transactionId: " << chordTransaction->m_transactionId);
+          chordTransaction->m_remoteNode->SendRPC(chordTransaction->m_chordPacket);
+        }
+        else  {
+          CHORD_LOG("Retransmitting statically" << chordTransaction->m_chordPacket.m_messageType << " transactionId: " << chordTransaction->m_transactionId);
+          // Retransmit
+          remote_node(chordTransaction->m_chordPacket.originator, m_socket, m_appPort).SendRPC(chordTransaction->m_chordPacket);
+          // Reschedule
+          // Start transaction timer
+          NormalVariable interval = NormalVariable (chordTransaction->m_requestTimeout.GetMilliSeconds (), 500);
+          //EventId requestTimeoutId = Simulator::Schedule(chordTransaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, transactionId);
+          EventId requestTimeoutId = Simulator::Schedule(MilliSeconds (interval.GetValue ()), &PennChord::HandleRequestTimeout, this, transactionId);
+          chordTransaction->m_requestTimeoutEventId = requestTimeoutId;
+        }
     }
 }
 

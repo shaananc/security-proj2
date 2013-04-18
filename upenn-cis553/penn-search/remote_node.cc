@@ -217,6 +217,7 @@ PennChordMessage::PennChordPacket remote_node::reply_preceeding(NodeInfo origina
     //cout << "SENDING BACK " << predecessor.address << endl;
     p.requestee = m_info.address;
     p.originator = originator;
+    p.m_resolved = true;
     SendRPC(p);
     return p;
 }
@@ -270,6 +271,7 @@ PennChordMessage::PennChordPacket remote_node::Leave_Conf(NodeInfo originator) {
     p.m_messageType = PennChordMessage::PennChordPacket::LEAVE_CONF;
     p.requestee = m_info.address;
     p.originator = originator;
+    p.m_resolved = true;
     SendRPC(p);
     return p;
 }

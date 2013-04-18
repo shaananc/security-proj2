@@ -102,6 +102,7 @@ PennSearch::StartApplication(void) {
     m_chord->SetPingFailureCallback(MakeCallback(&PennSearch::HandleChordPingFailure, this));
     m_chord->SetPingRecvCallback(MakeCallback(&PennSearch::HandleChordPingRecv, this));
     m_chord->SetLookupSuccessCallback(MakeCallback(&PennSearch::HandleLookupSuccess, this));
+    m_chord->SetLookupFailureCallbacl(MakeCallback(&PennSearch::HandleLookupSuccess, this));
     // Start Chord
     m_chord->SetStartTime(Simulator::Now());
     m_chord->Start();

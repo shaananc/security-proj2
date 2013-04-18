@@ -51,7 +51,7 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
       //      if(inLookup) num_hops++; //Need to separate out this from normal traffic
         CHORD_LOG("No successor. Forwarding");
         p.m_resolved = false;
-        // TODO: do find_predecessor after consulting finger table instead
+        // consult finger table
         Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);
         if (fingerNode != NULL) {
           fingerNode->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
@@ -75,7 +75,7 @@ void PennChord::procREQ_LOOKUP(PennChordMessage::PennChordPacket p, Ipv4Address 
         num_hops++; 
 	//CHORD_LOG("LookupRequestion<");
         p.m_resolved = false;
-        // TODO: do find_predecessor after consulting finger table instead
+        // consult finger table
         Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);
         if (fingerNode != NULL) {
           fingerNode->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
@@ -207,8 +207,14 @@ void PennChord::procREQ_FINGER(PennChordMessage::PennChordPacket p, Ipv4Address 
       
       //      if(inLookup) num_hops++; //Need to separate out this from normal traffic
         //DEBUG_LOG("Finger not found. Forwarding");
-        // TODO: do find_predecessor after consulting finger table instead
-        m_successor->find_finger(p.originator, p.lookupLocation, p.m_transactionId, p.fingerNum);
+        // consult finger table
+        Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);
+        if (fingerNode != NULL) {
+          fingerNode->find_finger(p.originator, p.lookupLocation, p.m_transactionId, p.fingerNum);
+        }
+        else  {
+          m_successor->find_finger(p.originator, p.lookupLocation, p.m_transactionId, p.fingerNum);
+        }
     }
 }
 

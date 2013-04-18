@@ -211,13 +211,15 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         std::stringstream ss;
         ss << m_node->GetId();
         std::string m_id = ss.str();
+        Ipv4Address ldmk = ResolveNodeIpAddress(landmark);
 
-        //CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
+        //CHORD_LOG("ldmk IP: " << ldmk << ", m_local: " << m_local);
+        // CHORD_LOG(m_id << " is the ID and " << landmark << " is the landmark" << std::endl);
 
-        if (landmark == m_id) {
-            CreateOverlay();
+        if (ldmk == m_local) {
+          CreateOverlay();
         } else {
-            JoinOverlay(ResolveNodeIpAddress(landmark));
+            JoinOverlay(ldmk);
         }
     } else if (command == "leave" || command == "LEAVE") {
         LeaveInitiate();
@@ -600,8 +602,8 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
     // Retransmit and reschedule if needed
     if (chordTransaction->m_retries > chordTransaction->m_maxRetries) {
         // Report failure
-        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOK) {
-            CHORD_LOG("Lookup failed!");
+        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOKUP) {
+            CHORD_LOG("Lookup failed for location " << strHash(chordTransaction->m_chordPacket.lookupLocation));
             m_chordTracker.erase(transactionId);
         }
         return;

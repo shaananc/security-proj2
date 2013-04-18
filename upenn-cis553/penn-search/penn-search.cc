@@ -276,9 +276,8 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
  
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
-            
+            newSearch.keywords.clear();        
         }
-    
 
 
     } // End Search command

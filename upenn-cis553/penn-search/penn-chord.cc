@@ -78,7 +78,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("AuditFingerInterval",
             "Audit finger intitial interval in milli seconds",
-            TimeValue(MilliSeconds(15000)),
+            TimeValue(MilliSeconds(19000)),
             MakeTimeAccessor(&PennChord::m_auditFingerInterval),
             MakeTimeChecker())
 
@@ -126,7 +126,11 @@ PennChord::StartApplication(void) {
     m_auditFingerTimer.SetFunction(&PennChord::AuditFingers, this);
     // Start timers
     m_auditPingsTimer.Schedule(m_pingTimeout);
-    m_fixFingerTimer.Schedule(m_fixFingerInterval);
+
+    NormalVariable interval = NormalVariable (m_fixFingerInterval.GetMilliSeconds (), 500);
+    m_fixFingerTimer.Schedule (MilliSeconds (interval.GetValue ()));
+    //m_fixFingerTimer.Schedule(m_fixFingerInterval);
+
     m_auditFingerTimer.Schedule(m_auditFingerInterval);
 
 
@@ -344,7 +348,7 @@ PennChord::StopChord() {
   }
 
   //  CHORD_LOG("Average hop count: " << avg_lookups << " " << num_hops <<" "<< num_lookups << std::endl);
-  CHORD_LOG("Average hop count: " << avg_lookups << std::endl);
+  std::cout <<"Average hop count: " << avg_lookups << std::endl;
   
   // print finger table
   DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
@@ -599,6 +603,7 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
         // Transaction does not exist
         return;
     }
+    chordTransaction->m_retries++;
     // Retransmit and reschedule if needed
     if (chordTransaction->m_retries > chordTransaction->m_maxRetries) {
         // Report failure
@@ -606,11 +611,17 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
             CHORD_LOG("Lookup failed for location " << strHash(chordTransaction->m_chordPacket.lookupLocation));
             if (!m_lookupFailureFn.IsNull()) {
                 m_lookupFailureFn(chordTransaction->m_chordPacket.lookupLocation, SHA_DIGEST_LENGTH, chordTransaction->m_transactionId);
+                m_chordTracker.erase(transactionId);
             }
         }
-        m_chordTracker.erase(transactionId);
+        else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC)  {
+          CHORD_LOG("Request Successor failed");
+        }
+
         return;
-    } else {
+    }
+
+    else {
         // Retransmit
         //CHORD_LOG ("Retransmission Req\n" << chordPacket);
         chordTransaction->m_remoteNode->SendRPC(chordTransaction->m_chordPacket);
@@ -657,7 +668,9 @@ void PennChord::FixFingers() {
     GetNextTransactionId();
     PennChordMessage::PennChordPacket chordPacket = m_successor->find_finger(m_info, fingerLocation, m_currentTransactionId, fingerNum);
   }
-  m_fixFingerTimer.Schedule(m_fixFingerInterval);
+  NormalVariable interval = NormalVariable (m_fixFingerInterval.GetMilliSeconds (), 500);
+  m_fixFingerTimer.Schedule (MilliSeconds (interval.GetValue ()));
+  //m_fixFingerTimer.Schedule(m_fixFingerInterval);
 }
 
 void PennChord::AuditFingers() {

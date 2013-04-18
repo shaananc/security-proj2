@@ -102,6 +102,7 @@ PennSearch::StartApplication(void) {
     m_chord->SetPingFailureCallback(MakeCallback(&PennSearch::HandleChordPingFailure, this));
     m_chord->SetPingRecvCallback(MakeCallback(&PennSearch::HandleChordPingRecv, this));
     m_chord->SetLookupSuccessCallback(MakeCallback(&PennSearch::HandleLookupSuccess, this));
+    m_chord->SetLookupFailureCallback(MakeCallback(&PennSearch::HandleLookupFailure, this));
     // Start Chord
     m_chord->SetStartTime(Simulator::Now());
     m_chord->Start();
@@ -708,6 +709,12 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
         }
     }
 }
+
+void
+PennSearch::HandleLookupFailure(uint8_t *lookupKey, uint8_t lookupKeyBytes, uint32_t transactionId) {
+  //TODO: restart request on failure and print log
+}
+
     // TODO: Publish lookup 
 // Override PennLog
 

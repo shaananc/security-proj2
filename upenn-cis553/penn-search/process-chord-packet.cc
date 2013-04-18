@@ -53,12 +53,12 @@ void PennChord::procREQ_SUC(PennChordMessage::PennChordPacket p, Ipv4Address sou
         p.m_resolved = false;
         // consult finger table
         Ptr<remote_node> fingerNode = FindFinger(p.lookupLocation);
-        if (fingerNode != NULL) {
+        /*if (fingerNode != NULL) {
           fingerNode->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
         }
-        else  {
+        else  {*/
           m_successor->find_successor(p.originator, p.lookupLocation, p.m_transactionId);
-        }
+        //}
     }
 }
 

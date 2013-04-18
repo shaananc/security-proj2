@@ -150,11 +150,12 @@ void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address so
         m_chordTracker[m_currentTransactionId] = transaction;
         EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
         transaction->m_requestTimeoutEventId = requestTimeoutId;*/
+        GetNextTransactionId();
         m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1, p.m_transactionId);
 
 
     } else {
-        CHORD_LOG(p.m_result.address.Get() << " is the total number of nodes in the ring\n");
+        CHORD_LOG(p.m_result.address.Get() << " is the total number of nodes in the ring\n" << " messageType: " << p.m_messageType);
     }
 }
 

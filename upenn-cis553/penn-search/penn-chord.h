@@ -130,6 +130,8 @@ private:
     Time m_fixFingerInterval;
     Time m_auditFingerInterval;
     Time m_debugTimeout;
+    Time m_leaveTimeout;
+
 
     uint16_t m_appPort;
     uint8_t m_maxRequestRetries;

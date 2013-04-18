@@ -72,8 +72,14 @@ PennChord::GetTypeId() {
 
             .AddAttribute("RingDebugTimeout",
             "Timeout value for debug request retransmission in milli seconds",
-            TimeValue(MilliSeconds(20000)),
+            TimeValue(MilliSeconds(10000)),
             MakeTimeAccessor(&PennChord::m_debugTimeout),
+            MakeTimeChecker())
+
+            .AddAttribute("LeaveTimeout",
+            "Timeout value for debug request retransmission in milli seconds",
+            TimeValue(MilliSeconds(20000)),
+            MakeTimeAccessor(&PennChord::m_leaveTimeout),
             MakeTimeChecker())
 
             .AddAttribute("FixFingerInterval",
@@ -483,8 +489,8 @@ void PennChord::ProcessChordMessage(PennChordMessage message, Ipv4Address source
     //    DEBUG_LOG("Packet Received");
 
     map<uint32_t, Ptr<PennChordTransaction> >::iterator callback_pair = m_chordTracker.find(p.m_transactionId);
-    if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address && p.m_resolved == true) {
-    //if ((callback_pair != m_chordTracker.end() && p.originator.address == m_info.address) || p.m_) {
+    //if (callback_pair != m_chordTracker.end() && p.originator.address == m_info.address && p.m_resolved == true) {
+    if ((callback_pair != m_chordTracker.end() && p.originator.address == m_info.address) && (p.m_messageType == PennChordMessage::PennChordPacket::RSP_SUC || p.m_messageType == PennChordMessage::PennChordPacket::RSP_CP || p.m_messageType == PennChordMessage::PennChordPacket::LEAVE_CONF || p.m_messageType == PennChordMessage::PennChordPacket::RING_DBG)) {
         callback_pair->second->m_replyProcFn(p, sourceAddress, sourcePort);
         CHORD_LOG("deleting transaction " << p.m_transactionId);
         m_chordTracker.erase(callback_pair);
@@ -594,7 +600,7 @@ void PennChord::LeaveInitiate() {
     GetNextTransactionId();
     // Sends a request for the location of the landmark
     PennChordMessage::PennChordPacket chordPacket = m_predecessor->Leave_Suc(m_info, m_successor->m_info, m_currentTransactionId);
-    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procLEAVE_SUC, this), m_currentTransactionId, chordPacket, m_predecessor, m_debugTimeout, m_maxRequestRetries);
+    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procLEAVE_SUC, this), m_currentTransactionId, chordPacket, m_predecessor, m_leaveTimeout, m_maxRequestRetries);
     m_chordTracker[m_currentTransactionId] = transaction;
     EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
     transaction->m_requestTimeoutEventId = requestTimeoutId;

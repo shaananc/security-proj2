@@ -360,7 +360,7 @@ PennChord::StopChord() {
   }
 
   //  CHORD_LOG("Average hop count: " << avg_lookups << " " << num_hops <<" "<< num_lookups << std::endl);
-  std::cout <<"Average hop count: " << avg_lookups << std::endl;
+  CHORD_LOG("Average hop count: " << avg_lookups);
   
   // print finger table
   //DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
@@ -588,7 +588,17 @@ void PennChord::stabilize() {
 void PennChord::LeaveInitiate() {
     //CHORD_LOG("Leaving Ring");
     m_stabilizeTimer.Cancel();
-    m_predecessor->Leave_Suc(m_info, m_successor->m_info);
+    // update TransactionId
+    GetNextTransactionId();
+    // Sends a request for the location of the landmark
+    PennChordMessage::PennChordPacket chordPacket = m_predecessor->Leave_Suc(m_info, m_successor->m_info, m_currentTransactionId);
+    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procLEAVE_SUC, this), m_currentTransactionId, chordPacket, m_predecessor, m_debugTimeout, m_maxRequestRetries);
+    m_chordTracker[m_currentTransactionId] = transaction;
+    EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
+    transaction->m_requestTimeoutEventId = requestTimeoutId;
+
+
+    //m_predecessor->Leave_Suc(m_info, m_successor->m_info, m_currentTransactionId);
 }
 
 void PennChord::LeaveOverlay() {
@@ -635,6 +645,9 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
         }
         else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::RING_DBG)  {
           CHORD_LOG("Ring Debug failed");
+        }
+        else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::LEAVE_SUC)  {
+          CHORD_LOG("Leave Successor failed");
         }
         return;
     }

@@ -604,8 +604,11 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
         // Report failure
         if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_LOOKUP) {
             CHORD_LOG("Lookup failed for location " << strHash(chordTransaction->m_chordPacket.lookupLocation));
-            m_chordTracker.erase(transactionId);
+            if (!m_lookupFailureFn.IsNull()) {
+                m_lookupFailureFn(chordTransaction->m_chordPacket.lookupLocation, SHA_DIGEST_LENGTH, chordTransaction->m_transactionId);
+            }
         }
+        m_chordTracker.erase(transactionId);
         return;
     } else {
         // Retransmit

@@ -102,7 +102,8 @@ PennSearch::StartApplication(void) {
     m_chord->SetPingFailureCallback(MakeCallback(&PennSearch::HandleChordPingFailure, this));
     m_chord->SetPingRecvCallback(MakeCallback(&PennSearch::HandleChordPingRecv, this));
     m_chord->SetLookupSuccessCallback(MakeCallback(&PennSearch::HandleLookupSuccess, this));
-    m_chord->SetLookupFailureCallbacl(MakeCallback(&PennSearch::HandleLookupSuccess, this));
+    m_chord->SetLookupFailureCallback(MakeCallback(&PennSearch::HandleLookupFailure, this));
+
     // Start Chord
     m_chord->SetStartTime(Simulator::Now());
     m_chord->Start();
@@ -677,7 +678,7 @@ void
 PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4Address address, uint32_t transactionId) {
   SEARCH_LOG("Lookup Success " << transactionId << ", IP: " << address);
   inLookup = false;
-    map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
+  map<uint32_t, SearchRes>::iterator iter = m_searchTracker.find(transactionId);
     if (iter != m_searchTracker.end()) {
         SearchRes results = iter->second;
         m_searchTracker.erase(iter);
@@ -700,12 +701,40 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
                 packet->AddHeader(resp);
                 DEBUG_LOG("\nKeyword: " << it->first << "Node: " << ReverseLookup(address));
                 m_socket->SendTo(packet, 0, InetSocketAddress(address, m_appPort));
-                
                 }
+
+                break;
             }
+        }
+        if(itr!=m_trackPublish.end()){
+            m_trackPublish.erase(itr->first);
         }
     }
 }
+
+void
+PennSearch::HandleLookupFailure(uint8_t *lookupKey, uint8_t lookupKeyBytes, uint32_t transactionId) {
+  //Remove transaction from queue/local storage
+
+    SEARCH_LOG("Lookup Failure " << transactionId);
+    if (m_searchTracker.find(transactionId) != m_searchTracker.end()) {
+        m_searchTracker.erase(transactionId);
+    }
+    else{
+        map<std::string, uint32_t>::iterator itr;
+        for(itr=m_trackPublish.begin(); itr!=m_trackPublish.end(); itr++){
+            if(transactionId == itr->second){
+                m_need_to_publish.erase(itr->first);
+                break;
+            }
+        }
+        if(itr!=m_trackPublish.end()){
+            m_trackPublish.erase(itr->first);
+        }
+    }
+
+}
+
     // TODO: Publish lookup 
 // Override PennLog
 

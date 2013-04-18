@@ -514,18 +514,19 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
 
     results.keywords.erase(results.keywords.begin());
     results.docs = res;
+    res.clear();
 
-    if (res.empty()) {
+    if (results.docs.empty()) {
         SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", \"Empty List\">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
-        return;
+        goto cleanup;
     }
     if (results.keywords.empty()) {
-      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(res) << ">");
+      SEARCH_LOG("\nSearchResults<" << ReverseLookup(results.queryNode) << ", " << printDocs(results.docs) << ">");
         //Send list back to originating node
         SendSearchFin(results.queryNode, results);
-        return;
+        goto cleanup;
     } else {
         unsigned char keyHash[SHA_DIGEST_LENGTH];
         unsigned char *keyword = (unsigned char *)results.keywords.front().c_str();
@@ -534,7 +535,9 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
         m_searchTracker.insert(std::make_pair(lookRes, results));
         //lookup hash of kewords.front(), then send keywords and docs to appropriate node
     }
-
+    cleanup:
+    results.keywords.clear();
+    results.docs.clear();
 }
 
 void

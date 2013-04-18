@@ -329,7 +329,7 @@ PennChord::AuditPings() {
             // Send indication to application layer
             m_pingFailureFn(pingRequest->GetDestinationAddress(), pingRequest->GetPingMessage());
         } else {
-            ++iter;
+             ++iter;
         }
     }
     // Rechedule timer
@@ -358,9 +358,9 @@ PennChord::StopChord() {
   std::cout <<"Average hop count: " << avg_lookups << std::endl;
   
   // print finger table
-  DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
+  //DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());
   for (std::map<uint8_t, Ptr<remote_node> >::iterator iter = m_fingerTable.begin(); iter != m_fingerTable.end(); iter++)  {
-    DEBUG_LOG("Finger Entry: " << iter->first << " : " << iter->second->m_info.address);
+    //DEBUG_LOG("Finger Entry: " << iter->first << " : " << iter->second->m_info.address);
   }
 
     StopApplication();

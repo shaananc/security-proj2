@@ -198,7 +198,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             std::string doc;
             getline(ss, doc, ' ');
             while (getline(ss, item, ' ')) {
-                SEARCH_LOG("\nItem: " << item << "\nDoc: " << doc); 
+              //SEARCH_LOG("\nItem: " << item << "\nDoc: " << doc); 
                 std::vector<std::string> docs;
                 //keyword exists in map
                 if (inverted.count(item) != 0) {
@@ -235,12 +235,12 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             }
         }
         //Print the inverted doc list
-        for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
+        /*for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
             SEARCH_LOG("\nINV Key: " << iter->first);
             for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
                 SEARCH_LOG("\nINV Doc: " << *itr);
             }
-        }
+            }*/
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
@@ -274,7 +274,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             
             SHA1(keyword, newSearch.keywords.front().size(), keyHash);
             //HASH DEBUG MESSAGE
-            SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
+            //SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
  
             uint32_t lookRes = m_chord->Lookup(keyHash);
             newSearch.transID = lookRes;
@@ -366,7 +366,7 @@ PennSearch::publish_lookup() {
             unsigned char *keyword = (unsigned char *)key.c_str();
             SHA1(keyword, key.size(), keyHash);
             //hash debug messages
-            SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
+            //SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
             //key.clear();
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_trackPublish.insert(std::make_pair(key, lookRes));
@@ -461,7 +461,7 @@ PennSearch::ProcessPublishReq(PennSearchMessage message, Ipv4Address sourceAddre
         sourceAddress.Serialize(ip_string);
         SHA1((const unsigned char *) ip_string, sizeof (ip_string), sourcelocation);
 
-        SEARCH_LOG("KEYWORD " << itr->first << "HASHES TO ")
+        //SEARCH_LOG("KEYWORD " << itr->first << "HASHES TO ")
         PrintHash(location, std::cout);
         // Compare range of keyword
         if (RangeCompare(m_chord->getPredecessor().location, location, sourcelocation) == 1) {
@@ -506,7 +506,7 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
 
 void
 PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
-  SEARCH_LOG("SearchRes received from " << sourceAddress);
+  //SEARCH_LOG("SearchRes received from " << sourceAddress);
     SearchRes results = message.GetSearchRsp().searchMessage;
 
     std::vector<std::string> res;
@@ -705,7 +705,7 @@ PennSearch::HandleLookupSuccess(uint8_t *lookupKey, uint8_t lookupKeyBytes, Ipv4
                 resp.SetPublishRsp(message);
                 Ptr<Packet> packet = Create<Packet> ();
                 packet->AddHeader(resp);
-                DEBUG_LOG("\nKeyword: " << it->first << "Node: " << ReverseLookup(address));
+                //DEBUG_LOG("\nKeyword: " << it->first << "Node: " << ReverseLookup(address));
                 m_socket->SendTo(packet, 0, InetSocketAddress(address, m_appPort));
                 }
 

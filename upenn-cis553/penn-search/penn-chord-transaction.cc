@@ -4,7 +4,7 @@
 using namespace ns3;
 using namespace std;
 
-PennChordTransaction::PennChordTransaction (Callback<void ,PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> replyProcFn, uint32_t transactionId, PennChordMessage::PennChordPacket chordPacket, Ptr<remote_node> remoteNode, Time requestTimeout, uint8_t maxRequestRetries)
+PennChordTransaction::PennChordTransaction (Callback<void ,PennChordMessage::PennChordPacket, Ipv4Address, uint16_t> replyProcFn, uint32_t transactionId, PennChordMessage::PennChordPacket chordPacket, Ptr<remote_node> remoteNode, Time requestTimeout, uint8_t maxRequestRetries) : m_retries (0)
 {
   m_transactionId = transactionId;
   m_chordPacket = chordPacket;

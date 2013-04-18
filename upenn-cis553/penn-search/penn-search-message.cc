@@ -409,6 +409,7 @@ PennSearchMessage::SearchInit::Serialize(Buffer::Iterator &start) const {
     //std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
 
     start.WriteHtonU32(searchMessage.queryNode.Get());
+    start.WriteHtonU32(searchMessage.transID);
 
     for (std::vector<std::string>::const_iterator iter = searchMessage.keywords.begin(); iter != searchMessage.keywords.end(); iter++) {
         start.WriteU16((*iter).length());
@@ -427,6 +428,7 @@ PennSearchMessage::SearchInit::Deserialize(Buffer::Iterator &start) {
     uint16_t docSize = start.ReadU16();
 
     searchMessage.queryNode = Ipv4Address(start.ReadNtohU32());
+    searchMessage.transID = start.ReadNtohU32();
 
     for (int s = 0; s < keySize; s++) {
         uint16_t length = start.ReadU16();
@@ -454,7 +456,7 @@ PennSearchMessage::SearchInit::Deserialize(Buffer::Iterator &start) {
 uint32_t
 PennSearchMessage::SearchInit::GetSerializedSize(void) const {
     uint32_t size;
-    size = sizeof (uint16_t) + sizeof (uint16_t) + IPV4_ADDRESS_SIZE;
+    size = sizeof (uint16_t) + sizeof (uint16_t) + IPV4_ADDRESS_SIZE + sizeof (uint32_t);
     for (std::vector<std::string>::const_iterator iter = searchMessage.docs.begin(); iter != searchMessage.docs.end(); iter++) {
         size = size + sizeof (uint16_t) + (*iter).length();
     }
@@ -505,6 +507,7 @@ PennSearchMessage::SearchRsp::Serialize(Buffer::Iterator &start) const {
     //std::cout << "doc size: " << searchMessage.docs.size() << std::endl;
 
     start.WriteHtonU32(searchMessage.queryNode.Get());
+    start.WriteHtonU32(searchMessage.transID);
 
     for (std::vector<std::string>::const_iterator iter = searchMessage.keywords.begin(); iter != searchMessage.keywords.end(); iter++) {
         start.WriteU16((*iter).length());
@@ -523,6 +526,7 @@ PennSearchMessage::SearchRsp::Deserialize(Buffer::Iterator &start) {
     uint16_t docSize = start.ReadU16();
 
     searchMessage.queryNode = Ipv4Address(start.ReadNtohU32());
+    searchMessage.transID = start.ReadNtohU32();
 
     for (int s = 0; s < keySize; s++) {
         uint16_t length = start.ReadU16();
@@ -551,7 +555,7 @@ PennSearchMessage::SearchRsp::Deserialize(Buffer::Iterator &start) {
 uint32_t
 PennSearchMessage::SearchRsp::GetSerializedSize(void) const {
     uint32_t size;
-    size = sizeof (uint16_t) + sizeof (uint16_t) + IPV4_ADDRESS_SIZE;
+    size = sizeof (uint16_t) + sizeof (uint16_t) + IPV4_ADDRESS_SIZE + sizeof (uint32_t);
     for (std::vector<std::string>::const_iterator iter = searchMessage.docs.begin(); iter != searchMessage.docs.end(); iter++) {
         size = size + sizeof (uint16_t) + (*iter).length();
     }
@@ -596,6 +600,7 @@ PennSearchMessage::SearchFin::Serialize(Buffer::Iterator &start) const {
     start.WriteU16(searchMessage.docs.size());
 
     start.WriteHtonU32(searchMessage.queryNode.Get());
+    start.WriteHtonU32(searchMessage.transID);
 
     for (std::vector<std::string>::const_iterator iter = searchMessage.keywords.begin(); iter != searchMessage.keywords.end(); iter++) {
         start.WriteU16((*iter).length());
@@ -614,6 +619,7 @@ PennSearchMessage::SearchFin::Deserialize(Buffer::Iterator &start) {
     uint16_t docSize = start.ReadU16();
 
     searchMessage.queryNode = Ipv4Address(start.ReadNtohU32());
+    searchMessage.transID = start.ReadNtohU32();
 
     for (int s = 0; s < keySize; s++) {
         uint16_t length = start.ReadU16();
@@ -640,7 +646,7 @@ PennSearchMessage::SearchFin::Deserialize(Buffer::Iterator &start) {
 uint32_t
 PennSearchMessage::SearchFin::GetSerializedSize(void) const {
     uint32_t size;
-    size = sizeof (uint16_t) + sizeof (uint16_t) + IPV4_ADDRESS_SIZE;
+    size = sizeof (uint16_t) + sizeof (uint16_t) + IPV4_ADDRESS_SIZE + sizeof (uint32_t);
     for (std::vector<std::string>::const_iterator iter = searchMessage.docs.begin(); iter != searchMessage.docs.end(); iter++) {
         size = size + sizeof (uint16_t) + (*iter).length();
     }

@@ -228,13 +228,15 @@ void remote_node::processPacket(PennChordMessage::PennChordPacket p) {
 }
 
 
-PennChordMessage::PennChordPacket remote_node::RingDebug(NodeInfo originator, uint32_t n){
+PennChordMessage::PennChordPacket remote_node::RingDebug(NodeInfo originator, uint32_t n, uint32_t transactionId_original)  {
+    cout << "\n" << "RingDebug" << "\n";
     PennChordMessage::PennChordPacket p;
     // Change packet variables
     p.m_messageType = PennChordMessage::PennChordPacket::RING_DBG;
     p.originator = originator;
     // Piggy Backing
     p.m_result.address.Set(n);
+    p.m_transactionId = transactionId_original;
     SendRPC(p);
     return p;
 }

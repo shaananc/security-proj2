@@ -18,7 +18,7 @@ class remote_node;
  *************************************************************/
 
 void PennChord::procREQ_PRE(PennChordMessage::PennChordPacket p, Ipv4Address sourceAddress, uint16_t sourcePort) {
-    CHORD_LOG("REQ PREDECESSOR from " << ReverseLookup(p.originator.address));
+    //CHORD_LOG("REQ PREDECESSOR from " << ReverseLookup(p.originator.address));
     if (/*m_predecessor->m_info.address.IsEqual(Ipv4Address("0.0.0.0")) ||*/
             RangeCompare(m_info.location, p.originator.location, m_successor->m_info.location)) {
 
@@ -142,7 +142,15 @@ void PennChord::procRING_DBG(PennChordMessage::PennChordPacket p, Ipv4Address so
     if (p.originator.address != m_info.address && m_successor->m_info.address != m_info.address) {
         PrintInfo();
 
-        m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1);
+        /*GetNextTransactionId();
+        PennChordMessage::PennChordPacket chordPacket = m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1, m_currentTransactionId);
+        Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRING_DBG, this), m_currentTransactionId, chordPacket, m_successor, m_requestTimeout, m_maxRequestRetries);
+        m_chordTracker[m_currentTransactionId] = transaction;
+        EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
+        transaction->m_requestTimeoutEventId = requestTimeoutId;*/
+        m_successor->RingDebug(p.originator, p.m_result.address.Get() + 1, m_currentTransactionId);
+
+
     } else {
         CHORD_LOG(p.m_result.address.Get() << " is the total number of nodes in the ring\n");
     }

@@ -229,7 +229,14 @@ PennChord::ProcessCommand(std::vector<std::string> tokens) {
         LeaveInitiate();
     } else if (command == "ringstate" || command == "RINGSTATE") {
         PrintInfo();
-        m_successor->RingDebug(m_info, 1);
+/*
+        GetNextTransactionId();
+        PennChordMessage::PennChordPacket chordPacket = m_successor->RingDebug(m_info, 1, m_currentTransactionId);
+        Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procRING_DBG, this), m_currentTransactionId, chordPacket, m_successor, m_requestTimeout, m_maxRequestRetries);
+        m_chordTracker[m_currentTransactionId] = transaction;
+        EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
+        transaction->m_requestTimeoutEventId = requestTimeoutId;*/
+        m_successor->RingDebug(m_info, 1, m_currentTransactionId);
     }
 
 

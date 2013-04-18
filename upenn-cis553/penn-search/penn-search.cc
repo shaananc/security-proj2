@@ -233,12 +233,12 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             }
         }
         //Print the inverted doc list
-        /*for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
+        for(std::map<std::string, std::vector<std::string> >::iterator iter = inverted.begin(); iter!=inverted.end(); iter++){
             SEARCH_LOG("\nINV Key: " << iter->first);
             for(std::vector<std::string>::iterator itr = iter->second.begin(); itr!=iter->second.end(); itr++){
                 SEARCH_LOG("\nINV Doc: " << *itr);
             }
-        }*/
+        }
 
         //Update the local node publishing-to-do list
         update_publish_list(inverted);
@@ -272,7 +272,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             
             SHA1(keyword, newSearch.keywords.front().size(), keyHash);
             //HASH DEBUG MESSAGE
-            //SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
+            SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
  
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -363,7 +363,7 @@ PennSearch::publish_lookup() {
             unsigned char *keyword = (unsigned char *)key.c_str();
             SHA1(keyword, key.size(), keyHash);
             //hash debug messages
-            //SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
+            SEARCH_LOG("\nPUB Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nkeyword: " << sizeof (keyword)); 
             //key.clear();
             uint32_t lookRes = m_chord->Lookup(keyHash);
             m_trackPublish.insert(std::make_pair(key, lookRes));

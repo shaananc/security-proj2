@@ -60,7 +60,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("StabilizeFreq",
             "Frequency to Update Successor",
-            TimeValue(MilliSeconds(900)),
+            TimeValue(MilliSeconds(1500)),
             MakeTimeAccessor(&PennChord::m_stabilizeFreq),
             MakeTimeChecker())
 
@@ -78,7 +78,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("FixFingerInterval",
             "Fix finger interval in milli seconds",
-            TimeValue(MilliSeconds(10000)),
+            TimeValue(MilliSeconds(25000)),
             MakeTimeAccessor(&PennChord::m_fixFingerInterval),
             MakeTimeChecker())
 

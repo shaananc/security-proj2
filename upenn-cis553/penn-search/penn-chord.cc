@@ -78,7 +78,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("LeaveTimeout",
             "Timeout value for debug request retransmission in milli seconds",
-            TimeValue(MilliSeconds(20000)),
+            TimeValue(MilliSeconds(2000)),
             MakeTimeAccessor(&PennChord::m_leaveTimeout),
             MakeTimeChecker())
 
@@ -96,7 +96,7 @@ PennChord::GetTypeId() {
 
             .AddAttribute("MaxRequestRetries",
             "Number of request retries before giving up",
-            UintegerValue(10),
+            UintegerValue(3),
             MakeUintegerAccessor(&PennChord::m_maxRequestRetries),
             MakeUintegerChecker<uint8_t> ())
             ;
@@ -600,7 +600,7 @@ void PennChord::LeaveInitiate() {
     GetNextTransactionId();
     // Sends a request for the location of the landmark
     PennChordMessage::PennChordPacket chordPacket = m_predecessor->Leave_Suc(m_info, m_successor->m_info, m_currentTransactionId);
-    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procLEAVE_SUC, this), m_currentTransactionId, chordPacket, m_predecessor, m_leaveTimeout, m_maxRequestRetries);
+    Ptr<PennChordTransaction> transaction = Create<PennChordTransaction> (MakeCallback(&PennChord::procLEAVE_SUC, this), m_currentTransactionId, chordPacket, m_predecessor, m_leaveTimeout, 100);
     m_chordTracker[m_currentTransactionId] = transaction;
     EventId requestTimeoutId = Simulator::Schedule(transaction->m_requestTimeout, &PennChord::HandleRequestTimeout, this, m_currentTransactionId);
     transaction->m_requestTimeoutEventId = requestTimeoutId;
@@ -652,7 +652,12 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
           CHORD_LOG("Request Successor failed");
         }
         else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::RING_DBG)  {
-          CHORD_LOG("Ring Debug failed");
+          // retransmit statically after resetting retries
+          CHORD_LOG("Ring Debug failed retransmitting statically");
+          CHORD_LOG("Retransmitting statically" << chordTransaction->m_chordPacket.m_messageType << " transactionId: " << chordTransaction->m_transactionId);
+          // Retransmit
+          remote_node(chordTransaction->m_chordPacket.originator, m_socket, m_appPort).SendRPC(chordTransaction->m_chordPacket);
+          return;
         }
         else if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::LEAVE_SUC)  {
           CHORD_LOG("Leave Successor failed");
@@ -663,7 +668,7 @@ void PennChord::HandleRequestTimeout(uint32_t transactionId) {
     }
 
     else {
-        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC)  {
+        if (chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::REQ_SUC || chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::RING_DBG || chordTransaction->m_chordPacket.m_messageType == PennChordMessage::PennChordPacket::LEAVE_SUC)  {
           CHORD_LOG("Retransmitting dynamically" << chordTransaction->m_chordPacket.m_messageType << " transactionId: " << chordTransaction->m_transactionId);
           chordTransaction->m_remoteNode->SendRPC(chordTransaction->m_chordPacket);
         }

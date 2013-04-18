@@ -1,0 +1,1287 @@
+commit 1ca09abca3bb0c3626d4f641519d47a199b15cd2
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 23:37:09 2013 -0400
+
+    add transID to searchRes
+
+commit c3e17aead9d4352a882e1fb530fa1fe65b1d3608
+Merge: 8bc8c25 97f3289
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 23:30:43 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 8bc8c2591a2e9a328d0bed1a2a143bbeef836e79
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 23:30:26 2013 -0400
+
+    search message transID add
+
+commit 97f3289662292c8b48d77503d5ce3682ddb7f2ef
+Merge: 2460896 8bfd74a
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 23:21:41 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 24608969ed2fd33b633ba3e33533d0761dd6480c
+Merge: b26ef4c 4401da2
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 23:21:02 2013 -0400
+
+    handle lookup failure
+
+commit 8bfd74afdc74e549b0fb728a04e7abd7f582c18b
+Merge: 5c4e25c a5275d8
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 23:14:23 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 5c4e25c912a17f20e28e44c46037e8b0514da73f
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 23:13:35 2013 -0400
+
+    Avg Hop count print and search cleanup
+
+commit a5275d8c548dfabfc7998a5613a3d8262b6d5792
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 23:08:57 2013 -0400
+
+    possible fix for incorrect ring state
+
+commit b26ef4c7f2ec3c885b017b92c649ef249c42ba2c
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 22:59:22 2013 -0400
+
+    adding lookup failure handling
+
+commit cd2aa69c3d9956c0237e3ee3f69afe369c621d0a
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 22:52:11 2013 -0400
+
+    debugging comments
+
+commit 54500db873dd2d8e9cdb9681b9729029af3cd9c3
+Merge: b1a77b4 80ee90e
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 22:42:16 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit b1a77b4029fa0e2bfb549107ff678bcc27e1c933
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 22:41:56 2013 -0400
+
+    some search cleanup fixes
+
+commit d970ef0e160ac4f8a6d0f5f42f9d87abde1afc01
+Merge: c10b2b3 80ee90e
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 21:58:24 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit c10b2b3ad8d2db6e9f9b97ef6ddce241ec53a91a
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 21:58:06 2013 -0400
+
+    minor tweaks
+
+commit 4401da23bb5894ccf50d47ead156ed53068fb494
+Merge: d2f04f2 80ee90e
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 21:46:57 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 80ee90e56b1ccc25279de6575681fd05664be648
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 21:45:31 2013 -0400
+
+    added m2 tests
+
+commit d2f04f283be72f2495be93a2801ae866e23b981a
+Merge: 733470e 13706c6
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 21:31:23 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 13706c659eed1703fede66979d901cdd28273499
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 21:29:26 2013 -0400
+
+    Alternate node and intersection search size fix
+
+commit 733470e1b525695a9f4d0fe8fb0798c5696675c8
+Merge: 8b9a9a2 dae3a55
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 20:54:42 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 8b9a9a2ee0197e19ca6d5a4a487ebcf765f42801
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 20:54:18 2013 -0400
+
+    handle search failure skeletal code
+
+commit dae3a55718c1433ec07bc6a68879793c67cd6a9e
+Merge: 89a5a55 31b696b
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 20:53:12 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 89a5a55193c708d1876385deb360c577b3c27adf
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 20:52:49 2013 -0400
+
+    fixed hash and publish bugs
+
+commit 31b696bc2d4fe41ba18e058542546b5ac87e541f
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 19:43:57 2013 -0400
+
+    consult finger table during finger fixing
+
+commit 7dec599aac644909e4a23c2bd324accdf3195f7d
+Author: Laurel A Emurian <lemurian@minus.seas.upenn.edu>
+Date:   Wed Apr 17 19:32:06 2013 -0400
+
+    Write up additions
+
+commit e687c1dfc0f4d5970c1189cccee8b489b4202c27
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 18:12:11 2013 -0400
+
+    more writeup
+
+commit 050056a133b1baa2ba9bfebc5836b07d638a961f
+Merge: ab9bb77 360887f
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 17:52:03 2013 -0400
+
+    penn-search merge
+
+commit ab9bb77df37214ef569c049094b7de4fcebb6351
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 17:42:41 2013 -0400
+
+    chord join real stack fix
+
+commit 360887f0f73abc018f6e42eb132c4b527f64ce88
+Merge: 9aa071f 7ed23e9
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Wed Apr 17 17:15:55 2013 -0400
+
+    commented out debug code
+
+commit 9aa071f1c6de39f37b42fac4c3c9c934c928f4f6
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Wed Apr 17 17:09:41 2013 -0400
+
+    changed scenario file
+
+commit eef2ff8322490f5ffc7be81c935a898cab57af8f
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Wed Apr 17 17:08:34 2013 -0400
+
+    commented out debug messages
+
+commit 4c83cd4023c30433a387b6bfbbbd852b1b120e9f
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Wed Apr 17 17:07:27 2013 -0400
+
+    clear string variables after use
+
+commit f814e33d339630dfa3071ee6b83318e448b2d921
+Merge: b2d25e8 7ed23e9
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 16:57:50 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit b2d25e8cc1fb668901743cb8b7ef76773ab36ddd
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 16:57:27 2013 -0400
+
+    writeup addition
+
+commit 7ed23e9cc83c23300eca4ec90500f3548b38175c
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 16:47:17 2013 -0400
+
+    finger based lookup works!
+
+commit 6a8ba853cfcdd177468ab08d196515fef082492f
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 15:56:00 2013 -0400
+
+    attempted search fix and scenario update
+
+commit ec01c16ff3dc9dcef6b066c82a9a6e9e57674742
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 14:35:31 2013 -0400
+
+    store finger table, periodically audit finger table
+
+commit 55b96308033cb649130ace6fdab9a4eef45fff15
+Merge: 7059f9b b60cdb3
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 12:04:41 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 7059f9b25905d384ffd451366168d231aa965805
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 12:04:19 2013 -0400
+
+    change scenario files to print only search and chord logs
+
+commit b60cdb347ce7185a89820537c4c05e8c8d5a25fa
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Wed Apr 17 11:57:49 2013 -0400
+
+    added writeup for publish
+
+commit 9211295adc1097974ccde2303e30cb4446f01432
+Merge: d41266a 0443740
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Wed Apr 17 11:34:34 2013 -0400
+
+    debug messages for publish
+
+commit d41266a80b1aeeaaaaa29ce41764443f3eae0b6e
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Wed Apr 17 11:29:33 2013 -0400
+
+    added debug messages
+
+commit 04437406122bdf456a79c714c4e3d48d74aa83d8
+Merge: de1f866 e024bdb
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Wed Apr 17 11:08:30 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit de1f866781ed41bbe4fcbf1306bb1ae8230a1b90
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Wed Apr 17 11:07:31 2013 -0400
+
+    Documentation - added Robs start
+
+commit e024bdb653e540127ce8d72f640f3d055180e9b7
+Merge: fc3621a 27b6c7b
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 11:02:12 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit fc3621a2663a29f0e2129aa03562a8a0f57b72b5
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Wed Apr 17 11:01:32 2013 -0400
+
+    fix finger and more robust transaction handling
+
+commit 27b6c7bc69d1a2a789e221187c3e4aa6e3f64050
+Merge: a0a2ba9 b422d8f
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Wed Apr 17 10:28:25 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit a0a2ba9d926ab8c094ee719d851056e780fbf1bf
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Wed Apr 17 10:27:22 2013 -0400
+
+    Lookup logs
+
+commit b422d8fbaa683b75ca78efe527beba1400822569
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 10:25:02 2013 -0400
+
+    fixed Rob7.sce
+
+commit 98a4bce5af78de2348c277f371c1c2797d6e46f1
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 10:03:44 2013 -0400
+
+    empty search results fix
+
+commit 395f1816e35efa13ed9dcce9096a9cf1978d5d39
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 07:08:51 2013 -0400
+
+    Test scenarios
+
+commit 065c250e410c31c2197b7a71451d58ebb8b29790
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 01:56:09 2013 -0400
+
+    restored robs scenario
+
+commit 4e27fb067197309279c4ee63a7ade23322c1edc3
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 01:52:38 2013 -0400
+
+    fixed random char bug
+
+commit 5b177414c5287d533e2984c9ca7d9b6390e3b57e
+Merge: 36f8974 63e7372
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 00:53:11 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 36f8974109a27a651197c5d0112601a8f3fbd8b1
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 00:52:50 2013 -0400
+
+    clean up
+
+commit 63e73723eebc8d4f93c4bede4c64ed5dbde3cc34
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 00:45:41 2013 -0400
+
+    string conversion fixes
+
+commit 6a4af957cdf5d81a61f6ea0bcd5d7ce681fd6f87
+Merge: b6072bd dbc1433
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Wed Apr 17 00:28:30 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit b6072bddcf2fcd4b6d94ba4da72cc1dfae9533b8
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Wed Apr 17 00:28:17 2013 -0400
+
+    debug code
+
+commit 585025636a57ffd7d80fdf996ca091e40ca43458
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Wed Apr 17 00:26:23 2013 -0400
+
+    added some debug code
+
+commit dbc143327abeb9670d36d4b4da0af7211a1ff91f
+Merge: e721dbf a796bc3
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 00:22:30 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit e721dbfdf3a675a9d724d44f20dd5e02e6f32c03
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 00:21:46 2013 -0400
+
+    fixed hotfix
+
+commit a1959ecd7f9aef0758ca6f838e7e5092208b0905
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 17 00:16:44 2013 -0400
+
+    hotfix
+
+commit a796bc3ec4bba1d746d1643f7f94add7f108e842
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 17 00:07:12 2013 -0400
+
+    string char debug issue
+
+commit 03ec2cfeabcb090007022bc298abce8e06e62e5e
+Author: Laurel A Emurian <lemurian@spec33.seas.upenn.edu>
+Date:   Tue Apr 16 22:20:23 2013 -0400
+
+    Separated lookups from find successor. Fixed stats
+
+commit 6f175d0a530b2eb3a508c3a79190347774509141
+Merge: 6a9effb 90ba619
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Tue Apr 16 20:27:33 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit 6a9effbe97c0a85959faedfd329d2e2ea9bf6c12
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Tue Apr 16 20:27:21 2013 -0400
+
+    added custom2.sce
+
+commit 90ba61939f765f2348c5ed45231d186a36781526
+Merge: b5be2d7 8bd50a2
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 20:19:54 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit b5be2d7c93914a334cca36d15c25839eeea79b95
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 20:19:13 2013 -0400
+
+    publish extra character fix and store change
+
+commit 8bd50a2121c5d58e2f6085bcd2fee55f0d9fd9c4
+Merge: 9638e5d ca05079
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Tue Apr 16 19:33:31 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 9638e5daa1e2efd8ad358002193287b716c67ede
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Tue Apr 16 19:33:08 2013 -0400
+
+    fix finger skeletal code
+
+commit d4b9b3b1e4cb516ac5ca507b13d9a033bcc65125
+Merge: a0d4c64 ca05079
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 19:31:30 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit a0d4c641ff99812e07e827f7704daf30d7014217
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 19:31:07 2013 -0400
+
+    minor fixes
+
+commit ca05079e4b30cd0ee565b2ae9b53a90e73bc9d4e
+Merge: 81b9168 0872663
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Tue Apr 16 18:30:14 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 81b916862e03ae73e1bbb4736b034ea77c080b3c
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Tue Apr 16 18:29:26 2013 -0400
+
+    fixed serialized bug
+
+commit 0872663fd4406691bcc23edffa2a03cd8012225a
+Merge: 3138803 5b13719
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Tue Apr 16 18:21:07 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 313880305c89ea61cc1fe0045c01dcc9e95da50b
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Tue Apr 16 18:20:37 2013 -0400
+
+    initialize finger location list
+
+commit 22611e3a41e8fa183899c70368096385a16832db
+Merge: 45c4987 5b13719
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 17:51:36 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 45c4987a96f390b4eac7174468e01f40b1f39701
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 17:51:08 2013 -0400
+
+    Lookup message and publish message fix
+
+commit 5b137199a8f119a6525dae8a73efcd16fce09766
+Merge: 08a8b29 173a533
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Tue Apr 16 17:47:19 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 08a8b29721f74b2b552787718dcbd4dbb251cf51
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Tue Apr 16 17:46:33 2013 -0400
+
+    actually called lookup function
+
+commit 173a5331e3ccf5d062557175cf1c2def112d0d42
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Tue Apr 16 16:52:07 2013 -0400
+
+    Port number change
+
+commit 317cbf75854c8f373a437eeb71048b4127fbcbaa
+Merge: e1c4d99 72ec380
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 16:21:05 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit e1c4d99c06e66ee7a1db49cdc673b981107cad81
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 16:20:12 2013 -0400
+
+    multiple search debugging
+
+commit 72ec3805896a288a4c333aa7d916a3afc166ffb0
+Merge: 8b9aa1d 027e133
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Tue Apr 16 15:37:05 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 8b9aa1db596c601dae8eebd22d438e9698cf0537
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Tue Apr 16 15:36:15 2013 -0400
+
+    Chord log performance count
+
+commit 027e1337ba57228b6ffab273d2ad9efadfc97ee8
+Merge: 4aaf2ee cdaed00
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 15:24:03 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 4aaf2ee3ccffb046cc065b08c0f7350f91f240bc
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 16 15:23:44 2013 -0400
+
+    xtra char fix and search debug
+
+commit cdaed009f5a4437fd069439cdd00d34ab8292ee4
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Tue Apr 16 14:29:02 2013 -0400
+
+    added debug messages
+
+commit 6cce5865dccbd2f467d3ce602cc4a691dc894414
+Merge: 6ccacd5 fe6380e
+Author: Laurel A Emurian <lemurian@spec03.seas.upenn.edu>
+Date:   Tue Apr 16 10:41:35 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit fe6380e884453793c4a075e8803871cdd6f79f0c
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Tue Apr 16 09:50:11 2013 -0400
+
+    publish update from yesterday
+
+commit 38d7ff9bc5102d7e9f4373b610177f74661e3800
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Mon Apr 15 23:06:10 2013 -0400
+
+    fixed basic ringstate with Robs scenario
+
+commit db4cabf93cb4dc1778e18c2e8d81303b854d6b26
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Mon Apr 15 22:28:10 2013 -0400
+
+    basic resend scenario
+
+commit add6df30961a817f0f146793616b59d2a5b145e9
+Merge: 562218e 29a5b59
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Mon Apr 15 22:18:57 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 29a5b590a65eb64a09e66b8c7b5ad072cd7e1e8e
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Mon Apr 15 22:14:48 2013 -0400
+
+    possible fix for seg fault
+
+commit 562218e36cde42e9c3c27cd84d691b159d656c25
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Mon Apr 15 20:55:57 2013 -0400
+
+    search debug
+
+commit 4a26e7223174c012f8e30d95dd34e3da0ca1d35b
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Mon Apr 15 14:45:52 2013 -0400
+
+    added process publish packet
+
+commit 6ccacd5077c2665d77a938bf7a6d83dcb719fc48
+Merge: 84bc4ee bf402b3
+Author: Laurel A Emurian <lemurian@lvn614-8.cis.upenn.edu>
+Date:   Mon Apr 15 11:41:09 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit bf402b32cb008db41f17c3421b4a15230cb538f9
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Mon Apr 15 00:25:02 2013 -0400
+
+    recomment Tanveer's line
+
+commit 9e03b685113a99e223ce70af5f5f09270d4fc59b
+Merge: c491916 c96266b
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Mon Apr 15 00:19:49 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit c49191651f8680520b2122edd2c54c702943a084
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Mon Apr 15 00:19:17 2013 -0400
+
+    strange bug fixed
+
+commit c96266b2d0e183a87aae9fd485076a9a6cf18154
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Mon Apr 15 00:11:24 2013 -0400
+
+    adding transaction removal code on receiving response
+
+commit c6f7db6379c52c17c6ab282c57c3b746e95c3fa9
+Merge: f812618 4da8126
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Apr 14 17:21:43 2013 -0400
+
+    Merge branch 'search'
+    
+    Conflicts:
+    	upenn-cis553/penn-search/penn-search-message.cc
+    	upenn-cis553/penn-search/penn-search-message.h
+    	upenn-cis553/penn-search/penn-search.cc
+    	upenn-cis553/penn-search/penn-search.h
+
+commit f812618a3cb5b0f01e2ffb09793d3d6b7cab8ea2
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Apr 14 17:03:43 2013 -0400
+
+    changed consts in message-search
+
+commit 4da812615cb26c84485f3645c56f1a8366028da2
+Merge: 7270550 d28ebf8
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Sun Apr 14 16:35:45 2013 -0400
+
+    Merge branch 'search' of https://github.com/shaananc/cis553_proj2 into search
+
+commit 0825910e1fe657f997eba55de7daeb75bfcedca3
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Apr 14 16:26:55 2013 -0400
+
+    added join & leave
+
+commit 727055034bdd1856056fc0e99c12903765165278
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Sun Apr 14 16:30:53 2013 -0400
+
+    theoretically working search
+
+commit 2c57f8521015312ee47884aa33ebe9888e0735f9
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Sun Apr 14 16:17:30 2013 -0400
+
+    publish lookups
+
+commit 7b391de0f42c9e7fa1ca3ca7128c5b270abf4d10
+Merge: bb950b5 b4511ca
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Sun Apr 14 16:08:52 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit bb950b529bde786ff6df93413600c70d7d49eec7
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Sun Apr 14 16:08:35 2013 -0400
+
+    added publish lookup
+
+commit b4511cac4a88bf95b13b758a674a913ff7b0f6ff
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Apr 14 15:57:52 2013 -0400
+
+    improved publishreq
+
+commit 1b15c5306023e216c2a485c215fc0d3ce14eb4f9
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Sun Apr 14 15:35:42 2013 -0400
+
+    adding transaction map
+
+commit 419a6744332802fca38a6719828b1933e6aea280
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Apr 14 15:27:19 2013 -0400
+
+    added start of join code
+
+commit d28ebf88051cf726f19e836ef22b3bff8d7e108d
+Merge: fedafcd 839d63d
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Sun Apr 14 15:22:55 2013 -0400
+
+    Merge branch 'search' of https://github.com/shaananc/cis553_proj2 into search
+
+commit fedafcd24295c973d2593a937708e0f90633c97b
+Author: Charu Jangid <jangidc@plus.seas.upenn.edu>
+Date:   Sun Apr 14 15:22:38 2013 -0400
+
+    cleaned up some code
+
+commit 839d63d65f961e8e81dd6ae6b2cf6a3cd8931ce2
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Sat Apr 13 22:56:09 2013 -0400
+
+    Search except for message sending and final receive
+
+commit fb31d5ee68e7595a28385719cfd24757c517309d
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sat Apr 13 20:11:20 2013 -0400
+
+    added join callback to search
+
+commit 7f5f486ad261b76272fc5073371ce3b52872416d
+Merge: 2c8d674 f7e8806
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Fri Apr 12 15:52:54 2013 -0400
+
+    merge penn-search-message.cc
+
+commit 2c8d674c73c08c16ee4be0d59ef64622ce71ad2d
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Fri Apr 12 15:45:47 2013 -0400
+
+    compile error search
+
+commit f7e8806d62a6b021c7bbcaeccb3fa24e23e21e43
+Author: Laurel A Emurian <lemurian@minus.seas.upenn.edu>
+Date:   Fri Apr 12 10:16:38 2013 -0400
+
+    search messages
+
+commit 84bc4eed9fbc559d8300f7bacfede34f48167880
+Merge: e187ebd 17bffd5
+Author: Laurel A Emurian <lemurian@lvn614-8.cis.upenn.edu>
+Date:   Thu Apr 11 16:43:07 2013 -0400
+
+    Merge branch 'search' of https://github.com/shaananc/cis553_proj2
+
+commit e187ebd120a270498d9773d4c4a8bf9284564205
+Author: Laurel A Emurian <lemurian@lvn614-8.cis.upenn.edu>
+Date:   Thu Apr 11 16:40:03 2013 -0400
+
+    Start of performance hop counting
+
+commit 17bffd5fd8308d0f9182124cd1b37a1b175f952b
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 10 21:51:02 2013 -0400
+
+    search update
+
+commit 44931c2c527272570df1a6a6b22efd9b1fde5fbc
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 10 21:18:32 2013 -0400
+
+    more search changes
+
+commit 6685c6bdc80051e9509997f7fc07a7d1a95e9ac8
+Merge: 4f655ac 887aa7c
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 10 18:10:31 2013 -0400
+
+    more search progress
+
+commit 4f655ac7bc532c8fa938ede51c24b3b3181c7a01
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Apr 10 15:04:43 2013 -0400
+
+    More search
+
+commit 887aa7c28d810e79e39abf2f748109530f8e4aff
+Merge: e8f66d5 f1b3021
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Tue Apr 9 20:30:48 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit e8f66d5a557859d830b357847fa625128b3e01c3
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Tue Apr 9 20:30:32 2013 -0400
+
+    defined Publish packet functions
+
+commit f1b302135df73481c26dc4765630bc4b8887690d
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Tue Apr 9 19:08:24 2013 -0400
+
+    changes to lookup and handlelookupsuccess
+
+commit cc2dfbc60887f8691ab9bcc7a8427135ba735961
+Merge: f311c3a 8b93198
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 9 14:41:03 2013 -0400
+
+    merge resolution
+
+commit f311c3aedfe9371d3fbb404f67f605a9e1420e84
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Apr 9 14:16:13 2013 -0400
+
+    search beginnings
+
+commit 8b931985d96b870dff3b463b585204586b560036
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Tue Apr 9 03:04:50 2013 -0400
+
+    penn-chord-transaction
+
+commit b5a2bb977bff6f52f7401fa07cbf44f6020e84ba
+Merge: 218185a 59ca345
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Mon Apr 8 21:26:17 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit 218185aa06c71dcd25f41d334d589d386f1464d9
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Mon Apr 8 21:26:07 2013 -0400
+
+    no signficant changes
+
+commit 59ca345217be41c18019e9f44f742ae9736239c3
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Mon Apr 8 20:04:56 2013 -0400
+
+    skeletal code for handling lookups in PennSearch layer.
+
+commit 26b323069df95883a4cab6f948b28fa3bca0962a
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Mon Apr 8 19:56:04 2013 -0400
+
+    basic callback API for lookup results in chord to invoke PennSearch layer
+
+commit 70e1aa0249f42eaa25e807828bbc7368e577daf2
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Mon Apr 8 15:18:17 2013 -0400
+
+    modified remote node, added local storage
+
+commit ff0bad3a8bfc07073538d626d3981b3714c07321
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Sun Apr 7 20:24:41 2013 -0400
+
+    basic lookup functionality
+
+commit 683ccc8663d71cfe65c41c5d054782ffda499f1b
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Sun Apr 7 12:01:02 2013 -0400
+
+    removing unnecessary files from the repo
+
+commit bcd547f1bf26d73b44a27fd0ef0689b9aa49c49a
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Sun Apr 7 11:47:58 2013 -0400
+
+    location based lookup
+
+commit 4581ef435b346837673acc429c0a00893b91a552
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Sun Apr 7 10:15:21 2013 -0400
+
+    fix callback identification
+
+commit 61e28b029eb20e7d8ed7b326fb7abc954e13ee33
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Sun Apr 7 01:34:23 2013 -0400
+
+    callback based join overlay. added find predecessor functions
+
+commit f8bfcbec064b49a050bd90e2ea7bd175fd782a7c
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Sat Apr 6 16:34:56 2013 -0400
+
+    fixed range compare
+
+commit 8952a8d23b19a56842d70e598a205ba2c4d5524a
+Merge: 8f9b9b4 fd0dcf1
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Apr 5 17:40:21 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit 8f9b9b46310b23f14c76d397552a711291e262f0
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Apr 5 17:39:48 2013 -0400
+
+    fixed ring numbering
+
+commit fd0dcf1ec58c1931140d9b474d0737ab94842530
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Fri Apr 5 15:55:29 2013 -0400
+
+    updated documentation and chord packet
+
+commit 32ace73df7c8f82c28d388670db06fabeb085851
+Merge: 3a22bca e609dfa
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Fri Apr 5 13:06:32 2013 -0400
+
+    penn-chord resolution
+
+commit 3a22bca0492f2143e000bf0c0ae319bd9bd864e3
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Apr 4 23:32:01 2013 -0400
+
+    restored proper leave function and updated writeup
+
+commit 84d993805e8b02b6d9610602b1a3478254239b85
+Author: Laurel A Emurian <lemurian@minus.seas.upenn.edu>
+Date:   Thu Apr 4 11:45:05 2013 -0400
+
+    Finished ms1 documentation
+
+commit e609dfa86188d8615e25c0f8372a9c2b154f0b18
+Merge: 45a56e1 84d9938
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Thu Apr 4 01:09:04 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit 45a56e1bd81869cf51c1a6e8cf8702aadc6db8d7
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Thu Apr 4 01:08:48 2013 -0400
+
+    New Debug Messages
+
+commit f4c3f06b5747d67e432e3172bf92568deeb08f82
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Thu Apr 4 01:07:33 2013 -0400
+
+    New Debug Messages
+
+commit 61a1aef9202f29cae1158a471aa3be6dcd41d395
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 3 20:50:16 2013 -0400
+
+    Working tests
+
+commit c441174a8c95061809b07a30c730b10a98662256
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 3 10:39:32 2013 -0400
+
+    fixed timer bug
+
+commit f1cfc0fd55c808df9453149a3852b3adedf9428d
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Apr 3 10:26:48 2013 -0400
+
+    updated tests
+
+commit ffe3a0675411d6005e97dbf9e0f584dd732a82ee
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Tue Apr 2 12:56:22 2013 -0400
+
+    added update_node functions
+
+commit c85fd5c5855f7d177bf4f4172b82c1bc9d9c413a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Mon Apr 1 23:42:57 2013 -0400
+
+    Oops, fixed compilation and added file
+
+commit 5d1d80018f965799d96237e13d8ea07932e499cb
+Merge: 471b0de bc72b0a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 29 00:47:07 2013 -0400
+
+    Merge
+
+commit 471b0deefd1ee772688d0df7202c4fff40b8abbe
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 29 00:35:06 2013 -0400
+
+    Completed Rebase
+    
+    Compelted Rebase
+    
+    Rebase completed
+
+commit bc72b0a0fff3c64a4c009807f3744545d161d186
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 29 00:35:06 2013 -0400
+
+    Compelted Rebase
+
+commit ff082b7214fb627693ec25f9d9cc6ee664f498be
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 29 00:15:28 2013 -0400
+
+    middle of cleanup
+
+commit 022730bd1d40a3a5e39171dfe91a41cee57edbce
+Author: Laurel A Emurian <lemurian@minus.seas.upenn.edu>
+Date:   Sat Mar 30 16:20:52 2013 -0400
+
+    list of files changed and notes on write up
+
+commit aa0353cb6a6dc1ee0b725656ffa6305d556f201f
+Merge: f087cb3 4e70f7f
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Fri Mar 29 01:24:05 2013 -0400
+
+    Merge branch 'master' of https://github.com/shaananc/cis553_proj2
+
+commit f087cb3c29b5d3dc97eb777a14293bfc65fce6de
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Fri Mar 29 01:23:43 2013 -0400
+
+    added inverted list functionality
+
+commit 4e70f7fa6ec980b7feccebce9bd3253e47e14131
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 28 14:50:50 2013 -0400
+
+    Added basic lookup functionality
+
+commit 539d381b6a9e1561ae17605a3738715f5d2231d0
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Wed Mar 27 23:50:41 2013 -0400
+
+    chord leave
+
+commit 444bbc24312fa049b633c13afbdc0491abb38cd2
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Tue Mar 26 21:56:16 2013 -0400
+
+    Fixed wrap around and some code cleanup
+
+commit 9f1b0524da408ed58d145887e25da6a90972baac
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Sun Mar 24 22:02:51 2013 -0400
+
+    removed Reverse Lookup and changed successsor spelling
+
+commit 82cbf7106217d592fb7eb7f714bd7092145d17d7
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 15:59:00 2013 -0400
+
+    swapped comparison, fixed bug
+
+commit a64a2949a52fb96ec84b02098ee5fcedcb9e1398
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 15:14:00 2013 -0400
+
+    Debugging Work, Ringstate Debug Implemented
+
+commit 59dbb79a351feaac0d3f02b14466f815677a70c2
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 05:02:21 2013 -0400
+
+    playing with rangecompare
+
+commit cc7df714efaadd15c4057320ce68106647bc6d5f
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 05:00:36 2013 -0400
+
+    still issues
+
+commit ee78b431ffc8fb1c25bd82a2c4e3b074e52eff0e
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 03:41:48 2013 -0400
+
+    stabilization in but not working
+
+commit c37d02dfd468a99381867e8265beacf96cbce7b4
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 02:37:35 2013 -0400
+
+    wrote notify
+
+commit 064cff0de88ee9e3a8492e4ce1841f50f623b316
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 01:58:21 2013 -0400
+
+    rework to add hashes
+
+commit 36943923187b7f4b31ebfc12741f3fd8b14fdaa5
+Merge: 0dfed6c fcba374
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 00:48:13 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit 0dfed6ce795acfcccadb76f1551d75df1d7016dd
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Sun Mar 24 00:47:50 2013 -0400
+
+    Working hashes
+
+commit fcba37460691c36b0a0cbf60a899d68b1904bbb8
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Fri Mar 22 19:48:06 2013 -0400
+
+    created m0_login folder with git log and members.txt. compile log needs to be added
+
+commit 2ff5739591ea8b7d36511b8a12a97dd9f71bb6a5
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 18:55:29 2013 -0400
+
+    updated gitignore
+
+commit a64a76227f749c4f9c4180b51ed98b39794fba44
+Merge: 1a6e349 1231088
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 18:54:28 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit 1a6e349f1899244822d55978c804435482b48dca
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 18:51:34 2013 -0400
+
+    added nodeinfo
+
+commit 1231088a59287bb6fb6aaf7d2e93a0551df01a5b
+Author: Charu Jangid <jangidc@ampersand.seas.upenn.edu>
+Date:   Fri Mar 22 17:36:01 2013 -0400
+
+    git log file created
+
+commit 40061f8e6b85243911dbf6edfa8627baf8be3a56
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 12:11:48 2013 -0400
+
+    fixed originator and successor
+
+commit d5b6a17425475b67b772fcc504a41086cd214dad
+Merge: d47bd4c 91741cd
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 11:39:36 2013 -0400
+
+    Merge branch 'master' of github.com:shaananc/cis553_proj2
+
+commit d47bd4cf98e476a8e3cb8a735a5add0d3dd2ab3e
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 11:39:24 2013 -0400
+
+    Finished packet structure
+
+commit 91741cd77a3a5a027c7b4fe050aaa5f25460f2fc
+Author: Laurel A Emurian <lemurian@lvn614-8.cis.upenn.edu>
+Date:   Fri Mar 22 10:54:50 2013 -0400
+
+    added self to members file
+
+commit b2e876c4d950b235d3bc4e9b263a05ef1b53570a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 04:00:49 2013 -0400
+
+    successful message passing
+
+commit 498171aae2f7fc3eb3a4334ef60e02f5f2f3518a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 03:37:11 2013 -0400
+
+    added processing function
+
+commit 865b6b45df162e000e5436c63aac8935fa55c141
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 03:30:52 2013 -0400
+
+    compiling on major changes
+
+commit 875cf9af11663392914aa946f616eed225ae1eca
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 02:19:59 2013 -0400
+
+    Experimental Setup for Remote Node - currently event driven
+
+commit 7c118b3f80f486b936277fa840c37895382f7ba3
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Fri Mar 22 01:40:43 2013 -0400
+
+    More work on ms1, started packet functiosn
+
+commit fc515fdaf41e2dfd96d90775f5db460a821c60ca
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 17:38:54 2013 -0400
+
+    Added cases for chordPacket
+
+commit 714b401e10e9d3cbe9462b40a0cc73e59171c447
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 17:23:46 2013 -0400
+
+    updates to pennchordpacket
+
+commit 9ce67031c1549e405d36a5f1e911410b99d01f40
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:43:11 2013 -0400
+
+    adding test result
+
+commit 17696f2506b2d1d6108898f52c77407c0b1262fa
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:33:24 2013 -0400
+
+    Added self to members.txt
+
+commit 33af28520a70cb70aaafc8ef48d58e8dd873a2aa
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:29:49 2013 -0400
+
+    adding project 1 code
+
+commit bf0cd6a78f9007244cac929b0438032ab9232846
+Author: rmygatt <rmygatt@seas.upenn.edu>
+Date:   Thu Mar 21 20:25:55 2013 -0400
+
+    added project 1 code
+
+commit baa7d9ced723fef41089e624ced40fc61bd91455
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 15:28:33 2013 -0400
+
+    Added my name to members.txt
+
+commit dabb9b6e0cd09e21b5c0a8e838c5f25edf534bb7
+Author: Tanveer Gill <tgill@tgill.local>
+Date:   Thu Mar 21 18:55:50 2013 -0400
+
+    update members.txt
+
+commit f4c66d7f71ef854df84d7d88ad154551ed0a5e8b
+Author: Charu Jangid <jangidc@minus.seas.upenn.edu>
+Date:   Thu Mar 21 18:35:22 2013 -0400
+
+    Charu's first commit. Created members.txt
+
+commit ae45faa58794ae9a773362eda32103e4cddf3a8a
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 15:19:53 2013 -0400
+
+    addedd enum instructions
+
+commit b70f06312c5b552d0cfba3e1ed2c3ff1ff003ec5
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 15:16:54 2013 -0400
+
+    Added more skeleton
+
+commit ba853d0f95fd8dc045f5b3945bc7174eebbcf993
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 14:59:27 2013 -0400
+
+    Scaffolding and stubs
+
+commit c64acc0cdd932d9b84fe626f551e11d0831e717f
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 13:47:55 2013 -0400
+
+    Added execute script, test code, join command
+
+commit 6733de4aa5403db8b8f47ce4af5b2075e612e106
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 11:26:32 2013 -0400
+
+    Initial Commit
+
+commit 59ba0d9cf5016e32034f53847bdd0aed04770866
+Author: Shaanan Cohney <shaananc@gmail.com>
+Date:   Wed Mar 20 13:25:18 2013 -0700
+
+    Initial commit

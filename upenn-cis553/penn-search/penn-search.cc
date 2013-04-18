@@ -277,6 +277,7 @@ PennSearch::ProcessCommand(std::vector<std::string> tokens) {
             SEARCH_LOG("\nSCH Look Pair Char: " << keyword << ", " << strHash(keyHash) << "\nKeyword size: "<< sizeof (keyword));
  
             uint32_t lookRes = m_chord->Lookup(keyHash);
+            newSearch.transID = lookres;
             m_searchTracker.insert(std::make_pair(lookRes, newSearch));
             newSearch.keywords.clear();        
         }
@@ -499,6 +500,7 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
     //std::cout << keyword << std::endl;
     SHA1(keyword, (newSearch.keywords.front()).size(), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
+    newSearch.transID = lookres;
     m_searchTracker.insert(std::make_pair(lookRes, newSearch));
 }
 
@@ -545,7 +547,8 @@ PennSearch::ProcessSearchRes(PennSearchMessage message, Ipv4Address sourceAddres
 void
 PennSearch::ProcessSearchFin(PennSearchMessage message, Ipv4Address sourceAddress, uint16_t sourcePort) {
     SearchRes results = message.GetSearchFin().searchMessage;
-    SEARCH_LOG("\nSearchResults<" << /*ReverseLookup(*/results.queryNode/*)*/ << ", " << printDocs(results.docs) <<">");
+    SEARCH_LOG("\nSearchResults<" << /*ReverseLookup(*/results.queryNode/*)*/ << ", SearchID: " << searchMessage.transID << ", " 
+               << printDocs(results.docs) <<">");
 }
 
 std::vector<std::string>
@@ -608,7 +611,7 @@ PennSearch::SendSearchFin(Ipv4Address destAddress, SearchRes results) {
 void
 PennSearch::ProcessSearchLookupResult(Ipv4Address destAddress, SearchRes results) {
     if (results.docs.empty()) {
-        SEARCH_LOG("Search<" << printDocs(results.keywords) << ">");
+      SEARCH_LOG("Search " << results.transID << " <" << printDocs(results.keywords) << ">");
     } else {
       SEARCH_LOG("InvertedListShip<" << results.keywords.front() << ", " << printDocs(results.docs) << ">");
     }

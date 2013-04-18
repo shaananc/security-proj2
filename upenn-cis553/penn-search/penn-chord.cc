@@ -344,7 +344,7 @@ PennChord::StopChord() {
   }
 
   //  CHORD_LOG("Average hop count: " << avg_lookups << " " << num_hops <<" "<< num_lookups << std::endl);
-  CHORD_LOG("Average hop count: " << avg_lookups << std::endl);
+  std::cout <<"Average hop count: " << avg_lookups << std::endl;
   
   // print finger table
   DEBUG_LOG("Finger Table" << " SHA_DIGEST_LENGTH: " << SHA_DIGEST_LENGTH << " figerTable size: " << m_fingerTable.size());

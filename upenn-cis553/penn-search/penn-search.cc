@@ -492,9 +492,9 @@ void PennSearch::ProcessSearchInit(PennSearchMessage message, Ipv4Address source
     SEARCH_LOG("Searching for<" << printDocs(newSearch.keywords) << ">");
 
     unsigned char keyHash[SHA_DIGEST_LENGTH];
-    std::cout << newSearch.keywords.front() << std::endl;
+    //std::cout << newSearch.keywords.front() << std::endl;
     unsigned char *keyword = (unsigned char *)newSearch.keywords.front().c_str();
-    std::cout << keyword << std::endl;
+    //std::cout << keyword << std::endl;
     SHA1(keyword, (newSearch.keywords.front()).size(), keyHash);
     uint32_t lookRes = m_chord->Lookup(keyHash);
     m_searchTracker.insert(std::make_pair(lookRes, newSearch));
@@ -797,7 +797,7 @@ void PennSearch::remove_publish_list(std::vector<std::string> &keys) {
 
 void PennSearch::chordJoined() {
     // TODO this is where we have to send a message that we want to move the associated lists
-    std::cout << "Did join callback! Yay!! " << ReverseLookup(m_local) << std::endl;
+    //std::cout << "Did join callback! Yay!! " << ReverseLookup(m_local) << std::endl;
     NodeInfo suc = m_chord->getSuccessor();
 
     Ptr<Packet> packet = Create<Packet> ();

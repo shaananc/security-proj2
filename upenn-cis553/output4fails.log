@@ -1,0 +1,434 @@
+
+Command >
+*CHORD* Node: 1, Module: CHORD, Time: 70004 ms, Message: deleting transaction 4087757999
+
+*SEARCH* Node: 0, Module: PENNSEARCH, Time: 70504 ms, Message: Received Publish Request from 10.0.0.2
+
+*CHORD* Node: 2, Module: CHORD, Time: 80008 ms, Message: deleting transaction 2657825489
+
+*SEARCH* Node: 1, Module: PENNSEARCH, Time: 81010 ms, Message: Received Publish Request from 10.0.2.2
+
+*CHORD* Node: 3, Module: CHORD, Time: 90004 ms, Message: deleting transaction 1857084228
+
+*SEARCH* Node: 1, Module: PENNSEARCH, Time: 90510 ms, Message: Received Publish Request from 10.0.3.2
+
+*CHORD* Node: 4, Module: CHORD, Time: 100017 ms, Message: deleting transaction 517714531
+
+*SEARCH* Node: 3, Module: PENNSEARCH, Time: 101010 ms, Message: Received Publish Request from 10.0.5.2
+
+*CHORD* Node: 5, Module: CHORD, Time: 110021 ms, Message: deleting transaction 2750814381
+
+*SEARCH* Node: 4, Module: PENNSEARCH, Time: 111517 ms, Message: Received Publish Request from 10.0.6.2
+
+*CHORD* Node: 6, Module: CHORD, Time: 120026 ms, Message: deleting transaction 2548887577
+
+*SEARCH* Node: 4, Module: PENNSEARCH, Time: 120510 ms, Message: Received Publish Request from 10.0.8.2
+
+*CHORD* Node: 7, Module: CHORD, Time: 130019 ms, Message: deleting transaction 3660717823
+
+*SEARCH* Node: 4, Module: PENNSEARCH, Time: 130515 ms, Message: Received Publish Request from 10.0.10.1
+
+*CHORD* Node: 8, Module: CHORD, Time: 140028 ms, Message: deleting transaction 1396796633
+
+*SEARCH* Node: 0, Module: PENNSEARCH, Time: 140523 ms, Message: Received Publish Request from 10.0.7.2
+
+*CHORD* Node: 9, Module: CHORD, Time: 150061 ms, Message: deleting transaction 3737238293
+
+*SEARCH* Node: 5, Module: PENNSEARCH, Time: 150528 ms, Message: Received Publish Request from 10.0.11.2
+
+*CHORD* Node: 10, Module: CHORD, Time: 160030 ms, Message: deleting transaction 3698759911
+
+*SEARCH* Node: 0, Module: PENNSEARCH, Time: 161040 ms, Message: Received Publish Request from 10.0.14.1
+
+*CHORD* Node: 11, Module: CHORD, Time: 170041 ms, Message: deleting transaction 2257420153
+
+*SEARCH* Node: 4, Module: PENNSEARCH, Time: 170525 ms, Message: Received Publish Request from 10.0.14.2
+
+*CHORD* Node: 12, Module: CHORD, Time: 180054 ms, Message: deleting transaction 3572626423
+
+*SEARCH* Node: 7, Module: PENNSEARCH, Time: 181527 ms, Message: Received Publish Request from 10.0.15.2
+
+*CHORD* Node: 13, Module: CHORD, Time: 190083 ms, Message: deleting transaction 3918583447
+
+*SEARCH* Node: 0, Module: PENNSEARCH, Time: 191545 ms, Message: Received Publish Request from 10.0.18.1
+
+*CHORD* Node: 14, Module: CHORD, Time: 200173 ms, Message: deleting transaction 3333675129
+
+*SEARCH* Node: 11, Module: PENNSEARCH, Time: 200536 ms, Message: Received Publish Request from 10.0.18.2
+
+*CHORD* Node: 15, Module: CHORD, Time: 210083 ms, Message: deleting transaction 4092581940
+
+*SEARCH* Node: 6, Module: PENNSEARCH, Time: 210538 ms, Message: Received Publish Request from 10.0.20.2
+
+*CHORD* Node: 16, Module: CHORD, Time: 220139 ms, Message: deleting transaction 3520363313
+
+*SEARCH* Node: 13, Module: PENNSEARCH, Time: 221532 ms, Message: Received Publish Request from 10.0.21.2
+
+*CHORD* Node: 17, Module: CHORD, Time: 230113 ms, Message: deleting transaction 324447437
+
+*SEARCH* Node: 9, Module: PENNSEARCH, Time: 231542 ms, Message: Received Publish Request from 10.0.24.1
+
+*CHORD* Node: 18, Module: CHORD, Time: 240085 ms, Message: deleting transaction 706459690
+
+*SEARCH* Node: 1, Module: PENNSEARCH, Time: 241525 ms, Message: Received Publish Request from 10.0.25.1
+
+*CHORD* Node: 19, Module: CHORD, Time: 255000 ms, Message: Retransmitting dynamically6 transactionId: 3854056729
+
+*CHORD* Node: 19, Module: CHORD, Time: 255100 ms, Message: deleting transaction 3854056729
+
+*SEARCH* Node: 9, Module: PENNSEARCH, Time: 255547 ms, Message: Received Publish Request from 10.0.26.1
+
+*CHORD* Node: 3, Module: CHORD, Time: 260000 ms, Message:
+RingState<9457.29c7.7b63.87a4.79b0.2261.8138.434d.6524.c0d6>: Pred<4, 8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>,Succ<18, a448.1dbe.3b2.aef6.eef4.e14.c759.d0d4.6eb1.8367>
+
+RingDebug
+
+*CHORD* Node: 18, Module: CHORD, Time: 260010 ms, Message:
+RingState<a448.1dbe.3b2.aef6.eef4.e14.c759.d0d4.6eb1.8367>: Pred<3, 9457.29c7.7b63.87a4.79b0.2261.8138.434d.6524.c0d6>,Succ<1, aa2a.d8e1.f3ec.b073.2d39.1d7e.ab9d.bb99.6bc7.d72f>
+
+RingDebug
+
+*CHORD* Node: 1, Module: CHORD, Time: 260017 ms, Message:
+RingState<aa2a.d8e1.f3ec.b073.2d39.1d7e.ab9d.bb99.6bc7.d72f>: Pred<18, a448.1dbe.3b2.aef6.eef4.e14.c759.d0d4.6eb1.8367>,Succ<8, c8a0.7736.616e.b6f.6295.d4f.3353.3380.61d0.a823>
+
+RingDebug
+
+*CHORD* Node: 8, Module: CHORD, Time: 260026 ms, Message:
+RingState<c8a0.7736.616e.b6f.6295.d4f.3353.3380.61d0.a823>: Pred<1, aa2a.d8e1.f3ec.b073.2d39.1d7e.ab9d.bb99.6bc7.d72f>,Succ<10, cde2.c57f.292b.df.fd53.5731.92c.c77c.cd28.ac74>
+
+RingDebug
+
+*CHORD* Node: 10, Module: CHORD, Time: 260030 ms, Message:
+RingState<cde2.c57f.292b.df.fd53.5731.92c.c77c.cd28.ac74>: Pred<8, c8a0.7736.616e.b6f.6295.d4f.3353.3380.61d0.a823>,Succ<16, dfdf.85a9.7bc1.78b.567.5935.2c12.a2d0.57b8.e941>
+
+RingDebug
+
+*CHORD* Node: 16, Module: CHORD, Time: 260043 ms, Message:
+RingState<dfdf.85a9.7bc1.78b.567.5935.2c12.a2d0.57b8.e941>: Pred<10, cde2.c57f.292b.df.fd53.5731.92c.c77c.cd28.ac74>,Succ<13, f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>
+
+RingDebug
+
+*CHORD* Node: 13, Module: CHORD, Time: 260050 ms, Message:
+RingState<f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>: Pred<16, dfdf.85a9.7bc1.78b.567.5935.2c12.a2d0.57b8.e941>,Succ<0, 1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>
+
+RingDebug
+
+*CHORD* Node: 0, Module: CHORD, Time: 260059 ms, Message:
+RingState<1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>: Pred<13, f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>,Succ<2, 2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>
+
+RingDebug
+
+*CHORD* Node: 2, Module: CHORD, Time: 260063 ms, Message:
+RingState<2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>: Pred<0, 1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>,Succ<17, 26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>
+
+RingDebug
+
+*CHORD* Node: 17, Module: CHORD, Time: 260074 ms, Message:
+RingState<26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>: Pred<2, 2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>,Succ<19, 2d90.67a7.6949.ffba.7145.44db.d8ba.9b9.c679.0f1>
+
+RingDebug
+
+*CHORD* Node: 19, Module: CHORD, Time: 260078 ms, Message:
+RingState<2d90.67a7.6949.ffba.7145.44db.d8ba.9b9.c679.0f1>: Pred<17, 26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>,Succ<9, 5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>
+
+RingDebug
+
+*CHORD* Node: 9, Module: CHORD, Time: 260091 ms, Message:
+RingState<5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>: Pred<19, 2d90.67a7.6949.ffba.7145.44db.d8ba.9b9.c679.0f1>,Succ<5, 6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>
+
+RingDebug
+
+*CHORD* Node: 5, Module: CHORD, Time: 260098 ms, Message:
+RingState<6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>: Pred<9, 5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>,Succ<15, 63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>
+
+RingDebug
+
+*CHORD* Node: 15, Module: CHORD, Time: 260115 ms, Message:
+RingState<63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>: Pred<5, 6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>,Succ<6, 6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>
+
+RingDebug
+
+*CHORD* Node: 6, Module: CHORD, Time: 260133 ms, Message:
+RingState<6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>: Pred<15, 63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>,Succ<12, 6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>
+
+RingDebug
+
+*CHORD* Node: 12, Module: CHORD, Time: 260146 ms, Message:
+RingState<6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>: Pred<6, 6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>,Succ<7, 6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>
+
+RingDebug
+
+*CHORD* Node: 7, Module: CHORD, Time: 260157 ms, Message:
+RingState<6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>: Pred<12, 6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>,Succ<14, 7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>
+
+RingDebug
+
+*CHORD* Node: 14, Module: CHORD, Time: 260170 ms, Message:
+RingState<7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>: Pred<7, 6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>,Succ<11, 7cff.8c4.838d.12eb.9722.5964.4789.5b56.f6ea.c74>
+
+RingDebug
+
+*CHORD* Node: 11, Module: CHORD, Time: 260177 ms, Message:
+RingState<7cff.8c4.838d.12eb.9722.5964.4789.5b56.f6ea.c74>: Pred<14, 7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>,Succ<4, 8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>
+
+RingDebug
+
+*CHORD* Node: 4, Module: CHORD, Time: 260185 ms, Message:
+RingState<8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>: Pred<11, 7cff.8c4.838d.12eb.9722.5964.4789.5b56.f6ea.c74>,Succ<3, 9457.29c7.7b63.87a4.79b0.2261.8138.434d.6524.c0d6>
+
+RingDebug
+
+*CHORD* Node: 3, Module: CHORD, Time: 260187 ms, Message: 20 is the total number of nodes in the ring
+ messageType: 9
+
+*CHORD* Node: 3, Module: CHORD, Time: 260187 ms, Message: deleting transaction 1857085349
+
+*CHORD* Node: 4, Module: CHORD, Time: 265019 ms, Message: Updating Predecessor to 10.0.18.2
+
+*CHORD* Node: 11, Module: CHORD, Time: 267000 ms, Message: Retransmitting dynamically10 transactionId: 2257420795
+
+*CHORD* Node: 4, Module: CHORD, Time: 267019 ms, Message: Updating Predecessor to 10.0.18.2
+
+*CHORD* Node: 9, Module: CHORD, Time: 275041 ms, Message: Updating Predecessor to 10.0.23.2
+
+*CHORD* Node: 19, Module: CHORD, Time: 277000 ms, Message: Retransmitting dynamically10 transactionId: 3854056731
+
+*CHORD* Node: 9, Module: CHORD, Time: 277019 ms, Message: Updating Predecessor to 10.0.23.2
+
+*CHORD* Node: 18, Module: CHORD, Time: 285015 ms, Message: Updating Predecessor to 10.0.5.2
+
+*CHORD* Node: 3, Module: CHORD, Time: 287000 ms, Message: Retransmitting dynamically10 transactionId: 1857085510
+
+*CHORD* Node: 18, Module: CHORD, Time: 287015 ms, Message: Updating Predecessor to 10.0.5.2
+
+*CHORD* Node: 10, Module: CHORD, Time: 295021 ms, Message: Updating Predecessor to 10.0.0.2
+
+*CHORD* Node: 8, Module: CHORD, Time: 297000 ms, Message: Retransmitting dynamically10 transactionId: 1396797435
+
+*CHORD* Node: 10, Module: CHORD, Time: 297021 ms, Message: Updating Predecessor to 10.0.0.2
+
+*CHORD* Node: 1, Module: CHORD, Time: 305019 ms, Message: Updating Predecessor to 10.0.5.2
+
+*CHORD* Node: 18, Module: CHORD, Time: 307000 ms, Message: Retransmitting dynamically10 transactionId: 706460172
+
+*CHORD* Node: 1, Module: CHORD, Time: 307019 ms, Message: Updating Predecessor to 10.0.5.2
+
+*CHORD* Node: 15, Module: CHORD, Time: 315000 ms, Message:
+RingState<63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>: Pred<5, 6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>,Succ<6, 6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>
+
+RingDebug
+
+*CHORD* Node: 6, Module: CHORD, Time: 315017 ms, Message:
+RingState<6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>: Pred<15, 63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>,Succ<12, 6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>
+
+RingDebug
+
+*CHORD* Node: 12, Module: CHORD, Time: 315030 ms, Message:
+RingState<6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>: Pred<6, 6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>,Succ<7, 6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>
+
+RingDebug
+
+*CHORD* Node: 7, Module: CHORD, Time: 315041 ms, Message:
+RingState<6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>: Pred<12, 6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>,Succ<14, 7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>
+
+RingDebug
+
+*CHORD* Node: 14, Module: CHORD, Time: 315054 ms, Message:
+RingState<7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>: Pred<7, 6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>,Succ<4, 8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>
+
+RingDebug
+
+*CHORD* Node: 4, Module: CHORD, Time: 315067 ms, Message:
+RingState<8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>: Pred<14, 7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>,Succ<1, aa2a.d8e1.f3ec.b073.2d39.1d7e.ab9d.bb99.6bc7.d72f>
+
+RingDebug
+
+*CHORD* Node: 1, Module: CHORD, Time: 315074 ms, Message:
+RingState<aa2a.d8e1.f3ec.b073.2d39.1d7e.ab9d.bb99.6bc7.d72f>: Pred<4, 8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>,Succ<10, cde2.c57f.292b.df.fd53.5731.92c.c77c.cd28.ac74>
+
+RingDebug
+
+*CHORD* Node: 10, Module: CHORD, Time: 315087 ms, Message:
+RingState<cde2.c57f.292b.df.fd53.5731.92c.c77c.cd28.ac74>: Pred<1, aa2a.d8e1.f3ec.b073.2d39.1d7e.ab9d.bb99.6bc7.d72f>,Succ<16, dfdf.85a9.7bc1.78b.567.5935.2c12.a2d0.57b8.e941>
+
+RingDebug
+
+*CHORD* Node: 16, Module: CHORD, Time: 315100 ms, Message:
+RingState<dfdf.85a9.7bc1.78b.567.5935.2c12.a2d0.57b8.e941>: Pred<10, cde2.c57f.292b.df.fd53.5731.92c.c77c.cd28.ac74>,Succ<13, f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>
+
+RingDebug
+
+*CHORD* Node: 13, Module: CHORD, Time: 315107 ms, Message:
+RingState<f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>: Pred<16, dfdf.85a9.7bc1.78b.567.5935.2c12.a2d0.57b8.e941>,Succ<0, 1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>
+
+RingDebug
+
+*CHORD* Node: 0, Module: CHORD, Time: 315115 ms, Message:
+RingState<1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>: Pred<13, f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>,Succ<2, 2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>
+
+RingDebug
+
+*CHORD* Node: 2, Module: CHORD, Time: 315120 ms, Message:
+RingState<2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>: Pred<0, 1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>,Succ<17, 26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>
+
+RingDebug
+
+*CHORD* Node: 17, Module: CHORD, Time: 315131 ms, Message:
+RingState<26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>: Pred<2, 2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>,Succ<9, 5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>
+
+RingDebug
+
+*CHORD* Node: 9, Module: CHORD, Time: 315146 ms, Message:
+RingState<5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>: Pred<17, 26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>,Succ<5, 6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>
+
+RingDebug
+
+*CHORD* Node: 5, Module: CHORD, Time: 315152 ms, Message:
+RingState<6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>: Pred<9, 5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>,Succ<15, 63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>
+
+RingDebug
+
+*CHORD* Node: 15, Module: CHORD, Time: 315170 ms, Message: 15 is the total number of nodes in the ring
+ messageType: 9
+
+*CHORD* Node: 15, Module: CHORD, Time: 315170 ms, Message: deleting transaction 4092582582
+
+*CHORD* Node: 11, Module: CHORD, Time: 320089 ms, Message: deleting transaction 2257420796
+
+*SEARCH* Node: 4, Module: PENNSEARCH, Time: 321541 ms, Message: Received Publish Request from 10.0.14.2
+
+*CHORD* Node: 19, Module: CHORD, Time: 330087 ms, Message: deleting transaction 3854056892
+
+*SEARCH* Node: 9, Module: PENNSEARCH, Time: 330547 ms, Message: Received Publish Request from 10.0.26.1
+
+*CHORD* Node: 3, Module: CHORD, Time: 340061 ms, Message: deleting transaction 1857085831
+
+*CHORD* Node: 8, Module: CHORD, Time: 355000 ms, Message: Retransmitting dynamically6 transactionId: 1396797916
+
+*CHORD* Node: 18, Module: CHORD, Time: 365000 ms, Message: Retransmitting dynamically6 transactionId: 706460493
+
+*CHORD* Node: 0, Module: CHORD, Time: 370000 ms, Message:
+RingState<1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>: Pred<13, f915.8db.88fd.b254.32a0.76e5.f1e.4bac.bb7d.ac33>,Succ<2, 2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>
+
+RingDebug
+
+*CHORD* Node: 2, Module: CHORD, Time: 370004 ms, Message:
+RingState<2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>: Pred<0, 1dc0.b422.3e18.7a10.c52f.f6a8.48df.9057.10fb.beaa>,Succ<17, 26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>
+
+RingDebug
+
+*CHORD* Node: 17, Module: CHORD, Time: 370015 ms, Message:
+RingState<26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>: Pred<2, 2540.baa4.8284.677b.b68b.172f.b5b6.582.f016.79db>,Succ<19, 2d90.67a7.6949.ffba.7145.44db.d8ba.9b9.c679.0f1>
+
+RingDebug
+
+*CHORD* Node: 19, Module: CHORD, Time: 370019 ms, Message:
+RingState<2d90.67a7.6949.ffba.7145.44db.d8ba.9b9.c679.0f1>: Pred<17, 26d5.6510.4e79.c4a8.7d7.6e1e.f653.ed81.5a76.1a12>,Succ<9, 5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>
+
+RingDebug
+
+*CHORD* Node: 9, Module: CHORD, Time: 370032 ms, Message:
+RingState<5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>: Pred<19, 2d90.67a7.6949.ffba.7145.44db.d8ba.9b9.c679.0f1>,Succ<5, 6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>
+
+RingDebug
+
+*CHORD* Node: 5, Module: CHORD, Time: 370039 ms, Message:
+RingState<6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>: Pred<9, 5cd4.f03.1ed5.7541.3dc6.e2db.b924.f7cc.985a.9f6>,Succ<15, 63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>
+
+RingDebug
+
+*CHORD* Node: 15, Module: CHORD, Time: 370056 ms, Message:
+RingState<63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>: Pred<5, 6144.a987.d8ca.e23.5fd2.1a5.fad9.79f9.b71d.7d65>,Succ<6, 6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>
+
+RingDebug
+
+*CHORD* Node: 6, Module: CHORD, Time: 370074 ms, Message:
+RingState<6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>: Pred<15, 63c7.c18.baad.3c4b.75bf.2e58.fc78.3474.f511.317f>,Succ<12, 6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>
+
+RingDebug
+
+*CHORD* Node: 12, Module: CHORD, Time: 370087 ms, Message:
+RingState<6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>: Pred<6, 6a63.8a16.1d32.64fc.61c.863b.a658.2327.bc3d.aa5>,Succ<7, 6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>
+
+RingDebug
+
+*CHORD* Node: 7, Module: CHORD, Time: 370098 ms, Message:
+RingState<6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>: Pred<12, 6b51.c27f.5684.6f84.6111.58bc.4077.1d94.b78.4e91>,Succ<14, 7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>
+
+RingDebug
+
+*CHORD* Node: 14, Module: CHORD, Time: 370111 ms, Message:
+RingState<7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>: Pred<7, 6fe3.df5.256d.994.151a.6e78.f55a.f333.1b3.fa1f>,Succ<11, 7cff.8c4.838d.12eb.9722.5964.4789.5b56.f6ea.c74>
+
+RingDebug
+
+*CHORD* Node: 11, Module: CHORD, Time: 370118 ms, Message:
+RingState<7cff.8c4.838d.12eb.9722.5964.4789.5b56.f6ea.c74>: Pred<14, 7830.dc41.4e6f.85f5.1e98.62ef.52c.e631.daaf.72a7>,Succ<4, 8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>
+
+RingDebug
+
+*CHORD* Node: 4, Module: CHORD, Time: 370126 ms, Message:
+RingState<8d5c.8922.e2e9.c4.3ff7.1e10.efd7.1cc.7828.6aff>: Pred<11, 7cff.8c4.838d.12eb.9722.5964.4789.5b56.f6ea.c74>,Succ<Unknown, 9050.b80.00.00.9fbc.ffff.ff7f.00.a0bc.ffff>
+
+RingDebug
+
+*CHORD* Node: 0, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 1, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 2, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 3, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 4, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 5, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 6, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 7, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 8, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 9, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 10, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 11, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 12, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 13, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 14, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 15, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 16, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 17, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 18, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 19, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 20, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 21, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 22, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 23, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 24, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 25, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 26, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 27, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 28, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+
+*CHORD* Node: 29, Module: CHORD, Time: 375000 ms, Message: Average hop count: 0
+End of Simulation.
